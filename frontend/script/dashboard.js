@@ -49,15 +49,13 @@ const togglePopup = function () {
 // #region ***  Init / DOMContentLoaded                  ***********
 const dashboardInit = function () {
   console.log('dashboard.js: init');
-  listenToQuestions();
-  togglePopup();
-  listenToFilterBtns('.js-filter-average');
-  listenToFilterBtns('.js-filter-total');
+  if (document.querySelector('.js-dashboard-page')) {
+    listenToQuestions();
+    togglePopup();
+    listenToFilterBtns('.js-filter-average');
+    listenToFilterBtns('.js-filter-total');
+  }
 };
 
 document.addEventListener('DOMContentLoaded', dashboardInit);
 // #endregion
-
-
-
-

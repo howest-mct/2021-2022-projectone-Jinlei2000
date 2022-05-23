@@ -17,9 +17,10 @@
 // #region ***  Init / DOMContentLoaded                  ***********
 const statsInit = function () {
   console.log('stats.js: init');
-  listenToFilterBtns('.js-filter-time');
+  if (document.querySelector('.js-history-page')) {
+    listenToFilterBtns('.js-filter-time');
+  }
 };
 
 document.addEventListener('DOMContentLoaded', statsInit);
 // #endregion
-

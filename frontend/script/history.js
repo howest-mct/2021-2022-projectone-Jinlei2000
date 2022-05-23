@@ -18,10 +18,11 @@
 // #region ***  Init / DOMContentLoaded                  ***********
 const historyInit = function () {
   console.log('history.js: init');
-  listenToFilterBtns('.js-filter-time');
-  listenToFilterBtns('.js-filter-action');
+  if (document.querySelector('.js-history-page')) {
+    listenToFilterBtns('.js-filter-time');
+    listenToFilterBtns('.js-filter-action');
+  }
 };
 
 document.addEventListener('DOMContentLoaded', historyInit);
 // #endregion
-

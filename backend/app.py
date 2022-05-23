@@ -1,6 +1,5 @@
 import time
 from RPi import GPIO
-from helpers.klasseknop import Button
 import threading
 
 from flask_cors import CORS
@@ -14,30 +13,18 @@ from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
 
-ledPin = 21
-btnPin = Button(20)
+btnLcdPin = 5
 
 # Code voor Hardware
 def setup_gpio():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    GPIO.setup(ledPin, GPIO.OUT)
-    GPIO.output(ledPin, GPIO.LOW)
-    
-    btnPin.on_press(lees_knop)
+    GPIO.setup(btnLcdPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.add_event_detect(btnLcdPin,GPIO.FALLING,demo_callback1,bouncetime=100)  
 
-
-def lees_knop(pin):
-    if btnPin.pressed:
-        print("**** button pressed ****")
-        if GPIO.input(ledPin) == 1:
-            switch_light({'lamp_id': '3', 'new_status': 0})
-        else:
-            switch_light({'lamp_id': '3', 'new_status': 1})
-
-
-
+def demo_callback1(pin):
+    print("**** LCD knop werkt ingedrukt ****")
 
 # Code voor Flask
 
@@ -54,7 +41,6 @@ def error_handler(e):
     print(e)
 
 
-
 # API ENDPOINTS
 @app.route('/')
 def hallo():
@@ -64,49 +50,13 @@ def hallo():
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
-    # # Send to the client!
-    # vraag de status op van de lampen uit de DB
-    status = DataRepository.read_status_lampen()
-    emit('B2F_status_lampen', {'lampen': status}, broadcast=True)
-
-
-@socketio.on('F2B_switch_light')
-def switch_light(data):
-    # Ophalen van de data
-    lamp_id = data['lamp_id']
-    new_status = data['new_status']
-    print(f"Lamp {lamp_id} wordt geswitcht naar {new_status}")
-
-    # Stel de status in op de DB
-    res = DataRepository.update_status_lamp(lamp_id, new_status)
-
-    # Vraag de (nieuwe) status op van de lamp en stuur deze naar de frontend.
-    data = DataRepository.read_status_lamp_by_id(lamp_id)
-    socketio.emit('B2F_verandering_lamp', {'lamp': data}, broadcast=True)
-
-    # Indien het om de lamp van de TV kamer gaat, dan moeten we ook de hardware aansturen.
-    if lamp_id == '3':
-        print(f"TV kamer moet switchen naar {new_status} !")
-        GPIO.output(ledPin, new_status)
-
-
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
-def all_out():
-    while True:
-        print('*** We zetten alles uit **')
-        DataRepository.update_status_alle_lampen(0)
-        GPIO.output(ledPin, 0)
-        status = DataRepository.read_status_lampen()
-        socketio.emit('B2F_status_lampen', {'lampen': status})
-        time.sleep(15)
-
-def start_thread():
-    print("**** Starting THREAD ****")
-    thread = threading.Thread(target=all_out, args=(), daemon=True)
+def start_thread_live_data():
+    print("**** Starting THREAD live data ****")
+    thread = threading.Timer(10, ........).start()
     thread.start()
-
 
 def start_chrome_kiosk():
     import os
