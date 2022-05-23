@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="theme-color" content="#0C5FB0" />
+    <meta name="description" content="Smart Room: Welcome" />
+    <title>Smart Garbage</title>
+
+    <!-- Show logo -->
+    <link rel="icon" href="img/favicon-blue.svg" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+    <link rel="manifest" href="img/manifest.json" />
+
+    <!-- Get icons -->
+    <!-- maker https://icons8.com/line-awesome -->
+    <link rel="stylesheet" href="supplier/icons/css/line-awesome.min.css" />
+
+    <!-- Get styles -->
+    <link rel="stylesheet" href="supplier/toast/simple-notify.min.css" />
+    <link rel="stylesheet" href="style/normalize.css" />
+    <link rel="stylesheet" href="style/screen.css" />
+
+    <!-- Get scripts -->
+    <script src="supplier/toast/simple-notify.min.js"></script>
+    <script src="script/datahandler.js"></script>
+    <script src="script/app.js"></script>
+    <script src="script/index.js"></script>
+  </head>
+  <body>
+    <div class="o-row o-row--login js-create u-hidden-card">
+      <div class="o-container u-center">
+        <div class="c-card c-card__login">
+          <h1 class="c-logo u-mb-xl">
+            <svg
+              class="c-logo__symbol c-logo__symbol--blue u-pr-xs"
+              version="1.1"
+              id="Layer_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 512 512"
+              style="enable-background: new 0 0 512 512"
+              xml:space="preserve"
+            >
+              <g>
+                <path
+                  d="M294.7,396.6h21.1c5.8,0,10.5-4.7,10.5-10.5V196.2c0-5.8-4.7-10.5-10.5-10.5h-21.1c-5.8,0-10.5,4.7-10.5,10.5v189.8
+                                    C284.1,391.9,288.8,396.6,294.7,396.6z M438.8,101.3h-72.4l-29.9-49.8C328.9,38.8,315.1,31,300.3,31h-88.6
+                                    c-14.8,0-28.6,7.8-36.2,20.5l-29.9,49.8H73.2c-7.8,0-14.1,6.3-14.1,14.1v14.1c0,7.8,6.3,14.1,14.1,14.1h14.1v295.3
+                                    c0,23.3,18.9,42.2,42.2,42.2l0,0h253.1c23.3,0,42.2-18.9,42.2-42.2l0,0V143.5h14.1c7.8,0,14.1-6.3,14.1-14.1v-14.1
+                                    C452.9,107.6,446.6,101.3,438.8,101.3z M210.2,75.7c1-1.6,2.7-2.6,4.5-2.6h82.6c1.9,0,3.6,1,4.5,2.6l15.3,25.6H194.8L210.2,75.7z
+                                    M382.6,438.8H129.4V143.5h253.1V438.8z M196.2,396.6h21.1c5.8,0,10.5-4.7,10.5-10.5V196.2c0-5.8-4.7-10.5-10.5-10.5h-21.1
+                                    c-5.8,0-10.5,4.7-10.5,10.5v189.8C185.7,391.9,190.4,396.6,196.2,396.6z"
+                />
+              </g>
+            </svg>
+            <p class="u-mb-clear u-fw-medium c-lead c-lead--xxl u-align-self-center">Smart garbage</p>
+          </h1>
+          <h2 class="u-ta-center u-mb-md u-fw-regular">Sign up</h2>
+          <p class="u-ta-center u-mb-xl u-color-text-light">Create a new account</p>
+          <div class="u-column-reverse">
+            <input class="c-input u-mb-lg" type="text" value="" id="username" name="username" required />
+            <label class="c-input__text c-input__text--light" for="username">Username *</label>
+          </div>
+          <div class="u-column-reverse">
+            <input class="c-input u-mb-lg" type="text" value="" id="password" name="password" required />
+            <label class="c-input__text c-input__text--light" for="password">Password *</label>
+          </div>
+          <div class="u-column-reverse u-mb-md">
+            <input class="c-input u-mb-lg" type="text" value="" id="badge_id" name="badge_id" required />
+            <label class="c-input__text c-input__text--light" for="badge_id"
+              >Badge id<i class="las la-question-circle c-icon--xs js-info-badge-id c-info"><span class="c-info__text">Scan your badge on the trash can to get the badge number.</span></i></label
+            >
+          </div>
+          <div class="u-ta-center u-mb-xxl">
+            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear">Sign up</button>
+          </div>
+          <p class="u-ta-center u-mb-clear">Already have an account? <a class="js-toggle-login">Log In</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="o-row o-row--login js-login">
+      <div class="o-container u-center">
+        <div class="c-card c-card__login">
+          <h1 class="c-logo u-mb-xl">
+            <svg
+              class="c-logo__symbol c-logo__symbol--blue u-pr-xs"
+              version="1.1"
+              id="Layer_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 512 512"
+              style="enable-background: new 0 0 512 512"
+              xml:space="preserve"
+            >
+              <g>
+                <path
+                  d="M294.7,396.6h21.1c5.8,0,10.5-4.7,10.5-10.5V196.2c0-5.8-4.7-10.5-10.5-10.5h-21.1c-5.8,0-10.5,4.7-10.5,10.5v189.8
+                                    C284.1,391.9,288.8,396.6,294.7,396.6z M438.8,101.3h-72.4l-29.9-49.8C328.9,38.8,315.1,31,300.3,31h-88.6
+                                    c-14.8,0-28.6,7.8-36.2,20.5l-29.9,49.8H73.2c-7.8,0-14.1,6.3-14.1,14.1v14.1c0,7.8,6.3,14.1,14.1,14.1h14.1v295.3
+                                    c0,23.3,18.9,42.2,42.2,42.2l0,0h253.1c23.3,0,42.2-18.9,42.2-42.2l0,0V143.5h14.1c7.8,0,14.1-6.3,14.1-14.1v-14.1
+                                    C452.9,107.6,446.6,101.3,438.8,101.3z M210.2,75.7c1-1.6,2.7-2.6,4.5-2.6h82.6c1.9,0,3.6,1,4.5,2.6l15.3,25.6H194.8L210.2,75.7z
+                                    M382.6,438.8H129.4V143.5h253.1V438.8z M196.2,396.6h21.1c5.8,0,10.5-4.7,10.5-10.5V196.2c0-5.8-4.7-10.5-10.5-10.5h-21.1
+                                    c-5.8,0-10.5,4.7-10.5,10.5v189.8C185.7,391.9,190.4,396.6,196.2,396.6z"
+                />
+              </g>
+            </svg>
+            <p class="u-mb-clear u-fw-medium c-lead c-lead--xxl u-align-self-center">Smart garbage</p>
+          </h1>
+          <h2 class="u-ta-center u-mb-md u-fw-regular">Log in</h2>
+          <p class="u-ta-center u-mb-xl u-color-text-light">Log in to stay connected</p>
+          <div class="u-column-reverse">
+            <input class="c-input u-mb-lg" type="text" value="" id="username" name="username" required />
+            <label class="c-input__text c-input__text--light" for="username">Username *</label>
+          </div>
+          <div class="u-column-reverse u-mb-md">
+            <input class="c-input u-mb-lg" type="text" value="" id="password" name="password" required />
+            <label class="c-input__text c-input__text--light" for="password">Password *</label>
+          </div>
+
+          <div class="u-ta-center u-mb-xxl">
+            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear">Log in</button>
+          </div>
+          <p class="u-ta-center u-mb-clear">Don't have an account? <a class="js-toggle-login">Create one</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
