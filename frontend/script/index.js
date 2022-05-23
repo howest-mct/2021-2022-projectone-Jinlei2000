@@ -1,5 +1,18 @@
 'use strict';
 
+// #region ***  DOM references                           ***********
+// #endregion
+
+// #region ***  Callback-Visualisation - show___         ***********
+// #endregion
+
+// #region ***  Callback-No Visualisation - callback___  ***********
+// #endregion
+
+// #region ***  Data Access - get___                     ***********
+// #endregion
+
+// #region ***  Event Listeners - listenTo___            ***********
 const toggleLogin = function () {
   const btns = document.querySelectorAll('.js-toggle-login');
   for (const btn of btns) {
@@ -23,6 +36,9 @@ const toggleInfoBtn = function () {
   });
 };
 
+// #endregion
+
+// #region ***  Init / DOMContentLoaded                  ***********
 const indexInit = function () {
   console.log('index.js: init');
   toggleLogin();
@@ -32,3 +48,4 @@ const indexInit = function () {
 };
 
 document.addEventListener('DOMContentLoaded', indexInit);
+// #endregion

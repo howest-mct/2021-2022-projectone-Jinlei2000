@@ -1,24 +1,12 @@
 'use strict';
 
-const toggleNav = function () {
-  let toggleTrigger = document.querySelectorAll('.js-toggle-nav');
-  for (let i = 0; i < toggleTrigger.length; i++) {
-    toggleTrigger[i].addEventListener('click', function () {
-      // console.log('Toggle Mobile Nav');
-      document.querySelector('body').classList.toggle('has-mobile-nav');
-    });
-  }
-};
+// #region ***  DOM references                           ***********
+const lanIP = `${window.location.hostname}:5000`;
+const socketio = io(`http://${lanIP}`);
+let backend = lanIP + '/api/v1';
+// #endregion
 
-const listenToLogo = function () {
-  document.querySelectorAll('.js-logo').forEach(function (logo) {
-    logo.addEventListener('click', function () {
-      // console.log('Clicked logo');
-      window.location.href = 'welcome.html';
-    });
-  });
-};
-
+// #region ***  Callback-Visualisation - show___         ***********
 const showNotification = function (type, message, title) {
   // type: succes, error, or warning
   if (type === 'success') {
@@ -56,6 +44,33 @@ const showNotification = function (type, message, title) {
     });
   }
 };
+// #endregion
+
+// #region ***  Callback-No Visualisation - callback___  ***********
+// #endregion
+
+// #region ***  Data Access - get___                     ***********
+// #endregion
+
+// #region ***  Event Listeners - listenTo___            ***********
+const listenToLogo = function () {
+  document.querySelectorAll('.js-logo').forEach(function (logo) {
+    logo.addEventListener('click', function () {
+      // console.log('Clicked logo');
+      window.location.href = 'welcome.html';
+    });
+  });
+};
+
+const toggleNav = function () {
+  let toggleTrigger = document.querySelectorAll('.js-toggle-nav');
+  for (let i = 0; i < toggleTrigger.length; i++) {
+    toggleTrigger[i].addEventListener('click', function () {
+      // console.log('Toggle Mobile Nav');
+      document.querySelector('body').classList.toggle('has-mobile-nav');
+    });
+  }
+};
 
 const listenToFilterBtns = function (htmlFilterClass) {
   const btns = document.querySelectorAll(htmlFilterClass);
@@ -73,7 +88,9 @@ const listenToFilterBtns = function (htmlFilterClass) {
     });
   }
 };
+// #endregion
 
+// #region ***  Init / DOMContentLoaded                  ***********
 const init = function () {
   console.log('app.js: init');
   toggleNav();
@@ -87,3 +104,4 @@ const init = function () {
 };
 
 document.addEventListener('DOMContentLoaded', init);
+// #endregion

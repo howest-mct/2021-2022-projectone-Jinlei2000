@@ -1,5 +1,18 @@
 'use strict';
 
+// #region ***  DOM references                           ***********
+// #endregion
+
+// #region ***  Callback-Visualisation - show___         ***********
+// #endregion
+
+// #region ***  Callback-No Visualisation - callback___  ***********
+// #endregion
+
+// #region ***  Data Access - get___                     ***********
+// #endregion
+
+// #region ***  Event Listeners - listenTo___            ***********
 const listenToQuestions = function () {
   const cards = document.querySelectorAll('.js-card');
   const cardsInfo = document.querySelectorAll('.js-card-info');
@@ -31,7 +44,9 @@ const togglePopup = function () {
     });
   }
 };
+// #endregion
 
+// #region ***  Init / DOMContentLoaded                  ***********
 const dashboardInit = function () {
   console.log('dashboard.js: init');
   listenToQuestions();
@@ -41,3 +56,8 @@ const dashboardInit = function () {
 };
 
 document.addEventListener('DOMContentLoaded', dashboardInit);
+// #endregion
+
+
+
+

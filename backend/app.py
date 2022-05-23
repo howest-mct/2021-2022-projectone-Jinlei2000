@@ -56,8 +56,6 @@ def error_handler(e):
 
 
 # API ENDPOINTS
-
-
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
