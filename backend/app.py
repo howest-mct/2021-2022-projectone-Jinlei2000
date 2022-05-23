@@ -1,6 +1,9 @@
-import time
+from time import sleep,time
 from RPi import GPIO
 import threading
+
+from helpers.Button import Button
+from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
@@ -13,18 +16,44 @@ from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
 
-btnLcdPin = 5
+btnLcdPin = Button(5)
+btnPoweroffPin = Button(6)
+
+lcd = Lcd_4bits_i2c(0x38)
+lcd.init_LCD()
+
+backlight_lcd = 25
+
+btnStatusLcd = False
+btnStatusPoweroff = False
 
 # Code voor Hardware
-def setup_gpio():
+def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    GPIO.setup(btnLcdPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.add_event_detect(btnLcdPin,GPIO.FALLING,demo_callback1,bouncetime=100)  
+    GPIO.setup(backlight_lcd,GPIO.OUT)
+    GPIO.output(backlight_lcd, GPIO.LOW)
+
+    btnLcdPin.on_press(demo_callback1)
+    btnPoweroffPin.on_press(demo_callback2)
+
+
 
 def demo_callback1(pin):
-    print("**** LCD knop werkt ingedrukt ****")
+    global btnStatusLcd
+    print("**** LCD Button pressed ****")
+    GPIO.output(backlight_lcd, GPIO.HIGH)
+    btnStatusLcd = True
+    print('**** Showing IP WLAN ****')
+    lcd.write_ip_adres('wlan0')
+
+
+def demo_callback2(pin):
+    global btnStatusPoweroff
+    print("**** Poweroff Pi Button pressed ****")
+    btnStatusPoweroff = True
+
 
 # Code voor Flask
 
@@ -53,9 +82,33 @@ def initial_connection():
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
+def show_ip():
+    global btnStatusLcd
+    tijd = time()
+    while True:
+        if btnStatusLcd == True:
+            GPIO.output(backlight_lcd, GPIO.HIGH)
+            print(time()-tijd)
+            if((time()-tijd)>10):
+                btnStatusLcd = False
+        else:
+            lcd.clear_LCD()
+            GPIO.output(backlight_lcd, GPIO.LOW)
+            tijd = time()
+
+
+def start_thread_lcd():
+    print("**** Starting THREAD lcd ****")
+    thread = threading.Timer(15, show_ip)
+    thread.start()
+
+
+def live_data():
+    pass
+        
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Timer(10, ........).start()
+    thread = threading.Timer(10, live_data)
     thread.start()
 
 def start_chrome_kiosk():
@@ -99,13 +152,23 @@ def start_chrome_thread():
 
 if __name__ == '__main__':
     try:
-        setup_gpio()
-        start_thread()
+        setup()
+        start_thread_live_data()
+        start_thread_lcd()
         start_chrome_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
+        GPIO.output(backlight_lcd, GPIO.LOW)
+
+        # scherm leegmaken en 8 bits instellen
+        lcd.cursorOn()
+        lcd.clear_LCD()
+        lcd.set_to_8bits()
+        # i2c afsluiten
+        lcd.close_i2c()
+
     finally:
         GPIO.cleanup()
 
