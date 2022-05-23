@@ -1,0 +1,1814 @@
+/*------------------------------------*\
+  #FONTS
+\*------------------------------------*/
+
+@font-face {
+    font-family: "Inter Web";
+    font-weight: 400;
+    src: url("../fonts/Inter-Regular.woff2") format("woff2"),
+        url("../fonts/Inter-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter Web";
+    font-weight: 500;
+    src: url("../fonts/Inter-Medium.woff2") format("woff2"),
+        url("../fonts/Inter-Medium.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter Web";
+    font-weight: 600;
+    src: url("../fonts/Inter-SemiBold.woff2") format("woff2"),
+        url("../fonts/Inter-SemiBold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter Web";
+    font-weight: 700;
+    src: url("../fonts/Inter-Bold.woff2") format("woff2"),
+        url("../fonts/Inter-Bold.woff") format("woff");
+}
+
+/*------------------------------------*\
+  #GENERIC
+\*------------------------------------*/
+
+/*
+    Generic: Page
+    ---
+    Global page styles + universal box-sizing:
+*/
+
+html {
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: "Inter Web", Helvetica, arial, sans-serif;
+    color: #0B1D47;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+/*
+ * Remove text-shadow in selection highlight:
+ * https://twitter.com/miketaylr/status/12228805301
+ *
+ * Customize the background color to match your design.
+ */
+
+::selection {
+    background: #264AFF;
+    color: white;
+    text-shadow: none;
+}
+
+/*------------------------------------*\
+  #Elements
+\*------------------------------------*/
+
+/*
+    Elements: Images
+    ---
+    Default markup for images to make them responsive
+*/
+
+img {
+    max-width: 100%;
+    vertical-align: top;
+}
+
+/*
+    Elements: typography
+    ---
+    Default markup for typographic elements
+*/
+
+h1,
+h2,
+h3 {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 36px;
+    line-height: 48px;
+    margin: 0 0 24px;
+}
+
+h2 {
+    font-size: 32px;
+    line-height: 40px;
+    margin: 0 0 24px;
+}
+
+h3 {
+    font-size: 26px;
+    line-height: 32px;
+    margin: 0 0 24px;
+}
+
+h4,
+h5,
+h6 {
+    font-size: 20px;
+    line-height: 24px;
+    margin: 0 0 24px;
+}
+
+p,
+ol,
+ul,
+dl,
+table,
+address,
+figure {
+    margin: 0 0 24px;
+}
+
+ul,
+ol {
+    padding-left: 24px;
+}
+
+li ul,
+li ol {
+    margin-bottom: 0;
+}
+
+blockquote {
+    font-style: normal;
+    font-size: 23px;
+    line-height: 32px;
+    margin: 0 0 24px;
+}
+
+blockquote * {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+figcaption {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 8px;
+    color: #3C3C42;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: LightGrey;
+    margin: 0 0 24px;
+}
+
+a {
+    color: #5051DB;
+    transition: all .1s ease-in-out;
+}
+
+a:visited,
+a:active {
+    color: #3E3EA8;
+}
+
+a:hover,
+a:focus {
+    color: #3E3EA8;
+}
+
+/*------------------------------------*\
+  #OBJECTS
+\*------------------------------------*/
+
+/*
+    Objects: Row
+    ---
+    Creates a horizontal row that stretches the viewport and adds padding around children
+*/
+
+.o-row {
+    position: relative;
+    padding: 24px 24px 0;
+    display: flow-root;
+    /* New solution! Fixes margin collapsing */
+}
+
+.o-row--header {
+    box-shadow: 1px 2px 15px rgba(59, 91, 255, 0.5);
+}
+
+/* size modifiers */
+
+.o-row--lg {
+    padding: 48px 24px 24px;
+}
+
+@media (min-width: 768px) {
+    .o-row {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .o-row--md {
+        padding-top: 48px;
+        padding-bottom: 24px;
+    }
+
+    .o-row--lg {
+        padding-top: 72px;
+        padding-bottom: 48px;
+    }
+}
+
+/* padding clear modifiers */
+
+.o-row--clear-top {
+    padding-top: 0;
+}
+
+/*
+    Objects: Container
+    ---
+    Creates a horizontal container that sets de global max-width
+*/
+
+.o-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 72em;
+    /* 72 * 16px = 1152px */
+}
+
+/*
+    Objects: section
+    ---
+    Creates vertical whitespace between adjacent sections inside a row
+*/
+
+.o-section {
+    display: flow-root;
+    /* New solution! Fixes margin collapsing */
+}
+
+.o-section+.o-section {
+    padding-top: 24px;
+}
+
+@media (min-width: 768px) {
+
+    .o-section--lg+.o-section--lg,
+    .o-section--xl+.o-section--xl {
+        padding-top: 48px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .o-section--xl+.o-section--xl {
+        padding-top: 72px;
+    }
+}
+
+/*
+    Objects: Layout
+    ---
+    The layout object provides us with a column-style layout system. This object
+    contains the basic structural elements, but classes should be complemented
+    with width utilities
+*/
+
+.o-layout {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.o-layout__item {
+    flex-basis: 100%;
+}
+
+/* gutter modifiers, these affect o-layout__item too */
+
+.o-layout--gutter {
+    margin: 0 -12px;
+}
+
+.o-layout--gutter>.o-layout__item {
+    padding: 0 12px;
+}
+
+.o-layout--gutter-sm {
+    margin: 0 -6px;
+}
+
+.o-layout--gutter-sm>.o-layout__item {
+    padding: 0 6px;
+}
+
+.o-layout--gutter-lg {
+    margin: 0 -24px;
+}
+
+.o-layout--gutter-lg>.o-layout__item {
+    padding: 0 24px;
+}
+
+/* reverse horizontal row modifier */
+
+.o-layout--row-reverse {
+    flex-direction: row-reverse;
+}
+
+/* Horizontal alignment modifiers*/
+
+.o-layout--justify-start {
+    justify-content: flex-start;
+}
+
+.o-layout--justify-end {
+    justify-content: flex-end;
+}
+
+.o-layout--justify-center {
+    justify-content: center;
+}
+
+.o-layout--justify-space-around {
+    justify-content: space-around;
+}
+
+.o-layout--justify-space-evenly {
+    justify-content: space-evenly;
+}
+
+.o-layout--justify-space-between {
+    justify-content: space-between;
+}
+
+/* Vertical alignment modifiers */
+
+.o-layout--align-start {
+    align-items: flex-start;
+}
+
+.o-layout--align-end {
+    align-items: flex-end;
+}
+
+.o-layout--align-center {
+    align-items: center;
+}
+
+.o-layout--align-baseline {
+    align-items: baseline;
+}
+
+/* Vertical alignment modifiers that only work if there is one than one flex item */
+
+.o-layout--align-content-start {
+    align-content: start;
+}
+
+.o-layout--align-content-end {
+    align-content: end;
+}
+
+.o-layout--align-content-center {
+    align-content: center;
+}
+
+.o-layout--align-content-space-around {
+    align-content: space-around;
+}
+
+.o-layout--align-content-space-between {
+    align-content: space-between;
+}
+
+/*
+    Objects: List
+    ---
+    Small reusable object to remove default list styling from lists
+*/
+
+.o-list {
+    list-style: none;
+    padding: 0;
+}
+
+/*
+    Object: Button reset
+    ---
+    Small button reset object
+*/
+
+.o-button-reset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+
+    /* inherit font & color from ancestor */
+    color: inherit;
+    font: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+}
+
+/*------------------------------------*\
+  #COMPONENTS
+\*------------------------------------*/
+
+
+/*
+    Component: Logo
+    ---
+    Website main logo
+*/
+
+.c-logo {
+    height: 32px;
+    display: flex;
+    margin-bottom: 0;
+}
+
+.c-logo__symbol {
+    height: 100%;
+    fill: white;
+}
+
+.c-logo__symbol--blue {
+    fill: #264AFF;
+}
+
+@media (min-width: 768px) {
+    .c-logo {
+        height: 40px;
+    }
+}
+
+/*
+    Component: header
+    ---
+    Main header of the website
+*/
+
+.c-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #E9EFFC;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.c-header__nav {
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .c-header {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .c-header__nav {
+        display: block;
+    }
+
+    .c-header__nav--main {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: 12px;
+    }
+
+    .c-header__mobile-nav-trigger {
+        display: none;
+    }
+}
+
+/*
+    Component: footer
+    ---
+    Main footer of the website
+*/
+
+.c-footer {
+    display: flex;
+    color: #E9EFFC;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.c-footer__text {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.c-footer__icon {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    gap: 4px;
+}
+
+.c-footer__link,
+.c-footer__link:visited,
+.c-footer__link:active,
+.c-footer__link:focus {
+    text-decoration: none;
+    color: #E9EFFC;
+}
+
+.c-footer__link:hover {
+    color: white;
+    font-weight: 700;
+}
+
+@media (min-width: 768px) {
+    .c-footer {
+        flex-direction: row;
+    }
+
+    .c-footer__text {
+        justify-content: start;
+    }
+
+    .c-footer__text--right {
+        justify-content: end;
+    }
+}
+
+/*
+    Component: Nav
+    ---
+    Main navigation of the site
+*/
+
+.c-nav-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.c-nav-trigger__icon {
+    color: white;
+    height: 100%;
+}
+
+.c-nav {
+    font-size: 18px;
+    line-height: 24px;
+}
+
+
+.c-nav__link {
+    text-decoration: none;
+    font-weight: 400;
+    display: inline-flex;
+    padding: 8px 0;
+    font-size: 16px;
+}
+
+.c-nav__link--button {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.c-nav__link,
+.c-nav__link:visited,
+.c-nav__link:active {
+    color: #E9EFFC;
+}
+
+.is-selected .c-nav__link,
+.c-nav__link:hover,
+.c-nav__link:focus {
+    color: white;
+    font-weight: 700;
+}
+
+@media (min-width: 992px) {
+    .c-nav__list {
+        display: flex;
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+
+    .c-nav__link {
+        padding: 8px 16px;
+    }
+
+    .is-selected .c-nav__link,
+    .c-nav__link:hover,
+    .c-nav__link:focus {
+        color: white;
+        font-weight: 700;
+        transform: translateY(5px);
+    }
+}
+
+.c-nav__icon {
+    font-size: 24px;
+    margin-right: 4px;
+}
+
+/*
+    Component: Lead
+    ---
+    Lead type treatments to style everything that differs from standard typography elements
+*/
+
+.c-lead {
+    position: relative;
+}
+
+.c-lead--md {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.c-lead--lg {
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.c-lead--xl {
+    font-size: 24px;
+    line-height: 28px;
+}
+
+.c-lead--xxl {
+    font-size: 32px;
+    line-height: 43px;
+}
+
+.c-lead--xxxl {
+    font-size: 36px;
+    line-height: 48px;
+}
+
+.c-lead--xxxxl {
+    font-size: 40px;
+    line-height: 50px;
+}
+
+/*
+    Component: CTA link
+    ---
+    Small cta link with custom animation
+*/
+
+.c-link-cta {
+    position: relative;
+}
+
+.c-link-cta::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    content: '';
+    color: transparent;
+    background-color: white;
+    height: 1px;
+    transform: scaleX(0);
+}
+
+.c-link-cta,
+.c-link-cta::after,
+.c-link-cta::before {
+    transition: all .175s ease-in-out;
+}
+
+.c-link-cta:hover::after {
+    transform: scaleX(1);
+}
+
+/*
+    Component: mobile nav
+    ---
+    Dedicated mobile nav component
+*/
+
+.c-mobile-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    pointer-events: none;
+}
+
+.has-mobile-nav .c-mobile-nav {
+    pointer-events: auto;
+}
+
+.c-mobile-nav__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.has-mobile-nav .c-mobile-nav__bg {
+    opacity: 0.5;
+}
+
+.c-mobile-nav__body {
+    position: relative;
+    padding: 24px;
+    height: 100vh;
+    width: 100vw;
+    background-color: #fff;
+    will-change: transform;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+}
+
+.has-mobile-nav .c-mobile-nav__body {
+    transform: translateX(0)
+}
+
+.c-page {
+    position: relative;
+    will-change: transform;
+    transition: transform .25s ease;
+}
+
+.has-mobile-nav .c-page {
+    /* option1 */
+    /* transform: scale(.98); */
+    /* option2 */
+    /* transform: translateX(100%); */
+    /* option3 */
+    transform: translateX(25%);
+}
+
+@media (min-width: 768px) {
+    .c-mobile-nav__body {
+        padding: 48px;
+    }
+}
+
+@media (min-width: 992px) {
+
+    /* Hide the mobile nav on larger viewports even whent it's open on smaller screens */
+    .c-mobile-nav {
+        display: none !important;
+    }
+}
+
+/*
+    Component: button
+    ---
+    make buttons with animated hover and focus states
+*/
+
+.c-button {
+    background-color: #264AFF;
+    color: white;
+    padding: 10px 48px;
+    margin: 8px 16px 0px 0px;
+    border: 0.5px solid #264AFF;
+    border-radius: 4px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+}
+
+.c-button-lg {
+    min-width: 184px;
+}
+
+.c-button--reversed {
+    background-color: white;
+    color: #264AFF;
+    margin-right: 0px;
+    margin-top: 16px;
+}
+
+.c-button:hover, .c-button:focus,
+.c-button--reversed:hover, .c-button--reversed:focus {
+    box-shadow: 0px 15px 20px rgba(77, 106, 255, 0.4);
+    transform: translateY(-7px);
+}
+
+@media (min-width: 376px) {
+    .c-button--reversed {
+        margin-top: 8px;
+    }
+}
+
+
+/*
+    Component: filter
+    ---
+    make filter buttons with animated hover and focus states
+*/
+
+.c-filter {
+    font-size: 16px;
+    line-height: 24px;
+    background-color: white;
+    color: #0B1D47;
+    border: 0.5px solid #264AFF;
+    border-radius: 4px;
+    width: 80px;
+    height: 25px;
+    margin: 0px 4px 16px 4px;
+}
+
+.c-filter--active,
+.c-filter:hover {
+    background-color: #264AFF;
+    color: white;
+}
+
+.c-filter--layout {
+    display: block;
+}
+
+
+/*
+    Component: card
+    ---
+    make cards with custom styles
+*/
+
+.c-card {
+    border: #E9EFFC 1px solid;
+    border-radius: 15px;
+    padding: 16px;
+    margin-bottom: 24px;
+    box-shadow: rgb(0 0 0 / 10%) 0px 10px 15px -3px, rgb(0 0 0 / 5%) 0px 4px 6px -2px;
+}
+
+.c-card:hover {
+    border-color: #264AFF;
+    transform: translateY(-7px);
+    box-shadow: 0px 10px 15px -3px rgba(77, 106, 255, 10%), 0px 4px 6px -2px rgba(77, 106, 255, 5%);
+}
+
+.c-card__login {
+    display: block;
+    min-width: 70%;
+}
+
+.c-card__login:hover {
+    border-color: #264AFF;
+    box-shadow: 0px 10px 15px -3px rgba(77, 106, 255, 10%), 0px 4px 6px -2px rgba(77, 106, 255, 5%);
+    transform: translateY(0);
+}
+
+.c-card--feed {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    padding: 8px 18px 8px 16px;
+}
+
+.c-card--info {
+    justify-content: start;
+}
+
+@media (min-width: 576px) {
+    .c-card__login {
+        margin-top: 48px;
+    }
+}
+
+@media (min-width: 993px) {
+    .c-card__login {
+        min-width: 50%;
+    }
+}
+
+.c-card__title {
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.c-card__title--feed {
+    font-weight: 500;
+    margin-bottom: 0;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: start;
+}
+
+.c-card__value {
+    font-weight: 600;
+    font-size: 40px;
+    margin-bottom: 0;
+}
+
+.c-card__icon-sm {
+    font-size: 24px;
+    color: #0B1D47;
+}
+
+.c-card__icon-lg {
+    font-size: 96px;
+}
+
+/*
+    Component: popup
+    ---
+    make popups with custom styles
+*/
+
+.c-popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.has-popup .c-popup {
+    display: block;
+}
+
+.c-popup__body {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: #E9EFFC 1px solid;
+    border-radius: 15px;
+    width: 80%;
+}
+
+.c-popup__title {
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.c-popup__form {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+}
+
+.c-popup__button {
+    display: flex;
+    flex-direction: column;
+}
+
+.c-popup__button .c-button {
+    transform: translateY(0);
+}
+
+@media (min-width: 500px) {
+    .c-popup__button {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .c-popup__button .c-button {
+        transform: translateY(-7px);
+    }
+}
+
+@media (min-width: 768px) {
+    .c-popup__body {
+        width: 550px;
+    }
+}
+
+/*
+    Component: info
+    ---
+    make info popup with custom styles
+*/
+
+.c-info {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.c-info .c-info__text {
+    visibility: hidden;
+    width: 160px;
+    background-color: #E9EFFC;
+    color: #0B1D47;
+    text-align: center;
+    border-radius: 10px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.c-info .c-info__text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #E9EFFC transparent transparent transparent;
+}
+
+@media (min-width: 768px) {
+    .c-info .c-info__text {
+        width: 400px;
+    }
+
+    .c-info .c-info__text::after {
+        left: 20%;
+    }
+}
+
+.c-info .show-info {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/*
+    Component: input
+    ---
+    make inputs with custom styles
+*/
+
+.c-input {
+    border: #8F9197 1px solid;
+    border-radius: 4px;
+    height: 40px;
+    margin-bottom: 16px;
+}
+
+.c-input__text {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.c-input__text--light {
+    color: #8F9197;
+}
+
+.c-input:hover+.c-input__text,
+.c-input:focus+.c-input__text {
+    color: #264AFF;
+}
+
+.c-input:hover,
+.c-input:focus {
+    border-color: #264AFF;
+    outline: none;
+}
+
+/*
+    Component: icon
+    ---
+    snackbar icon with custom styles
+*/
+
+.c-icon {
+    font-size: 32px;
+}
+
+.c-icon--xs {
+    font-size: 24px;
+}
+
+/*
+    Component: loading & loader
+    ---
+    loading animation with custom styles and rotation
+*/
+
+.c-loading {
+    display: flex;
+    justify-content: center;
+    background-color: #264AFF;
+    color: white;
+    padding: 10px 48px;
+    border-radius: 4px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+    align-items: center;
+}
+
+.c-loading__icon {
+    font-size: 16px;
+    margin-right: 8px;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.c-loader {
+    border: 6px solid #E9EFFC;
+    /* Light grey */
+    border-top: 6px solid #264AFF;
+    /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+    margin-bottom: 0;
+    display: flex;
+    align-self: center;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*
+    Component: Table
+    ---
+    make tables with custom styles
+*/
+
+.c-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 16px;
+    min-width: 768px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.c-table--scroll {
+    overflow-x: auto;
+    --webkit-overflow-scrolling: touch;
+}
+
+.c-table thead tr {
+    background-color: #264AFF;
+    color: #ffffff;
+    text-align: left;
+    font-weight: 700;
+}
+
+.c-table tbody tr td:not(:last-child) {
+    white-space: nowrap;
+}
+
+.c-table th,
+.c-table td {
+    padding: 12px 15px;
+}
+
+.c-table tbody tr:nth-of-type(even) {
+    background-color: #E9EFFC;
+}
+
+.c-table tbody tr:last-of-type {
+    border-bottom: 2px solid #264AFF;
+}
+
+/*
+    Component: Map
+    ---
+    make map with custom style
+*/
+
+.c-map {
+    height: 80vh;
+    margin-bottom: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    perspective: 1px;
+}
+
+
+/*------------------------------------*\
+  #UTILITIES
+\*------------------------------------*/
+
+/*
+    Utilities: random
+    ---
+    random utility functions
+*/
+
+.u-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.u-ta-start {
+    text-align: start;
+}
+
+.u-ta-center {
+    text-align: center;
+}
+
+.u-hidden-card {
+    display: none;
+}
+
+.u-h-xl {
+    height: 96px;
+}
+
+.u-align-self-center {
+    align-self: center;
+}
+
+.u-align-items-start {
+    display: flex;
+    align-items: flex-start;
+}
+
+.u-column-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+/*
+    Utilities: font-weight
+    ---
+    Change the font weight of a given element
+*/
+
+.u-fw-regular {
+    font-weight: 400 !important;
+}
+
+.u-fw-medium {
+    font-weight: 500 !important;
+}
+
+.u-fw-semibold {
+    font-weight: 600 !important;
+}
+
+.u-fw-bold {
+    font-weight: 700 !important;
+}
+
+/*
+    Utilities: color
+    ---
+    Utility classes to put specific colors onto elements
+*/
+
+.u-color-text-light {
+    color: #767FB3 !important;
+}
+
+.u-color-primary-blue {
+    background-color: #264AFF !important;
+}
+
+/*
+    Utilities: spacing
+    ---
+    Utility classes to put specific margins and paddings onto elements
+*/
+
+/* Padding */
+.u-pr-xs {
+    padding-right: 8px !important;
+}
+
+.u-pt-clear {
+    padding-top: 0 !important;
+}
+
+.u-pt-xs {
+    padding-top: 8px !important;
+}
+
+.u-pt-sm {
+    padding-top: 16px !important;
+}
+
+.u-pt-lg {
+    padding-top: 32px !important;
+}
+
+.u-pt-xl {
+    padding-top: 40px !important;
+}
+
+.u-pb-xs {
+    padding-bottom: 8px !important;
+}
+
+.u-pb-xl {
+    padding-bottom: 40px !important;
+}
+
+/* Margin */
+
+.u-mt-clear {
+    margin-top: 0 !important;
+}
+
+.u-mr-clear {
+    margin-right: 0 !important;
+}
+
+.u-mr-sm {
+    margin-right: 12px !important;
+}
+
+.u-mb-clear {
+    margin-bottom: 0 !important;
+}
+
+.u-mb-xs {
+    margin-bottom: 4px !important;
+}
+
+.u-mb-sm {
+    margin-bottom: 8px !important;
+}
+
+.u-mb-md {
+    margin-bottom: 16px !important;
+}
+
+.u-mb-lg {
+    margin-bottom: 24px !important;
+}
+
+.u-mb-xl {
+    margin-bottom: 32px !important;
+}
+
+.u-mb-xxl {
+    margin-bottom: 40px !important;
+}
+
+.u-mb-xxxl {
+    margin-bottom: 48px !important;
+}
+
+/*
+    Utilities: max-width
+    ---
+    Utility classes to put specific max widths onto elements
+*/
+
+.u-max-width-xs {
+    max-width: 18em !important;
+}
+
+.u-max-width-sm {
+    max-width: 36em !important;
+}
+
+.u-max-width-md {
+    max-width: 42em !important;
+}
+
+.u-max-width-lg {
+    max-width: 60em !important;
+}
+
+.u-max-width-xl {
+    max-width: 75em !important;
+}
+
+.u-max-width-none {
+    max-width: none !important;
+}
+
+/*
+    Utility: Flex
+    ---
+    Utility classes to put specific flex properties onto elements
+    Will be mostly used on o-layout__item
+*/
+
+.u-flex-basis-auto {
+    flex-basis: auto !important;
+}
+
+.u-flex-grow-1 {
+    flex-grow: 1 !important;
+}
+
+.u-1-of-2 {
+    flex-basis: calc(100% / 2) !important;
+}
+
+.u-1-of-3 {
+    flex-basis: calc(100% / 3) !important;
+}
+
+.u-2-of-3 {
+    flex-basis: calc(100% / 3 * 2) !important;
+}
+
+.u-1-of-4 {
+    flex-basis: calc(100% / 4) !important;
+}
+
+.u-3-of-4 {
+    flex-basis: calc(100% / 4 * 3) !important;
+}
+
+.u-1-of-5 {
+    flex-basis: calc(100% / 5) !important;
+}
+
+.u-2-of-5 {
+    flex-basis: calc(100% / 5 * 2) !important;
+}
+
+.u-3-of-5 {
+    flex-basis: calc(100% / 5 * 3) !important;
+}
+
+.u-4-of-5 {
+    flex-basis: calc(100% / 5 * 4) !important;
+}
+
+.u-1-of-6 {
+    flex-basis: calc(100% / 6) !important;
+}
+
+.u-5-of-6 {
+    flex-basis: calc(100% / 6 * 5) !important;
+}
+
+@media (min-width: 576px) {
+    .u-1-of-2-bp1 {
+        flex-basis: calc(100% / 2) !important;
+    }
+
+    .u-1-of-3-bp1 {
+        flex-basis: calc(100% / 3) !important;
+    }
+
+    .u-2-of-3-bp1 {
+        flex-basis: calc(100% / 3 * 2) !important;
+    }
+
+    .u-1-of-4-bp1 {
+        flex-basis: calc(100% / 4) !important;
+    }
+
+    .u-3-of-4-bp1 {
+        flex-basis: calc(100% / 4 * 3) !important;
+    }
+
+    .u-1-of-5-bp1 {
+        flex-basis: calc(100% / 5) !important;
+    }
+
+    .u-2-of-5-bp1 {
+        flex-basis: calc(100% / 5 * 2) !important;
+    }
+
+    .u-3-of-5-bp1 {
+        flex-basis: calc(100% / 5 * 3) !important;
+    }
+
+    .u-4-of-5-bp1 {
+        flex-basis: calc(100% / 5 * 4) !important;
+    }
+
+    .u-1-of-6-bp1 {
+        flex-basis: calc(100% / 6) !important;
+    }
+
+    .u-5-of-6-bp1 {
+        flex-basis: calc(100% / 6 * 5) !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .u-1-of-2-bp2 {
+        flex-basis: calc(100% / 2) !important;
+    }
+
+    .u-1-of-3-bp2 {
+        flex-basis: calc(100% / 3) !important;
+    }
+
+    .u-2-of-3-bp2 {
+        flex-basis: calc(100% / 3 * 2) !important;
+    }
+
+    .u-1-of-4-bp2 {
+        flex-basis: calc(100% / 4) !important;
+    }
+
+    .u-3-of-4-bp2 {
+        flex-basis: calc(100% / 4 * 3) !important;
+    }
+
+    .u-1-of-5-bp2 {
+        flex-basis: calc(100% / 5) !important;
+    }
+
+    .u-2-of-5-bp2 {
+        flex-basis: calc(100% / 5 * 2) !important;
+    }
+
+    .u-3-of-5-bp2 {
+        flex-basis: calc(100% / 5 * 3) !important;
+    }
+
+    .u-4-of-5-bp2 {
+        flex-basis: calc(100% / 5 * 4) !important;
+    }
+
+    .u-1-of-6-bp2 {
+        flex-basis: calc(100% / 6) !important;
+    }
+
+    .u-5-of-6-bp2 {
+        flex-basis: calc(100% / 6 * 5) !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .u-1-of-2-bp3 {
+        flex-basis: calc(100% / 2) !important;
+    }
+
+    .u-1-of-3-bp3 {
+        flex-basis: calc(100% / 3) !important;
+    }
+
+    .u-2-of-3-bp3 {
+        flex-basis: calc(100% / 3 * 2) !important;
+    }
+
+    .u-1-of-4-bp3 {
+        flex-basis: calc(100% / 4) !important;
+    }
+
+    .u-3-of-4-bp3 {
+        flex-basis: calc(100% / 4 * 3) !important;
+    }
+
+    .u-1-of-5-bp3 {
+        flex-basis: calc(100% / 5) !important;
+    }
+
+    .u-2-of-5-bp3 {
+        flex-basis: calc(100% / 5 * 2) !important;
+    }
+
+    .u-3-of-5-bp3 {
+        flex-basis: calc(100% / 5 * 3) !important;
+    }
+
+    .u-4-of-5-bp3 {
+        flex-basis: calc(100% / 5 * 4) !important;
+    }
+
+    .u-1-of-6-bp3 {
+        flex-basis: calc(100% / 6) !important;
+    }
+
+    .u-5-of-6-bp3 {
+        flex-basis: calc(100% / 6 * 5) !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .u-1-of-2-bp4 {
+        flex-basis: calc(100% / 2) !important;
+    }
+
+    .u-1-of-3-bp4 {
+        flex-basis: calc(100% / 3) !important;
+    }
+
+    .u-2-of-3-bp4 {
+        flex-basis: calc(100% / 3 * 2) !important;
+    }
+
+    .u-1-of-4-bp4 {
+        flex-basis: calc(100% / 4) !important;
+    }
+
+    .u-3-of-4-bp4 {
+        flex-basis: calc(100% / 4 * 3) !important;
+    }
+
+    .u-1-of-5-bp4 {
+        flex-basis: calc(100% / 5) !important;
+    }
+
+    .u-2-of-5-bp4 {
+        flex-basis: calc(100% / 5 * 2) !important;
+    }
+
+    .u-3-of-5-bp4 {
+        flex-basis: calc(100% / 5 * 3) !important;
+    }
+
+    .u-4-of-5-bp4 {
+        flex-basis: calc(100% / 5 * 4) !important;
+    }
+
+    .u-1-of-6-bp4 {
+        flex-basis: calc(100% / 6) !important;
+    }
+
+    .u-5-of-6-bp4 {
+        flex-basis: calc(100% / 6 * 5) !important;
+    }
+}
+
+/*------------------------------------*\
+  #MEDIA
+\*------------------------------------*/
+
+/*
+    Media Queries
+    ---
+    EXAMPLE Media Queries for Responsive Design.
+    These examples override the primary ('mobile first') styles.
+    USE THEM INLINE!
+*/
+
+/* Extra small devices (portrait phones, less than 576px)
+   No media query since this is the default in mobile first design
+*/
+
+/* Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {}
+*/
+
+/* Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {}
+*/
+
+/* Large devices (landscape tablets, desktops, 992px and up)
+@media (min-width: 992px) {}
+*/
+
+/* Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {}
+*/
+
+/*
+    Print styles.
+    ---
+    Inlined to avoid the additional HTTP request:
+    http://www.phpied.com/delay-loading-your-print-css/
+*/
+
+@media print {
+
+    *,
+    *:before,
+    *:after {
+        background: transparent !important;
+        color: #000 !important;
+        /* Black prints faster:
+                                   http://www.sanbeiji.com/archives/953 */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " ("attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " ("attr(title) ")";
+    }
+
+    /*
+     * Don't show links that are fragment identifiers,
+     * or use the `javascript:` pseudo protocol
+     */
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+
+    pre {
+        white-space: pre-wrap !important;
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    /*
+     * Printing Tables:
+     * http://css-discuss.incutio.com/wiki/Printing_Tables
+     */
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
