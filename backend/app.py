@@ -42,7 +42,7 @@ def setup():
 
 def demo_callback1(pin):
     global btnStatusLcd
-    print("**** LCD Button pressed ****")
+    print("---- LCD Button pressed ----")
     GPIO.output(backlight_lcd, GPIO.HIGH)
     btnStatusLcd = True
     print('**** Showing IP WLAN ****')
@@ -51,7 +51,7 @@ def demo_callback1(pin):
 
 def demo_callback2(pin):
     global btnStatusPoweroff
-    print("**** Poweroff Pi Button pressed ****")
+    print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
 
 
@@ -82,6 +82,8 @@ def initial_connection():
 
 # START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
+
+#START LCD
 def show_ip():
     global btnStatusLcd
     tijd = time()
@@ -96,21 +98,30 @@ def show_ip():
             GPIO.output(backlight_lcd, GPIO.LOW)
             tijd = time()
 
-
 def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
     thread = threading.Timer(15, show_ip)
     thread.start()
 
+#START OPSLAAN DATA
+def opslaan_data():
+    pass
+    
+def start_thread_opslaan_data():
+    print("**** Starting THREAD opslaan data ****")
+    thread = threading.Timer(10, opslaan_data)
+    thread.start()
 
+#START LIVE DATA
 def live_data():
     pass
-        
+   
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
     thread = threading.Timer(10, live_data)
     thread.start()
 
+#START CHROME KIOSK
 def start_chrome_kiosk():
     import os
 
@@ -139,7 +150,6 @@ def start_chrome_kiosk():
     while True:
         pass
 
-
 def start_chrome_thread():
     print("**** Starting CHROME ****")
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
@@ -154,6 +164,7 @@ if __name__ == '__main__':
     try:
         setup()
         start_thread_live_data()
+        start_thread_opslaan_data()
         start_thread_lcd()
         start_chrome_thread()
         print("**** Starting APP ****")
