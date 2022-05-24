@@ -509,6 +509,22 @@ a:focus {
 }
 
 /*
+    Component: body
+    ---
+    body
+*/
+
+.c-body {
+    min-height: calc(100vh - 84px - 62px);
+}
+
+@media (min-width: 768px) {
+    .c-body {
+        min-height: calc(100vh - 56px - 68px);
+    }
+}
+
+/*
     Component: footer
     ---
     Main footer of the website
