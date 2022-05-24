@@ -107,7 +107,7 @@ def start_rfid():
 
 def start_thread_rfid():
     print("**** Starting THREAD rfid ****")
-    thread = threading.Timer(2, start_rfid)
+    thread = threading.Timer(0.1, start_rfid)
     thread.start()
 
 
@@ -133,11 +133,12 @@ def start_thread_lcd():
 
 # START OPSLAAN DATA
 def opslaan_data():
-    pass
+    while True:
+        sleep(60)
     
 def start_thread_opslaan_data():
     print("**** Starting THREAD opslaan data ****")
-    thread = threading.Timer(10, opslaan_data)
+    thread = threading.Timer(60, opslaan_data)
     thread.start()
 
 # START LIVE DATA
@@ -146,7 +147,7 @@ def live_data():
    
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Timer(10, live_data)
+    thread = threading.Timer(0.1, live_data)
     thread.start()
 
 # START CHROME KIOSK
