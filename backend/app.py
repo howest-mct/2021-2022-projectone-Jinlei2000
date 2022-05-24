@@ -155,8 +155,6 @@ def start_chrome_thread():
     chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
     chromeThread.start()
 
-
-
 # ANDERE FUNCTIES
 if __name__ == '__main__':
     try:
