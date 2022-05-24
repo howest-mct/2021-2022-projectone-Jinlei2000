@@ -89,6 +89,9 @@ class Lcd_4bits_i2c:
 
     def write_a(self):
         self.__write('a')
+
+    def get_ip_wlan0(self):
+        return self.__read_ip_adres('wlan0')
     
     def second_row(self):
         #Sets DDRAM naar 2de rij

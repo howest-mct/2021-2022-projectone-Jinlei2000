@@ -15,7 +15,7 @@ from selenium import webdriver
 # from selenium import webdriver
 # from selenium.webdriver.chrome.options import Options
 
-
+# VARIABELEN
 btnLcdPin = Button(5)
 btnPoweroffPin = Button(6)
 
@@ -27,7 +27,7 @@ backlight_lcd = 25
 btnStatusLcd = False
 btnStatusPoweroff = False
 
-# Code voor Hardware
+# CODE VOOR HARDWARE
 def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -38,16 +38,13 @@ def setup():
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
 
-
-
 def demo_callback1(pin):
     global btnStatusLcd
     print("---- LCD Button pressed ----")
     GPIO.output(backlight_lcd, GPIO.HIGH)
     btnStatusLcd = True
-    print('**** Showing IP WLAN ****')
+    print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
     lcd.write_ip_adres('wlan0')
-
 
 def demo_callback2(pin):
     global btnStatusPoweroff
@@ -55,8 +52,7 @@ def demo_callback2(pin):
     btnStatusPoweroff = True
 
 
-# Code voor Flask
-
+# CODE VOOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
@@ -80,17 +76,21 @@ def hallo():
 def initial_connection():
     print('A new client connect')
 
-# START een thread op. Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
+
+
+
+# ALLE THREADS
+# Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
-#START LCD
+# START LCD
 def show_ip():
     global btnStatusLcd
     tijd = time()
     while True:
         if btnStatusLcd == True:
             GPIO.output(backlight_lcd, GPIO.HIGH)
-            print(time()-tijd)
+            # print(time()-tijd)
             if((time()-tijd)>10):
                 btnStatusLcd = False
         else:
@@ -103,7 +103,7 @@ def start_thread_lcd():
     thread = threading.Timer(15, show_ip)
     thread.start()
 
-#START OPSLAAN DATA
+# START OPSLAAN DATA
 def opslaan_data():
     pass
     
@@ -112,7 +112,7 @@ def start_thread_opslaan_data():
     thread = threading.Timer(10, opslaan_data)
     thread.start()
 
-#START LIVE DATA
+# START LIVE DATA
 def live_data():
     pass
    
@@ -121,7 +121,7 @@ def start_thread_live_data():
     thread = threading.Timer(10, live_data)
     thread.start()
 
-#START CHROME KIOSK
+# START CHROME KIOSK
 def start_chrome_kiosk():
     import os
 
@@ -158,8 +158,6 @@ def start_chrome_thread():
 
 
 # ANDERE FUNCTIES
-
-
 if __name__ == '__main__':
     try:
         setup()
