@@ -2,6 +2,8 @@ from time import sleep,time
 from RPi import GPIO
 import threading
 
+from mfrc522 import SimpleMFRC522
+
 from helpers.Button import Button
 from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 
@@ -21,8 +23,10 @@ btnPoweroffPin = Button(6)
 
 lcd = Lcd_4bits_i2c(0x38)
 lcd.init_LCD()
-
 backlight_lcd = 25
+
+reader = SimpleMFRC522()
+buzzer = 16
 
 btnStatusLcd = False
 btnStatusPoweroff = False
@@ -32,8 +36,9 @@ def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
+    GPIO.setup(buzzer,GPIO.OUT)
     GPIO.setup(backlight_lcd,GPIO.OUT)
-    GPIO.output(backlight_lcd, GPIO.LOW)
+    GPIO.output(backlight_lcd,GPIO.LOW)
 
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
@@ -50,6 +55,18 @@ def demo_callback2(pin):
     global btnStatusPoweroff
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
+
+def rfid():
+    id, text = reader.read()
+    print(f'**** RFID ID: {id} ****')
+    GPIO.output(buzzer, GPIO.HIGH)
+    sleep(1)
+    GPIO.output(buzzer, GPIO.LOW)
+    #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
+    #deur open servo functies of klasse maken
+    #iets op slaan in database duer is geopend
+    #als duer al open is niets doen
+
 
 
 # CODE VOOR FLASK
@@ -82,6 +99,17 @@ def initial_connection():
 # ALLE THREADS
 # Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
+
+# START RFID
+def start_rfid():
+    while True:
+        rfid()
+
+def start_thread_rfid():
+    print("**** Starting THREAD rfid ****")
+    thread = threading.Timer(2, start_rfid)
+    thread.start()
+
 
 # START LCD
 def show_ip():
@@ -162,11 +190,13 @@ if __name__ == '__main__':
         start_thread_live_data()
         start_thread_opslaan_data()
         start_thread_lcd()
+        start_thread_rfid()
         start_chrome_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
         print ('KeyboardInterrupt exception is caught')
+        
         GPIO.output(backlight_lcd, GPIO.LOW)
 
         # scherm leegmaken en 8 bits instellen
