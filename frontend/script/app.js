@@ -3,6 +3,7 @@
 // #region ***  DOM references                           ***********
 const lanIP = `${window.location.hostname}:5000`;
 const socketio = io(`http://${lanIP}`);
+// je kan // gebruiken zo kan die zelf zoeken naar poort
 let backend = 'http://' + lanIP + '/api/v1';
 // #endregion
 

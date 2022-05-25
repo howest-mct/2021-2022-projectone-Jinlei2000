@@ -11,6 +11,10 @@ class DataRepository:
         return gegevens
 
     @staticmethod
+    def all_users_badge_id():
+        sql = 'SELECT badgeid FROM user'
+        return Database.get_rows(sql)
+
     def create_user(name,password,badgeid):
         sql = 'INSERT INTO user (name,password,badgeid) VALUES (%s,%s,%s)'
         params = [name,password,badgeid]
