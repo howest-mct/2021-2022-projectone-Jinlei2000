@@ -6,25 +6,20 @@
 // #region ***  Callback-Visualisation - show___         ***********
 const showBadgeId = function (badgeid) {
   document.querySelector('.js-input-badgeid').value = badgeid;
-}
+};
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
 const callbackCreateUser = function (json) {
   const id = json.badgeid;
-  if(id > 0){
+  if (id > 0) {
     showNotification('success', 'user created', 'Signup');
   }
 };
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
-const getBadgeId = function () {
-  if (document.querySelector('.js-login').classList.contains('u-hidden-card')) {
-    console.log('bagdeid opvragen');
-    socketio.emit('F2B_getBadgeId');
-  }
-};
+
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -40,7 +35,6 @@ const toggleLogin = function () {
         document.querySelector('.js-login').classList.remove('u-hidden-card');
         document.querySelector('.js-create').classList.add('u-hidden-card');
       }
-      getBadgeId();
     });
   }
 };
@@ -72,14 +66,15 @@ const listenToSignupBtn = function () {
       showNotification('error', 'no valid username or password or badge id', 'Signup');
     }
   });
-}
+};
 
 const listenToSocket = function () {
   socketio.on('connect', function () {
     console.log('verbonden met socket webserver');
   });
   socketio.on('B2F_sendBadgeId', function (payload) {
-    // console.log('B2F_badgeId: ' + payload.badgeid);
+    console.log('B2F_badgeId: ', payload);
+    console.log('pppppppppppppppppppppppp');
     const badgeid = payload.badgeid;
     showBadgeId(badgeid);
   });

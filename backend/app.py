@@ -4,7 +4,7 @@ import threading
 
 from repositories.DataRepository import DataRepository
 
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 from mfrc522 import SimpleMFRC522
 
@@ -35,6 +35,8 @@ buzzer = 16
 btnStatusLcd = False
 btnStatusPoweroff = False
 
+q = Queue()
+
 # CODE VOOR HARDWARE
 def setup():
     GPIO.setwarnings(False)
@@ -46,6 +48,9 @@ def setup():
 
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
+
+def echo_proc():
+    print("echo proc")
 
 def demo_callback1(pin):
     global btnStatusLcd
@@ -61,8 +66,10 @@ def demo_callback2(pin):
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
 
-def rfid():
+def rfid(q):
+    print("socketio")
     id, text = reader.read()
+    q.put([id])
     print(f'**** RFID ID: {id} ****')
     GPIO.output(buzzer, GPIO.HIGH)
     sleep(1)
@@ -105,21 +112,15 @@ def users():
         nieuw_id = DataRepository.create_user(
             gegevens['username'], gegevens['password'], gegevens['badgeId'])
         return jsonify(badgeid=nieuw_id), 201
+        #een error opvangen
 
 
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
+    socketio.emit('B2F_sendBadgeId', {'badgeid': 'teszt'})
 
-@socketio.on('F2B_getBadgeId')
-def get_badge_id():
-    print("F2B_getBadgeId")
-    id, text = reader.read()
-    print(f'RFID ID: {id}')
-    GPIO.output(buzzer, GPIO.HIGH)
-    sleep(1)
-    GPIO.output(buzzer, GPIO.LOW)
-    socketio.emit('B2F_sendBadgeId', {'badgeid': id})
+
 
 
 
@@ -128,8 +129,10 @@ def get_badge_id():
 # werk enkel met de packages gevent en gevent-websocket.
 
 # START RFID & LCD
-def start_rfid_lcd():
+def start_rfid_lcd(q):
     global btnStatusLcd
+    print("cb",q)
+    # cb()
     tijd = time()
     while True:
         if btnStatusLcd == True:
@@ -141,33 +144,33 @@ def start_rfid_lcd():
             lcd.clear_LCD()
             GPIO.output(backlight_lcd, GPIO.LOW)
             tijd = time()
-        # rfid()
+        rfid(q)
 
 def start_thread_rfid_lcd():
     print("**** Starting THREAD lcd ****")
     # thread = threading.Timer(15, show_ip)
     # thread.start()
-    p = Process(target=start_rfid_lcd, args=())
+    p = Process(target=start_rfid_lcd, args=(q,))
     p.start()
 
-# START OPSLAAN DATA
-def opslaan_data():
-    while True:
-        sleep(60)
+# # START OPSLAAN DATA
+# def opslaan_data():
+#     while True:
+#         sleep(60)
     
-def start_thread_opslaan_data():
-    print("**** Starting THREAD opslaan data ****")
-    thread = threading.Timer(60, opslaan_data)
-    thread.start()
+# def start_thread_opslaan_data():
+#     print("**** Starting THREAD opslaan data ****")
+#     thread = threading.Timer(60, opslaan_data)
+#     thread.start()
 
-# START LIVE DATA
-def live_data():
-    pass
+# # START LIVE DATA
+# def live_data():
+#     pass
    
-def start_thread_live_data():
-    print("**** Starting THREAD live data ****")
-    thread = threading.Timer(0.1, live_data)
-    thread.start()
+# def start_thread_live_data():
+#     print("**** Starting THREAD live data ****")
+#     thread = threading.Timer(0.1, live_data)
+#     thread.start()
 
 # START CHROME KIOSK
 def start_chrome_kiosk():
@@ -205,14 +208,28 @@ def start_chrome_thread():
     p = Process(target=start_chrome_kiosk, args=())
     p.start()
 
-# ANDERE FUNCTIES
+def read_q():
+    while True:
+        qu = q.get()
+        print(">>", qu)
+        socketio.emit('B2F_sendBadgeId', {'badgeid': qu[0]})
+
+        sleep(0.5)
+
+def proc_main_comm():
+    qThread = threading.Thread(target=read_q, args=(), daemon=True)
+    qThread.start()
+
+
+
 if __name__ == '__main__':
     try:
         setup()
-        start_thread_live_data()
-        start_thread_opslaan_data()
-        # start_thread_rfid_lcd()
+        # start_thread_live_data()
+        # start_thread_opslaan_data()
+        start_thread_rfid_lcd()
         start_chrome_thread()
+        proc_main_comm()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
