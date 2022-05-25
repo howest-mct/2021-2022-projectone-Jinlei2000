@@ -3,7 +3,7 @@
 // #region ***  DOM references                           ***********
 const lanIP = `${window.location.hostname}:5000`;
 const socketio = io(`http://${lanIP}`);
-let backend = lanIP + '/api/v1';
+let backend = 'http://' + lanIP + '/api/v1';
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
@@ -88,7 +88,6 @@ const listenToFilterBtns = function (htmlFilterClass) {
     });
   }
 };
-
 
 // #endregion
 

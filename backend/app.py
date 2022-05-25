@@ -2,6 +2,8 @@ from time import sleep,time
 from RPi import GPIO
 import threading
 
+from repositories.DataRepository import DataRepository
+
 from multiprocessing import Process
 
 from mfrc522 import SimpleMFRC522
@@ -11,7 +13,7 @@ from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
@@ -53,6 +55,7 @@ def demo_callback1(pin):
     print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
     lcd.write_ip_adres('wlan0')
 
+
 def demo_callback2(pin):
     global btnStatusPoweroff
     print("---- Poweroff Pi Button pressed ----")
@@ -89,15 +92,34 @@ def error_handler(e):
 
 
 # API ENDPOINTS
+endpoint = '/api/v1'
+
 @app.route('/')
 def hallo():
     return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+
+@app.route(endpoint + '/users/', methods=['POST'])
+def users():
+    if request.method == 'POST':
+        gegevens = DataRepository.json_or_formdata(request)
+        nieuw_id = DataRepository.create_user(
+            gegevens['username'], gegevens['password'], gegevens['badgeId'])
+        return jsonify(badgeid=nieuw_id), 201
 
 
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
 
+@socketio.on('F2B_getBadgeId')
+def get_badge_id():
+    print("F2B_getBadgeId")
+    id, text = reader.read()
+    print(f'RFID ID: {id}')
+    GPIO.output(buzzer, GPIO.HIGH)
+    sleep(1)
+    GPIO.output(buzzer, GPIO.LOW)
+    socketio.emit('B2F_sendBadgeId', {'badgeid': id})
 
 
 
@@ -119,7 +141,7 @@ def start_rfid_lcd():
             lcd.clear_LCD()
             GPIO.output(backlight_lcd, GPIO.LOW)
             tijd = time()
-        rfid()
+        # rfid()
 
 def start_thread_rfid_lcd():
     print("**** Starting THREAD lcd ****")
@@ -189,7 +211,7 @@ if __name__ == '__main__':
         setup()
         start_thread_live_data()
         start_thread_opslaan_data()
-        start_thread_rfid_lcd()
+        # start_thread_rfid_lcd()
         start_chrome_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')

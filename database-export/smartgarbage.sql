@@ -28,7 +28,7 @@ CREATE TABLE `action` (
   `actionid` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(150) NOT NULL,
   PRIMARY KEY (`actionid`),
-  UNIQUE KEY `description_idx` (`description`)
+  UNIQUE KEY `description_UNIQUE` (`description`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -135,12 +135,12 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `userid` int(11) NOT NULL,
+  `userid` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `password` varchar(100) NOT NULL,
   `badgeid` decimal(10,0) NOT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-25 11:56:14
+-- Dump completed on 2022-05-25 13:20:06
