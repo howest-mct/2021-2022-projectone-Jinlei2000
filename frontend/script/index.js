@@ -41,7 +41,7 @@ const toggleInfoBtn = function () {
 // #region ***  Init / DOMContentLoaded                  ***********
 const indexInit = function () {
   console.log('index.js: init');
-  if (document.querySelector('.js-history-page')) {
+  if (document.querySelector('.js-index-page')) {
     toggleLogin();
     if (document.querySelector('.js-info-badge-id')) {
       toggleInfoBtn();

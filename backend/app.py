@@ -2,6 +2,8 @@ from time import sleep,time
 from RPi import GPIO
 import threading
 
+from multiprocessing import Process
+
 from mfrc522 import SimpleMFRC522
 
 from helpers.Button import Button
@@ -67,6 +69,9 @@ def rfid():
     #iets op slaan in database duer is geopend
     #als duer al open is niets doen
 
+def servo_turn(servo, angle):
+    pass
+
 
 
 # CODE VOOR FLASK
@@ -100,19 +105,8 @@ def initial_connection():
 # Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
 # werk enkel met de packages gevent en gevent-websocket.
 
-# START RFID
-def start_rfid():
-    while True:
-        rfid()
-
-def start_thread_rfid():
-    print("**** Starting THREAD rfid ****")
-    thread = threading.Timer(0.1, start_rfid)
-    thread.start()
-
-
-# START LCD
-def show_ip():
+# START RFID & LCD
+def start_rfid_lcd():
     global btnStatusLcd
     tijd = time()
     while True:
@@ -125,11 +119,14 @@ def show_ip():
             lcd.clear_LCD()
             GPIO.output(backlight_lcd, GPIO.LOW)
             tijd = time()
+        rfid()
 
-def start_thread_lcd():
+def start_thread_rfid_lcd():
     print("**** Starting THREAD lcd ****")
-    thread = threading.Timer(15, show_ip)
-    thread.start()
+    # thread = threading.Timer(15, show_ip)
+    # thread.start()
+    p = Process(target=start_rfid_lcd, args=())
+    p.start()
 
 # START OPSLAAN DATA
 def opslaan_data():
@@ -181,8 +178,10 @@ def start_chrome_kiosk():
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
-    chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
-    chromeThread.start()
+    # chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
+    # chromeThread.start()
+    p = Process(target=start_chrome_kiosk, args=())
+    p.start()
 
 # ANDERE FUNCTIES
 if __name__ == '__main__':
@@ -190,8 +189,7 @@ if __name__ == '__main__':
         setup()
         start_thread_live_data()
         start_thread_opslaan_data()
-        start_thread_lcd()
-        start_thread_rfid()
+        start_thread_rfid_lcd()
         start_chrome_thread()
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
