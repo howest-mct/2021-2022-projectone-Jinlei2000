@@ -45,6 +45,8 @@ def showWeight():
 
 try:
     setup()
+    # waarde afstellen als er niets op zit 
+    # later gwn afstellen op plank
     sample = 1807315
 
     while True:
