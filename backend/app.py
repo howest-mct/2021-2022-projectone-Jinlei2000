@@ -113,8 +113,16 @@ def users():
                 return jsonify(badgeid=nieuw_id), 201
         return jsonify(status='error'), 404
 
+@app.route(endpoint + '/users/<userid>/', methods=['GET'])
+def user(userid):
+    if request.method == 'GET':
+        name = DataRepository.read_username_by_id(userid)
+        if name is not None:
+            return jsonify(name), 201
+        return jsonify(status='error'), 404
+
 @app.route(endpoint + '/users/login/<username>/<password>/', methods=['GET'])
-def user(username,password):
+def get_user_id(username,password):
     if request.method == 'GET':
         id = DataRepository.check_user_login(username, password)
         if id is not None:

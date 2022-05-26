@@ -24,3 +24,8 @@ class DataRepository:
         sql = 'INSERT INTO user (name,password,badgeid) VALUES (%s,%s,%s)'
         params = [name,password,badgeid]
         return Database.execute_sql(sql,params)
+    
+    def read_username_by_id(userid):
+        sql = 'SELECT name FROM user WHERE userid = %s'
+        params = [userid]
+        return Database.get_one_row(sql,params)
