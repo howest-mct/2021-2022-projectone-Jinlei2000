@@ -33,8 +33,10 @@ const callbackCheckBadgeId = function (badges) {
     if (badge.badgeid == id) {
       exists = true;
       // console.log('exists check: ', exists);
-      showNotification('error', 'badge id already exists', 'Badge id');
-      showLogin();
+      if (!document.querySelector('.js-create').classList.contains('u-hidden-card')) {
+        showNotification('error', 'badge id already exists', 'Badge id');
+        showLogin();
+      }
       break;
     }
   }
