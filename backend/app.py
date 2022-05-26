@@ -33,9 +33,10 @@ reader = SimpleMFRC522()
 buzzer = 16
 
 btnStatusPoweroff = False
-# btnStatusLcd = False
 
-x = Queue()
+btnStatusLcd = Value('b', False)
+badgeid = Queue()
+
 
 # CODE VOOR HARDWARE
 def setup():
@@ -50,31 +51,21 @@ def setup():
     btnPoweroffPin.on_press(demo_callback2)
 
 def demo_callback1(pin):
-    # global btnStatusLcd
+    global btnStatusLcd
     print("---- LCD Button pressed ----")
-    GPIO.output(backlight_lcd, GPIO.HIGH)
     print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
     lcd.write_ip_adres('wlan0')
-    # btnStatusLcd = True
-    timer_10s_lcd()
-
-def timer_10s_lcd():
-    tijd = time()
-    while True:
-        # print(time()-tijd)
-        if((time()-tijd)>10):
-            lcd.clear_LCD()
-            GPIO.output(backlight_lcd, GPIO.LOW)
-            break
+    GPIO.output(backlight_lcd, GPIO.HIGH)
+    btnStatusLcd.value = True
 
 def demo_callback2(pin):
     global btnStatusPoweroff
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
 
-def rfid(send_queue):
+def rfid(send_badgeid):
     id, text = reader.read()
-    send_queue.put([id])
+    send_badgeid.put([id])
     print(f'**** RFID ID: {id} ****')
     GPIO.output(buzzer, GPIO.HIGH)
     sleep(1)
@@ -131,44 +122,54 @@ def initial_connection():
 # werk enkel met de packages gevent en gevent-websocket.
 
 # START RFID
-def start_rfid(send_queue):
-    # print("type",send_queue)
-    while True:
-        rfid(send_queue)
-
+def start_rfid(send_badgeid):
+    # print("type",send_badgeid)
+    try:
+        while True:
+            rfid(send_badgeid)
+    except:
+        pass
+    
 def start_thread_rfid():
     print("**** Starting THREAD lcd ****")
     # thread = threading.Timer(15, show_ip)
     # thread.start()
-    p = Process(target=start_rfid, args=(x,))
+    p = Process(target=start_rfid, args=(badgeid,))
     p.start()
 
-# vragen wat is beter dit met een threads of met een functie timer met while
-# def start_lcd():
-#     global btnStatusLcd
-#     tijd = time()
-#     while True:
-#         if btnStatusLcd == True:
-#             GPIO.output(backlight_lcd, GPIO.HIGH)
-#             print(time()-tijd)
-#             if((time()-tijd)>10):
-#                 btnStatusLcd = False
-#         else:
-#             lcd.clear_LCD()
-#             GPIO.output(backlight_lcd, GPIO.LOW)
-#             tijd = time()
+# START LCD
+def start_lcd(btnStatusLcd):
+    tijd = time()
+    try:
+        while True:
+            if btnStatusLcd.value == True:
+                GPIO.output(backlight_lcd, GPIO.HIGH)
+                # print(time()-tijd)
+                if((time()-tijd)>10):
+                    btnStatusLcd.value = False
+            else:
+                # lcd.clear_LCD()
+                GPIO.output(backlight_lcd, GPIO.LOW)
+                tijd = time()
+    except:
+        pass
+    
 
-# def start_thread_lcd():
-#     print("**** Starting THREAD lcd ****")
-#     thread = threading.Thread(target=start_lcd, args=(), daemon=True)
-#     thread.start()
-
+def start_thread_lcd():
+    print("**** Starting THREAD lcd ****")
+    p = Process(target=start_lcd, args=(btnStatusLcd,))
+    p.start()
 
 
 # START OPSLAAN DATA
 def opslaan_data():
-    while True:
-        sleep(60)
+    try:
+        while True:
+            #om de 60sec opslaan
+            pass
+    except:
+        pass
+    
     
 def start_thread_opslaan_data():
     print("**** Starting THREAD opslaan data ****")
@@ -179,7 +180,12 @@ def start_thread_opslaan_data():
 
 # START LIVE DATA
 def live_data():
-    pass
+    try:
+        while True:
+            #om de 1sec live data refresh
+            pass
+    except:
+        pass
    
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
@@ -191,30 +197,32 @@ def start_thread_live_data():
 # START CHROME KIOSK
 def start_chrome_kiosk():
     import os
+    try:
+        os.environ['DISPLAY'] = ':0.0'
+        options = webdriver.ChromeOptions()
+        # options.headless = True
+        # options.add_argument("--window-size=1920,1080")
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36")
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument('--allow-running-insecure-content')
+        options.add_argument("--disable-extensions")
+        # options.add_argument("--proxy-server='direct://'")
+        options.add_argument("--proxy-bypass-list=*")
+        options.add_argument("--start-maximized")
+        options.add_argument('--disable-gpu')
+        # options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--kiosk')
+        # chrome_options.add_argument('--no-sandbox')         
+        # options.add_argument("disable-infobars")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
 
-    os.environ['DISPLAY'] = ':0.0'
-    options = webdriver.ChromeOptions()
-    # options.headless = True
-    # options.add_argument("--window-size=1920,1080")
-    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36")
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--allow-running-insecure-content')
-    options.add_argument("--disable-extensions")
-    # options.add_argument("--proxy-server='direct://'")
-    options.add_argument("--proxy-bypass-list=*")
-    options.add_argument("--start-maximized")
-    options.add_argument('--disable-gpu')
-    # options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--kiosk')
-    # chrome_options.add_argument('--no-sandbox')         
-    # options.add_argument("disable-infobars")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
-
-    driver = webdriver.Chrome(options=options)
-    driver.get("http://localhost")
-    while True:
+        driver = webdriver.Chrome(options=options)
+        driver.get("http://localhost")
+        while True:
+            pass
+    except:
         pass
 
 def start_chrome_thread():
@@ -226,32 +234,37 @@ def start_chrome_thread():
 
 # START QUEUE
 def read_list_out_Process():
-    while True:
-        # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
-        list_data = x.get()
-        print(">>", list_data)
-        id = list_data[0]
-        socketio.emit('B2F_sendBadgeId', {'badgeid': id})
-        sleep(0.5)
+    try:
+        while True:
+            # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
+            list_data = badgeid.get()
+            # print(">>", list_data)
+            id = list_data[0]
+            socketio.emit('B2F_sendBadgeId', {'badgeid': id})
+            sleep(0.5)
+    except:
+        pass
 
 def start_thread_Queue():
     xThread = threading.Thread(target=read_list_out_Process, args=(), daemon=True)
     xThread.start()
 
-
 if __name__ == '__main__':
     try:
+        start = time()
         setup()
-        # start_thread_lcd()
+        start_thread_lcd()
         start_thread_live_data()
         start_thread_opslaan_data()
         start_thread_rfid()
         start_chrome_thread()
         start_thread_Queue()
+        end = time()
+        print(f"Threads elapsed time: {(end-start):.3f}s")
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
-        print ('KeyboardInterrupt exception is caught')
+        print('KeyboardInterrupt exception is caught')
         # scherm backlight uitzetten
         GPIO.output(backlight_lcd, GPIO.LOW)
         # scherm leegmaken en 8 bits instellen

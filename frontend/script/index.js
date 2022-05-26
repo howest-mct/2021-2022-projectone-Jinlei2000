@@ -13,6 +13,7 @@ const showBadgeId = function (badgeid) {
 const showLogin = function () {
   document.querySelector('.js-login').classList.remove('u-hidden-card');
   document.querySelector('.js-create').classList.add('u-hidden-card');
+  resetInputsValue();
   // console.log('showLogin');
 };
 // #endregion
