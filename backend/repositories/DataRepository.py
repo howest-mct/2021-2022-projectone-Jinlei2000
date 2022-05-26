@@ -12,7 +12,7 @@ class DataRepository:
 
     @staticmethod
     def check_user_login(name,password):
-        sql = 'SELECT userid FROM user WHERE name = %s and password = %s'
+        sql = 'SELECT userid FROM user WHERE BINARY name = %s AND BINARY password = %s'
         params = [name,password]
         return Database.get_one_row(sql,params)
 
