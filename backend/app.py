@@ -108,9 +108,18 @@ def users():
         gegevens = DataRepository.json_or_formdata(request)
         nieuw_id = DataRepository.create_user(
             gegevens['username'], gegevens['password'], gegevens['badgeId'])
-        return jsonify(badgeid=nieuw_id), 201
-        #een error opvangen
+        if nieuw_id is not None:
+            if nieuw_id > 0:
+                return jsonify(badgeid=nieuw_id), 201
+        return jsonify(status='error'), 404
 
+@app.route(endpoint + '/users/login/<username>/<password>/', methods=['GET'])
+def user(username,password):
+    if request.method == 'GET':
+        id = DataRepository.check_user_login(username, password)
+        if id is not None:
+            return jsonify(id), 201
+        return jsonify(status='error'), 404
 
 @socketio.on('connect')
 def initial_connection():

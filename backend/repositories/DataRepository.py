@@ -11,6 +11,11 @@ class DataRepository:
         return gegevens
 
     @staticmethod
+    def check_user_login(name,password):
+        sql = 'SELECT userid FROM user WHERE name = %s and password = %s'
+        params = [name,password]
+        return Database.get_one_row(sql,params)
+
     def all_users_badge_id():
         sql = 'SELECT badgeid FROM user'
         return Database.get_rows(sql)

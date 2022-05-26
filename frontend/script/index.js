@@ -25,6 +25,10 @@ const callbackCreateUser = function (json) {
   showLogin();
 };
 
+const callbackCreateUserError = function (json){
+  showNotification('error', 'no valid username or password', 'Signup');
+}
+
 const callbackCheckBadgeId = function (badges) {
   // console.log('callbackCheckBadgeId: ', badges);
   for (const badge of badges) {
@@ -43,6 +47,17 @@ const callbackCheckBadgeId = function (badges) {
   }
 };
 
+const callbackLogin = function (json) {
+  const id = json.userid;
+  showNotification('success', 'login successful', 'Login');
+  // console.log('userid: ', id);
+  window.location.href = `/welcome.html?userid=${id}`;
+}
+
+const callbackLoginError = function (json) {
+  showNotification('error', 'no valid username, password or user dont exists', 'Login');
+}
+
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
@@ -60,7 +75,7 @@ const resetInputsValue = function () {
     document.querySelector('.js-input-badgeid').value = '';
   }else{
     document.querySelector('.js-username-login').value = '';
-    document.querySelector('.js-username-login').value = '';
+    document.querySelector('.js-password-login').value = '';
   }
 }
 
@@ -104,7 +119,7 @@ const listenToSignupBtn = function () {
         });
         const url = backend + `/users/`;
         // console.log('url: ' + url);
-        handleData(url, callbackCreateUser, null, 'POST', body);
+        handleData(url, callbackCreateUser, callbackCreateUserError, 'POST', body);
       } else {
         // console.log('geen geldige gegevens ingevuld');
         showNotification('error', 'no valid username or password or badge id', 'Signup');
@@ -112,6 +127,20 @@ const listenToSignupBtn = function () {
     } 
   });
 };
+
+const listenToLoginBtn = function () {
+  document.querySelector('.js-login-btn').addEventListener('click', function () {
+    console.log('login: click');
+    const username = document.querySelector('.js-username-login').value;
+    const password = document.querySelector('.js-password-login').value;
+    if (username.length > 0 && password.length > 0) {
+      const url = backend + `/users/login/${username}/${password}/`;
+      handleData(url, callbackLogin, callbackLoginError);
+    }else{
+      showNotification('error', 'username or password is empty', 'Login');
+    }
+  })
+}
 
 const listenToSocket = function () {
   socketio.on('connect', function () {
@@ -138,6 +167,7 @@ const indexInit = function () {
     }
     listenToSocket();
     listenToSignupBtn();
+    listenToLoginBtn();
   }
 };
 
