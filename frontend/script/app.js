@@ -2,9 +2,13 @@
 
 // #region ***  DOM references                           ***********
 const lanIP = `${window.location.hostname}:5000`;
-const socketio = io(`http://${lanIP}`);
+try {
+  const socketio = io(`http://${lanIP}`);
+} catch (error) {
+  console.log(`${error}`);
+}
 // je kan // gebruiken zo kan die zelf zoeken naar poort
-let backend = 'http://' + lanIP + '/api/v1';
+let backend = `http://${lanIP}/api/v1`;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
@@ -45,6 +49,11 @@ const showNotification = function (type, message, title) {
     });
   }
 };
+
+const showApiError = function () {
+  showNotification('error', 'Something went wrong while fetching data from the api.');
+};
+
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
@@ -90,21 +99,25 @@ const listenToFilterBtns = function (htmlFilterClass) {
   }
 };
 
-
+const listenToSocketConnection = function () {
+  try {
+    socketio.on('connect', function () {
+      console.log('verbonden met socket webserver');
+    });
+  } catch (error) {
+    console.log(`socketio don't have connection`);
+    showNotification('error', 'Sockect connection lost!');
+  }
+};
 
 // #endregion
 
 // #region ***  Init / DOMContentLoaded                  ***********
 const init = function () {
   console.log('app.js: init');
+  listenToSocketConnection();
   toggleNav();
   listenToLogo();
-
-  // test
-  //  console.log('app.js: click');
-  //  document.querySelector('.js-click').addEventListener('click', function () {
-  //    showNotification('error', 'je login is gelukt danje!', 'success');
-  //  });
 };
 
 document.addEventListener('DOMContentLoaded', init);

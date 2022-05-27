@@ -14,7 +14,7 @@ const showUsername = function (user) {
 // #region ***  Data Access - get___                     ***********
 const getUsername = function (userid) {
   const url = backend + `/users/${userid}/`;
-  handleData(url, showUsername);
+  handleData(url, showUsername, showApiError);
 };
 // #endregion
 

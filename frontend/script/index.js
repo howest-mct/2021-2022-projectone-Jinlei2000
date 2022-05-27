@@ -63,7 +63,7 @@ const callbackLoginError = function (json) {
 // #region ***  Data Access - get___                     ***********
 const getAllUsersBadgeId = function () {
   const url = backend + `/users/`;
-  handleData(url, callbackCheckBadgeId);
+  handleData(url, callbackCheckBadgeId, showApiError);
 };
 // #endregion
 
@@ -143,9 +143,6 @@ const listenToLoginBtn = function () {
 }
 
 const listenToSocket = function () {
-  socketio.on('connect', function () {
-    console.log('verbonden met socket webserver');
-  });
   socketio.on('B2F_sendBadgeId', function (payload) {
     // console.log('B2F_badgeId: ', payload);
     const badgeid = payload.badgeid;

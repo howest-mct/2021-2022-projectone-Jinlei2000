@@ -69,9 +69,7 @@ const togglePopup = function () {
 };
 
 const listenToSocket = function () {
-  socketio.on('connect', function () {
-    console.log('verbonden met socket webserver');
-  });
+  
 };
 // #endregion
 

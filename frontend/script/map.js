@@ -71,7 +71,7 @@ const getCoordinates = function () {
   const myAPIKey = `2bb92724d0cd4edd8a5b0599e269f54c`;
   const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&lang=nl&apiKey=${myAPIKey}`;
   // console.log(url);
-  handleData(url, showMarker);
+  handleData(url, showMarker, showApiError);
 };
 // #endregion
 
