@@ -106,7 +106,7 @@ def users():
         return jsonify(DataRepository.all_users_badge_id()), 201
     elif request.method == 'POST':
         gegevens = DataRepository.json_or_formdata(request)
-        nieuw_id = DataRepository.create_user(
+        nieuw_id = DataRepository.add_user(
             gegevens['username'], gegevens['password'], gegevens['badgeId'])
         if nieuw_id is not None:
             if nieuw_id > 0:
