@@ -23,6 +23,7 @@ const callbackCreateUser = function (json) {
   const id = json.badgeid;
   showNotification('success', 'user created', 'Signup');
   showLogin();
+  socketio.emit('F2B_addNewUser');
 };
 
 const callbackCreateUserError = function (json){
@@ -49,13 +50,14 @@ const callbackCheckBadgeId = function (badges) {
 
 const callbackLogin = function (json) {
   const id = json.userid;
-  showNotification('success', 'login successful', 'Login');
+  showNotification('success', 'login successful');
   // console.log('userid: ', id);
+  socketio.emit('F2B_LoggedInUser');
   window.location.href = `/welcome.html?userid=${id}`;
 }
 
 const callbackLoginError = function (json) {
-  showNotification('error', 'no valid username, password or user dont exists', 'Login');
+  showNotification('error', 'no valid username, password or user dont exists');
 }
 
 // #endregion
@@ -69,14 +71,11 @@ const getAllUsersBadgeId = function () {
 
 // #region ***  Event Listeners - listenTo___            ***********
 const resetInputsValue = function () {
-  if (!document.querySelector('.js-login').classList.contains('u-hidden-card')) {
     document.querySelector('.js-username').value = '';
     document.querySelector('.js-password').value = '';
     document.querySelector('.js-input-badgeid').value = '';
-  }else{
     document.querySelector('.js-username-login').value = '';
     document.querySelector('.js-password-login').value = '';
-  }
 }
 
 const toggleLogin = function () {

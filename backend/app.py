@@ -57,11 +57,16 @@ def demo_callback1(pin):
     global btnStatusLcd
     print("---- LCD Button pressed ----")
     btnStatusLcd.value = True
+    print("**** DB --> LCD Button pressed ****")
+    DataRepository.add_history(1,8,5)
 
 def demo_callback2(pin):
     global btnStatusPoweroff
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
+    print("**** DB --> Poweroff Button pressed ****")
+    DataRepository.add_history(1,8,7)
+
 
 def rfid(send_badgeid):
     id, text = reader.read()
@@ -70,13 +75,13 @@ def rfid(send_badgeid):
     GPIO.output(buzzer, GPIO.HIGH)
     sleep(1)
     GPIO.output(buzzer, GPIO.LOW)
+    print("**** DB --> Badge was scanned ****")
+    DataRepository.add_history(id,6,23)
+    DataRepository.add_history(id,9,24)
     #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
     #deur open servo functies of klasse maken
     #iets op slaan in database duer is geopend
     #als duer al open is niets doen
-
-def servo_turn(servo, angle):
-    pass
 
 
 # CODE VOOR FLASK
@@ -133,6 +138,15 @@ def get_user_id(username,password):
 def initial_connection():
     print('A new client connect')
 
+@socketio.on('F2B_addNewUser')
+def add_new_user():
+    print("**** DB --> New User added ****")
+    DataRepository.add_history(None,None,14)
+
+@socketio.on('F2B_LoggedInUser')
+def logged_in_user():
+    print("**** DB --> Logged in user ****")
+    DataRepository.add_history(None,None,17)
 
 # ALLE THREADS
 # Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
@@ -166,9 +180,14 @@ def start_lcd(btnStatusLcd):
                     lcd.write_ip_adres('wlan0')
                     GPIO.output(backlight_lcd, GPIO.HIGH)
                     write_ip_status = False
+                    print("**** DB --> LCD on & show ip ****")
+                    DataRepository.add_history(id,5,12)
+                    DataRepository.add_history(id,5,6)
                 # print(time()-tijd)
                 if((time()-tijd)>10):
                     btnStatusLcd.value = False
+                    print("**** DB --> LCD off ****")
+                    DataRepository.add_history(id,5,13)
             else:
                 lcd.clear_LCD()
                 GPIO.output(backlight_lcd, GPIO.LOW)
@@ -189,6 +208,7 @@ def opslaan_data():
     try:
         while True:
             #om de 60sec opslaan
+            # sleep(60)
             pass
     except:
         pass
@@ -206,6 +226,7 @@ def live_data():
     try:
         while True:
             #om de 1sec live data refresh
+            # sleep(1)
             pass
     except:
         pass
