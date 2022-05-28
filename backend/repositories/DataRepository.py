@@ -16,6 +16,12 @@ class DataRepository:
         sql = 'SELECT userid FROM user WHERE BINARY name = %s AND BINARY password = %s'
         params = [name,password]
         return Database.get_one_row(sql,params)
+    
+    @staticmethod
+    def check_user_badge_id(badgeid):
+        sql = 'SELECT badgeid FROM user WHERE badgeid = %s'
+        params = [badgeid]
+        return Database.get_one_row(sql,params)
 
     @staticmethod
     def all_users_badge_id():

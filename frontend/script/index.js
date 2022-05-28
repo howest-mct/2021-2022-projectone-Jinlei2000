@@ -50,7 +50,7 @@ const callbackCheckBadgeId = function (badges) {
 
 const callbackLogin = function (json) {
   const id = json.userid;
-  showNotification('success', 'login successful');
+  // showNotification('success', 'login successful');
   // console.log('userid: ', id);
   socketio.emit('F2B_LoggedInUser');
   window.location.href = `/welcome.html?userid=${id}`;

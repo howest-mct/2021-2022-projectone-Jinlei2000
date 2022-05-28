@@ -2,9 +2,8 @@ from time import sleep,time
 from RPi import GPIO
 from helpers.HX711 import HX711
 
-
 hx711 = HX711(27,22) # dt, sck
-sample = 8478413
+sample = 1799462
 
 try:
     # waarde afstellen als er niets op zit 
@@ -16,3 +15,4 @@ try:
 except KeyboardInterrupt as e:
     print(e)
     #pass
+

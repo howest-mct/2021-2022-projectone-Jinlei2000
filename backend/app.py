@@ -32,6 +32,10 @@ lcd = Lcd_4bits_i2c(0x38)
 lcd.init_LCD()
 backlight_lcd = 25
 
+servo_door = SG90(24)
+servo_valve = SG90(23)
+servoDoorStatus = Value('b', False)
+
 reader = SimpleMFRC522()
 buzzer = 16
 
@@ -68,17 +72,24 @@ def demo_callback2(pin):
     DataRepository.add_history(1,8,7)
 
 
-def rfid(send_badgeid):
+def rfid(send_badgeid,servoDoorStatus):
     id, text = reader.read()
     send_badgeid.put([id])
     print(f'**** RFID ID: {id} ****')
     GPIO.output(buzzer, GPIO.HIGH)
     sleep(1)
     GPIO.output(buzzer, GPIO.LOW)
-    print("**** DB --> Badge was scanned ****")
+    print("**** DB --> Badge was scanned & buzzer rings ****")
     DataRepository.add_history(id,6,23)
     DataRepository.add_history(id,9,24)
     #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
+    user = DataRepository.check_user_badge_id(id)
+    badgeid = user['badgeid']
+    if badgeid is not None:
+        if badgeid == id:
+            #kijken of de duer ni open is
+            print('servo unlock door')
+            servoDoorStatus.value = True
     #deur open servo functies of klasse maken
     #iets op slaan in database duer is geopend
     #als duer al open is niets doen
@@ -153,11 +164,11 @@ def logged_in_user():
 # werk enkel met de packages gevent en gevent-websocket.
 
 # START RFID
-def start_rfid(send_badgeid):
+def start_rfid(send_badgeid,servoDoorStatus):
     # print("type",send_badgeid)
     try:
         while True:
-            rfid(send_badgeid)
+            rfid(send_badgeid,servoDoorStatus)
     except:
         pass
     
@@ -165,7 +176,7 @@ def start_thread_rfid():
     print("**** Starting THREAD lcd ****")
     # thread = threading.Timer(15, show_ip)
     # thread.start()
-    p = Process(target=start_rfid, args=(badgeid,))
+    p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
     p.start()
 
 # START LCD
@@ -181,13 +192,13 @@ def start_lcd(btnStatusLcd):
                     GPIO.output(backlight_lcd, GPIO.HIGH)
                     write_ip_status = False
                     print("**** DB --> LCD on & show ip ****")
-                    DataRepository.add_history(id,5,12)
-                    DataRepository.add_history(id,5,6)
+                    DataRepository.add_history(None,5,12)
+                    DataRepository.add_history(None,5,6)
                 # print(time()-tijd)
                 if((time()-tijd)>10):
                     btnStatusLcd.value = False
                     print("**** DB --> LCD off ****")
-                    DataRepository.add_history(id,5,13)
+                    DataRepository.add_history(None,5,13)
             else:
                 lcd.clear_LCD()
                 GPIO.output(backlight_lcd, GPIO.LOW)
@@ -225,9 +236,7 @@ def start_thread_opslaan_data():
 def live_data():
     try:
         while True:
-            #om de 1sec live data refresh
-            # sleep(1)
-            pass
+            sleep(1)
     except:
         pass
    
@@ -237,6 +246,24 @@ def start_thread_live_data():
     # thread.start()
     p = Process(target=live_data, args=())
     p.start()
+
+# START SERVO DOOR
+def servo(servoDoorStatus):
+    try:
+        while True:
+            if servoDoorStatus.value == True:
+                servo_door.unlock_door()
+                print("**** DB -->  DOOR 2 is unlocked with badge****")
+                DataRepository.add_history(None,1,19)
+                servoDoorStatus.value = False
+    except:
+        pass
+   
+def start_thread_servo():
+    print("**** Starting THREAD live data ****")
+    thread = threading.Thread(target=servo, args=(servoDoorStatus,), daemon=True)
+    thread.start()
+
 
 # START CHROME KIOSK
 def start_chrome_kiosk():
@@ -286,6 +313,7 @@ def read_list_out_Process():
             id = list_data[0]
             socketio.emit('B2F_sendBadgeId', {'badgeid': id})
             sleep(0.5)
+            
     except:
         pass
 
@@ -301,12 +329,14 @@ if __name__ == '__main__':
         start_thread_live_data()
         start_thread_opslaan_data()
         start_thread_rfid()
+        start_thread_servo()
         start_chrome_thread()
         start_thread_Queue()
         end = time()
         print(f"Threads elapsed time: {(end-start):.3f}s")
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
+        # socketio.run(app, host='0.0.0.0', debug=False, keyfile='/etc/ssl/private/private.key', certfile='/etc/ssl/certs/certificate.crt')
     except KeyboardInterrupt:
         print('KeyboardInterrupt exception is caught')
         # scherm backlight uitzetten

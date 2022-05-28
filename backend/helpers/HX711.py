@@ -52,7 +52,7 @@ class HX711:
         return round(sum/amount)
     
     def get_weight(self, sample):
-        count = self.__read_count_mean()
+        count = self.__read_count_mean(100)
         gram=(count-sample)/106
         if gram < 0:
             gram = 0
