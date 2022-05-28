@@ -13,6 +13,8 @@ try:
     while True:
         x = input('Enter to read weight: ')
         print('gewicht: ',hx711.get_weight(sample))
-
+except KeyboardInterrupt as e:
+    print(e)
+    #pass
 finally:
     GPIO.cleanup()

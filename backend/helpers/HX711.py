@@ -35,7 +35,7 @@ class HX711:
                 #print Count
 
         GPIO.output(self.sck,1)
-        count=count^0x800000
+        count=count^0x800000 # flip the 24th bit 
         #time.sleep(0.001)
         GPIO.output(self.sck,0)
         return count

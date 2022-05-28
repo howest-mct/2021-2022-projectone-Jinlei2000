@@ -53,9 +53,6 @@ def setup():
 def demo_callback1(pin):
     global btnStatusLcd
     print("---- LCD Button pressed ----")
-    print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
-    lcd.write_ip_adres('wlan0')
-    GPIO.output(backlight_lcd, GPIO.HIGH)
     btnStatusLcd.value = True
 
 def demo_callback2(pin):
@@ -157,17 +154,23 @@ def start_thread_rfid():
 # START LCD
 def start_lcd(btnStatusLcd):
     tijd = time()
+    write_ip_status = True
     try:
         while True:
             if btnStatusLcd.value == True:
-                GPIO.output(backlight_lcd, GPIO.HIGH)
+                if write_ip_status == True:
+                    print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
+                    lcd.write_ip_adres('wlan0')
+                    GPIO.output(backlight_lcd, GPIO.HIGH)
+                    write_ip_status = False
                 # print(time()-tijd)
                 if((time()-tijd)>10):
                     btnStatusLcd.value = False
             else:
-                # lcd.clear_LCD()
+                lcd.clear_LCD()
                 GPIO.output(backlight_lcd, GPIO.LOW)
                 tijd = time()
+                write_ip_status = True
     except:
         pass
     
