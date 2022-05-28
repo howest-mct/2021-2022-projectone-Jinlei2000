@@ -4,7 +4,7 @@ from helpers.HX711 import HX711
 
 
 hx711 = HX711(27,22) # dt, sck
-sample = 1910063
+sample = 8478413
 
 try:
     # waarde afstellen als er niets op zit 
@@ -16,5 +16,3 @@ try:
 except KeyboardInterrupt as e:
     print(e)
     #pass
-finally:
-    GPIO.cleanup()

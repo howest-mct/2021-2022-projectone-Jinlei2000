@@ -10,6 +10,9 @@ from mfrc522 import SimpleMFRC522
 
 from helpers.Button import Button
 from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
+from helpers.HCSR05 import HCSR05
+from helpers.HX711 import HX711
+from helpers.SG90 import SG90
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
