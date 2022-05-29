@@ -133,8 +133,12 @@ const listenToLoginBtn = function () {
     const username = document.querySelector('.js-username-login').value;
     const password = document.querySelector('.js-password-login').value;
     if (username.length > 0 && password.length > 0) {
-      const url = backend + `/users/login/${username}/${password}/`;
-      handleData(url, callbackLogin, callbackLoginError);
+      const body = JSON.stringify({
+        username: username,
+        password: password,
+      });
+      const url = backend + `/users/login/`;
+      handleData(url, callbackLogin, callbackLoginError,'POST',body);
     }else{
       showNotification('error', 'username or password is empty', 'Login');
     }

@@ -1,5 +1,6 @@
 // #region ***  DOM references                           ***********
 let htmlWelcomePage, htmlUsername;
+let userid;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
@@ -31,12 +32,14 @@ const welcomeInit = function () {
   htmlWelcomePage = document.querySelector('.js-welcome-page');
   htmlUsername = document.querySelector('.js-username');
 
-  userid = new URLSearchParams(window.location.search).get('userid');
-  // console.log('userid: ', userid);
   if (htmlWelcomePage) {
-    if (userid) {
+    id = new URLSearchParams(window.location.search).get('userid');
+    if (id) {
+      userid = id;
+      console.log('userid: ', userid);
       getUsername(userid);
     }
+    
   }
 };
 

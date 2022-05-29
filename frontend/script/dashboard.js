@@ -5,7 +5,7 @@ let htmlGeneralInformation, htmlLiveData;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
-const showGeneralInformation = function () {
+const showGeneralInformation = function (info) {
   console.log('showGeneralInformation');
   htmlGeneralInformation.innerHTML = `
             <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">General information</h2>
@@ -13,8 +13,8 @@ const showGeneralInformation = function () {
               <div class="o-layout__item u-1-of-2-bp3">
                 <div class="c-card">
                   <h3 class="c-card__title">Info<i class="c-card__icon-sm las la-pen js-toggle-popup"></i></h3>
-                  <p class="u-mb-clear u-mb-md">Name: Garbage bin 1</p>
-                  <p class="u-mb-clear">Location: Marksesteenweg 58, 8500 Kortrijk, Belgie</p>
+                  <p class="u-mb-clear u-mb-md">Name: ${info.name}</p>
+                  <p class="u-mb-clear">Location: ${info.address}</p>
                 </div>
               </div>
               <div class="o-layout__item u-1-of-2-bp3">
@@ -26,6 +26,7 @@ const showGeneralInformation = function () {
               </div>
             </div>
   `;
+  togglePopup();
 };
 
 const showLiveData = function (data) {
@@ -153,6 +154,8 @@ const showLiveData = function (data) {
               </div>
             </div>
   `;
+  listenToQuestions();
+
 };
 
 // #endregion
@@ -161,6 +164,10 @@ const showLiveData = function (data) {
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
+const getGeneralData = function () {
+  const url = backend + '/info/';
+  handleData(url, showGeneralInformation, showApiError);
+};
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -212,14 +219,11 @@ const dashboardInit = function () {
     htmlGeneralInformation = document.querySelector('.js-general-information');
     htmlLiveData = document.querySelector('.js-live-data');
 
-    showGeneralInformation();
+    getGeneralData();
 
     listenToSocket();
     listenToFilterBtns('.js-filter-average');
     listenToFilterBtns('.js-filter-total');
-
-    listenToQuestions();
-    togglePopup();
   }
 };
 

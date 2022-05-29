@@ -55,3 +55,9 @@ class DataRepository:
         data = Database.get_one_row(sql,params)
         amount = data['times']
         return amount
+
+    # LOCATION & NAME
+    @staticmethod
+    def get_info():
+        sql = 'SELECT name,address FROM location'
+        return Database.get_one_row(sql)

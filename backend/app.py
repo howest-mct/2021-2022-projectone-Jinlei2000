@@ -18,6 +18,7 @@ from helpers.SG90 import SG90
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
 from flask import Flask, jsonify, request
+from flask_jwt_extended import JWTManager, jwt_required,create_access_token, get_jwt_identity
 from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
@@ -130,9 +131,8 @@ def rfid(send_badgeid,servoDoorStatus):
 # CODE VOOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
-socketio = SocketIO(app, cors_allowed_origins="*", logger=False,
-                    engineio_logger=False, ping_timeout=1)
-
+socketio = SocketIO(app, cors_allowed_origins="*", logger=False,engineio_logger=False, ping_timeout=1)
+jwt = JWTManager(app)
 CORS(app)
 
 
@@ -169,13 +169,22 @@ def user(userid):
             return jsonify(name), 201
         return jsonify(status='error'), 404
 
-@app.route(endpoint + '/users/login/<username>/<password>/', methods=['GET'])
-def get_user_id(username,password):
-    if request.method == 'GET':
+@app.route(endpoint + '/users/login/', methods=['POST'])
+def get_user_id():
+    if request.method == 'POST':
+        gegevens = DataRepository.json_or_formdata(request)
+        username = gegevens['username']
+        password = gegevens['password']
         id = DataRepository.check_user_login(username, password)
         if id is not None:
             return jsonify(id), 201
         return jsonify(status='error'), 404
+    
+@app.route(endpoint + '/info/', methods=['GET'])
+def info():
+    if request.method == 'GET':
+        data = DataRepository.get_info()
+        return jsonify(data), 201
 
 @socketio.on('connect')
 def initial_connection():
@@ -282,7 +291,7 @@ def live_data():
                 'opened_times': opened_times,
                 'emptied_times': emptied_times
             }, broadcast=True)
-            sleep(1)
+            sleep(0.5)
     except:
         print('Error thread live_data!!!')
 
