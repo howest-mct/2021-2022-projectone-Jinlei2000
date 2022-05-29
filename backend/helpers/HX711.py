@@ -56,7 +56,7 @@ class HX711:
         gram=(count-sample)/106
         if gram < 0:
             gram = 0
-        return f'{round(gram)}g'
+        return round(gram)
     
     def get_sample(self):
         print('printing sample ....')

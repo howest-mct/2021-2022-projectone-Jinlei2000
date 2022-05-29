@@ -46,3 +46,12 @@ class DataRepository:
         sql = 'INSERT INTO history (value,deviceid,actionid) VALUES (%s,%s,%s)'
         params = [value,deviceid,actionid]
         return Database.execute_sql(sql,params)
+
+    # NUMBER OF TIMES OPENED/EMPTIED
+    @staticmethod
+    def filter_number_of_times_by_time_actionid(day,actionid):
+        sql = 'SELECT COUNT(*) AS times FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval %s DAY) AND NOW()'
+        params = [actionid,day]
+        data = Database.get_one_row(sql,params)
+        amount = data['times']
+        return amount

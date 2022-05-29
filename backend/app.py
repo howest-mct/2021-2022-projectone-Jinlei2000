@@ -1,3 +1,4 @@
+from random import sample
 from time import sleep,time
 from RPi import GPIO
 import threading
@@ -28,6 +29,9 @@ from selenium import webdriver
 btnLcdPin = Button(5)
 btnPoweroffPin = Button(6)
 
+magnetcontactDoor = Button(19)
+magnetcontactValve = Button(26)
+
 lcd = Lcd_4bits_i2c(0x38)
 lcd.init_LCD()
 backlight_lcd = 25
@@ -35,6 +39,11 @@ backlight_lcd = 25
 servo_door = SG90(24)
 servo_valve = SG90(23)
 servoDoorStatus = Value('b', False)
+servoValveStatus = Value('b', False)
+
+ultrasonic_sensor = HCSR05(echo_pin=21,trigger_pin=20)
+
+weight_sensor = HX711(dout_pin=27,sck_pin=22)
 
 reader = SimpleMFRC522()
 buzzer = 16
@@ -57,6 +66,9 @@ def setup():
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
 
+    magnetcontactDoor.on_press(demo_callback3)
+    magnetcontactValve.on_press(demo_callback4)
+
 def demo_callback1(pin):
     global btnStatusLcd
     print("---- LCD Button pressed ----")
@@ -70,6 +82,25 @@ def demo_callback2(pin):
     btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
+
+def demo_callback3(pin):
+    print(magnetcontactDoor.pressed)
+    status = magnetcontactDoor.pressed
+    if status == 1:
+        print('---- Magnetcontact door close ----')
+        # DataRepository.add_history(1,2,20)
+    elif status == 0:
+        print('---- Magnetcontact door open ----')
+        # DataRepository.add_history(1,2,22)
+
+def demo_callback4(pin):
+    status = magnetcontactValve.pressed
+    if status == 1:
+        print('---- Magnetcontact valve close ----')
+        # DataRepository.add_history(1,2,1)
+    elif status == 0:
+        print('---- Magnetcontact valve open ----')
+        # DataRepository.add_history(1,2,2)
 
 
 def rfid(send_badgeid,servoDoorStatus):
@@ -87,9 +118,10 @@ def rfid(send_badgeid,servoDoorStatus):
     badgeid = user['badgeid']
     if badgeid is not None:
         if badgeid == id:
-            #kijken of de duer ni open is
-            print('servo unlock door')
-            servoDoorStatus.value = True
+            if magnetcontactDoor.pressed == True:
+                #kijken of de duer ni open is
+                print('servo unlock door')
+                servoDoorStatus.value = True
     #deur open servo functies of klasse maken
     #iets op slaan in database duer is geopend
     #als duer al open is niets doen
@@ -173,7 +205,7 @@ def start_rfid(send_badgeid,servoDoorStatus):
         pass
     
 def start_thread_rfid():
-    print("**** Starting THREAD lcd ****")
+    print("**** Starting THREAD rfid ****")
     # thread = threading.Timer(15, show_ip)
     # thread.start()
     p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
@@ -205,8 +237,7 @@ def start_lcd(btnStatusLcd):
                 tijd = time()
                 write_ip_status = True
     except:
-        pass
-    
+        print('Error thread lcd!!!')
 
 def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
@@ -222,7 +253,7 @@ def opslaan_data():
             # sleep(60)
             pass
     except:
-        pass
+        print('Error thread opslaan_data!!!')
     
     
 def start_thread_opslaan_data():
@@ -235,19 +266,34 @@ def start_thread_opslaan_data():
 # START LIVE DATA
 def live_data():
     try:
+        sample = 1799462
         while True:
+            volume = ultrasonic_sensor.get_distance()
+            weight = weight_sensor.get_weight(sample)
+            door_status = magnetcontactDoor.pressed
+            valve_status = magnetcontactValve.pressed
+            opened_times = DataRepository.filter_number_of_times_by_time_actionid(1,2)
+            emptied_times = DataRepository.filter_number_of_times_by_time_actionid(1,22)
+            socketio.emit('B2F_live_data',{
+                'volume': volume,
+                'weight': weight,
+                'door': door_status,
+                'valve': valve_status,
+                'opened_times': opened_times,
+                'emptied_times': emptied_times
+            }, broadcast=True)
             sleep(1)
     except:
-        pass
-   
+        print('Error thread live_data!!!')
+
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    # thread = threading.Timer(0.1, live_data)
-    # thread.start()
-    p = Process(target=live_data, args=())
-    p.start()
+    thread = threading.Thread(target=live_data, args=(), daemon=True)
+    thread.start()
+    # p = Process(target=live_data, args=())
+    # p.start()
 
-# START SERVO DOOR
+# START SERVO
 def servo(servoDoorStatus):
     try:
         while True:
@@ -257,10 +303,10 @@ def servo(servoDoorStatus):
                 DataRepository.add_history(None,1,19)
                 servoDoorStatus.value = False
     except:
-        pass
+        print('Error thread servo!!!')
    
 def start_thread_servo():
-    print("**** Starting THREAD live data ****")
+    print("**** Starting THREAD servo ****")
     thread = threading.Thread(target=servo, args=(servoDoorStatus,), daemon=True)
     thread.start()
 
@@ -294,7 +340,7 @@ def start_chrome_kiosk():
         while True:
             pass
     except:
-        pass
+        print('Error thread chrome!!!')
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
@@ -315,7 +361,7 @@ def read_list_out_Process():
             sleep(0.5)
             
     except:
-        pass
+        print('Error thread read_list_out_Process!!!')
 
 def start_thread_Queue():
     xThread = threading.Thread(target=read_list_out_Process, args=(), daemon=True)
