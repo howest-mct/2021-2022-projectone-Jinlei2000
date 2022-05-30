@@ -1,4 +1,3 @@
-from random import sample
 from time import sleep,time
 from RPi import GPIO
 import threading
@@ -89,19 +88,19 @@ def demo_callback3(pin):
     status = magnetcontactDoor.pressed
     if status == 1:
         print('---- Magnetcontact door close ----')
-        # DataRepository.add_history(1,2,20)
+        DataRepository.add_history(1,2,20)
     elif status == 0:
         print('---- Magnetcontact door open ----')
-        # DataRepository.add_history(1,2,22)
+        DataRepository.add_history(1,2,22)
 
 def demo_callback4(pin):
     status = magnetcontactValve.pressed
     if status == 1:
         print('---- Magnetcontact valve close ----')
-        # DataRepository.add_history(1,2,1)
+        DataRepository.add_history(1,2,1)
     elif status == 0:
         print('---- Magnetcontact valve open ----')
-        # DataRepository.add_history(1,2,2)
+        DataRepository.add_history(1,2,2)
 
 
 def rfid(send_badgeid,servoDoorStatus):
@@ -120,12 +119,8 @@ def rfid(send_badgeid,servoDoorStatus):
     if badgeid is not None:
         if badgeid == id:
             if magnetcontactDoor.pressed == True:
-                #kijken of de duer ni open is
                 print('servo unlock door')
                 servoDoorStatus.value = True
-    #deur open servo functies of klasse maken
-    #iets op slaan in database duer is geopend
-    #als duer al open is niets doen
 
 
 # CODE VOOR FLASK
@@ -275,10 +270,9 @@ def start_thread_opslaan_data():
 # START LIVE DATA
 def live_data():
     try:
-        sample = 1799462
         while True:
             volume = ultrasonic_sensor.get_distance()
-            weight = weight_sensor.get_weight(sample)
+            weight = weight_sensor.get_weight()
             door_status = magnetcontactDoor.pressed
             valve_status = magnetcontactValve.pressed
             opened_times = DataRepository.filter_number_of_times_by_time_actionid(1,2)

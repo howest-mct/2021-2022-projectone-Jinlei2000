@@ -1,8 +1,11 @@
 'use strict';
 
 // #region ***  DOM references                           ***********
-const lanIP = `${window.location.hostname}:5000`;
-const socketio = io(`http://${lanIP}`);
+const lanIP = `${window.location.hostname}`;
+const socketio = io(`//${lanIP}:443`, {
+  path: '/socket.io',
+  transports: ['websocket'],
+});
 
 // je kan // gebruiken zo kan die zelf zoeken naar poort
 let backend = `//${lanIP}/api/v1`;

@@ -1,7 +1,8 @@
 import board
-import neopixel
+from neopixel import NeoPixel
 
 
-pixels = neopixel.NeoPixel(board.D12, 8)
-pixels[0] = (255, 0, 0)
+pixels = NeoPixel(board.D12, 8)
+for i in range(8):
+    pixels[i] = (0, 0, 255)
 
