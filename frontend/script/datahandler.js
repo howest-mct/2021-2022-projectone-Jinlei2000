@@ -6,7 +6,8 @@ const handleData = function (url, callbackFunctionName, callbackErrorFunctionNam
     body: body,
     headers: {
       'content-type': 'application/json',
-      Authorization: 'Bearer ' + token,
+      // hier een if plaatsen of zo dat ik da niet door stuur naar buiten bv andere api
+      // Authorization: 'Bearer ' + token,
     },
   })
     .then(function (response) {
