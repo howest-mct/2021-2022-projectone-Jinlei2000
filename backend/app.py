@@ -66,8 +66,6 @@ def setup():
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
 
-    # magnetcontactDoor.on_press(demo_callback3)
-    # magnetcontactValve.on_press(demo_callback4)
 
 def demo_callback1(pin):
     global btnStatusLcd
@@ -82,26 +80,6 @@ def demo_callback2(pin):
     btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
-
-# def demo_callback3(pin):
-#     status = magnetcontactDoor.pressed
-#     print('magnetcontactDoor: ',status)
-#     if status == 1:
-#         print('---- Magnetcontact door close ----')
-#         DataRepository.add_history(1,2,20)
-#     elif status == 0 :
-#         print('---- Magnetcontact door open ----')
-#         DataRepository.add_history(1,2,22)
-
-# def demo_callback4(pin):
-#     status = magnetcontactValve.pressed
-#     if status == 1:
-#         print('---- Magnetcontact valve close ----')
-#         DataRepository.add_history(1,2,1)
-#     elif status == 0:
-#         print('---- Magnetcontact valve open ----')
-#         DataRepository.add_history(1,2,2)
-
 
 def rfid(send_badgeid,servoDoorStatus):
     id, text = reader.read()
@@ -284,7 +262,7 @@ def live_data():
                 'opened_times': opened_times,
                 'emptied_times': emptied_times
             }, broadcast=True)
-            sleep(0.5)
+            sleep(0.5) # 500 ms
     except:
         print('Error thread live_data!!!')
 
@@ -328,6 +306,7 @@ def servo_magnet(servoDoorStatus):
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
                 sleep(0.25)
+            sleep(0.000001) # 1 µs
     except:
         print('Error thread servo & magnetcontact!!!')
    
