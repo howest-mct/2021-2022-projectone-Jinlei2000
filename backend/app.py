@@ -13,6 +13,7 @@ from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 from helpers.HCSR05 import HCSR05
 from helpers.HX711 import HX711
 from helpers.SG90 import SG90
+from helpers.Neopixel import Neopixel
 
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, send
@@ -22,8 +23,8 @@ from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
 
-# from selenium import webdriver
-# from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 # VARIABELEN
 btnLcdPin = Button(5)
@@ -53,8 +54,11 @@ btnStatusPoweroff = False
 btnStatusLcd = Value('b', False)
 badgeid = Queue()
 
+np = Neopixel(12)
+
 # CODE VOOR HARDWARE
 def setup():
+    print("**** DB --> Pi is starting up ****")
     DataRepository.add_history(None,None,28)
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -74,12 +78,18 @@ def demo_callback1(pin):
     print("**** DB --> LCD Button pressed ****")
     DataRepository.add_history(1,8,5)
 
+def poweroff():
+    print("**** DB --> Pi is shutting down ****")
+    DataRepository.add_history(None,None,8)
+    np.show_loading((255,0,0))
+
 def demo_callback2(pin):
     global btnStatusPoweroff
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
+    poweroff()
 
 def rfid(send_badgeid,servoDoorStatus):
     id, text = reader.read()
@@ -99,6 +109,9 @@ def rfid(send_badgeid,servoDoorStatus):
             if magnetcontactDoor.pressed == True:
                 print('servo unlock door')
                 servoDoorStatus.value = True
+    
+
+
 
 
 # CODE VOOR FLASK
@@ -198,8 +211,12 @@ def start_thread_rfid():
 def start_lcd(btnStatusLcd):
     tijd = time()
     write_ip_status = True
+    loading = True
     try:
         while True:
+            if loading == True:
+                np.show_loading()
+                loading = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
                     print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')

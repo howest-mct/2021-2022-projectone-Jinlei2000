@@ -29,3 +29,4 @@ class HCSR05:
         
         time_range = end_time - start_time
         return round(time_range * 17150,2)
+    
