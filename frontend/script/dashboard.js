@@ -209,6 +209,7 @@ const listenToSocket = function () {
     // console.log(data);
     showLiveData(data);
   });
+  
 };
 // #endregion
 

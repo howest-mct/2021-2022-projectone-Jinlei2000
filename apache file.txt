@@ -1,5 +1,12 @@
-<VirtualHost \*:80> # The ServerName directive sets the request scheme, hostname and port that # the server uses to identify itself. This is used when creating # redirection URLs. In the context of virtual hosts, the ServerName # specifies what hostname must appear in the request's Host: header to # match this virtual host. For the default virtual host (this file) this # value is not decisive as it is used as a last resort host regardless. # However, you must set it for any further virtual host explicitly.
-#ServerName www.example.com
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
 
         ServerAdmin webmaster@localhost
         DocumentRoot /home/student/2021-2022-projectone-Jinlei2000/frontend
@@ -20,18 +27,21 @@
         # after it has been globally disabled with "a2disconf".
         #Include conf-available/serve-cgi-bin.conf
 
+	RewriteEngine On
+        RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+
 </VirtualHost>
 
-<VirtualHost \*:443>
-ServerAdmin webmaster@localhost
-DocumentRoot /home/student/2021-2022-projectone-Jinlei2000/frontend
-ErrorLog ${APACHE_LOG_DIR}/error.log
-CustomLog ${APACHE_LOG_DIR}/access.log combined
-SSLEngine on
-SSLProtocol all -SSLv2
-SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
-SSLCertificateFile "/etc/ssl/certs/certificate.crt"
-SSLCertificateKeyFile "/etc/ssl/private/private.key"
+<VirtualHost *:443>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /home/student/2021-2022-projectone-Jinlei2000/frontend
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        SSLEngine on
+        SSLProtocol all -SSLv2
+        SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+        SSLCertificateFile "/etc/ssl/certs/certificate.crt"
+        SSLCertificateKeyFile "/etc/ssl/private/private.key"
 
 SSLProxyEngine on //apache log told me about this
 SSLProxyVerify none
@@ -40,15 +50,18 @@ SSLProxyCheckPeerName off
 SSLProxyCheckPeerExpire off
 
 RewriteEngine on
-RewriteCond %{HTTP:Upgrade} websocket [NC]
-RewriteRule /(.\*) ws://localhost:5000/$1 [P,L]
+    RewriteCond %{HTTP:Upgrade} websocket [NC]
+    RewriteRule /(.*) ws://localhost:5000/$1 [P,L]
+   # RewriteRule /(.*) http://localhost:5000/$1 [P,L]
 
-# RewriteRule /(.\*) http://localhost:5000/$1 [P,L]
 
 RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/socket.io [NC]
-RewriteCond %{QUERY_STRING} transport=websocket [NC]
-RewriteRule /(.\*) ws://localhost:5000/$1 [P,L]
+RewriteCond %{REQUEST_URI}  ^/socket.io            [NC]
+RewriteCond %{QUERY_STRING} transport=websocket    [NC]
+RewriteRule /(.*)           ws://localhost:5000/$1 [P,L]
 
-ProxyPass /socket.io http://localhost:5000/socket.io
+ProxyPass        /socket.io http://localhost:5000/socket.io
 ProxyPassReverse /socket.io http://localhost:5000/socket.io
+
+ProxyPass        /api/v1 http://localhost:5000/api/v1
+ProxyPassReverse /api/v1 http://localhost:5000/api/v1

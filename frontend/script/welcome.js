@@ -39,7 +39,6 @@ const welcomeInit = function () {
       console.log('userid: ', userid);
       getUsername(userid);
     }
-    
   }
 };
 

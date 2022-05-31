@@ -53,9 +53,9 @@ btnStatusPoweroff = False
 btnStatusLcd = Value('b', False)
 badgeid = Queue()
 
-
 # CODE VOOR HARDWARE
 def setup():
+    DataRepository.add_history(None,None,28)
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
@@ -66,8 +66,8 @@ def setup():
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
 
-    magnetcontactDoor.on_press(demo_callback3)
-    magnetcontactValve.on_press(demo_callback4)
+    # magnetcontactDoor.on_press(demo_callback3)
+    # magnetcontactValve.on_press(demo_callback4)
 
 def demo_callback1(pin):
     global btnStatusLcd
@@ -83,24 +83,24 @@ def demo_callback2(pin):
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
 
-def demo_callback3(pin):
-    print(magnetcontactDoor.pressed)
-    status = magnetcontactDoor.pressed
-    if status == 1:
-        print('---- Magnetcontact door close ----')
-        DataRepository.add_history(1,2,20)
-    elif status == 0:
-        print('---- Magnetcontact door open ----')
-        DataRepository.add_history(1,2,22)
+# def demo_callback3(pin):
+#     status = magnetcontactDoor.pressed
+#     print('magnetcontactDoor: ',status)
+#     if status == 1:
+#         print('---- Magnetcontact door close ----')
+#         DataRepository.add_history(1,2,20)
+#     elif status == 0 :
+#         print('---- Magnetcontact door open ----')
+#         DataRepository.add_history(1,2,22)
 
-def demo_callback4(pin):
-    status = magnetcontactValve.pressed
-    if status == 1:
-        print('---- Magnetcontact valve close ----')
-        DataRepository.add_history(1,2,1)
-    elif status == 0:
-        print('---- Magnetcontact valve open ----')
-        DataRepository.add_history(1,2,2)
+# def demo_callback4(pin):
+#     status = magnetcontactValve.pressed
+#     if status == 1:
+#         print('---- Magnetcontact valve close ----')
+#         DataRepository.add_history(1,2,1)
+#     elif status == 0:
+#         print('---- Magnetcontact valve open ----')
+#         DataRepository.add_history(1,2,2)
 
 
 def rfid(send_badgeid,servoDoorStatus):
@@ -194,6 +194,7 @@ def add_new_user():
 def logged_in_user():
     print("**** DB --> Logged in user ****")
     DataRepository.add_history(None,None,17)
+    
 
 # ALLE THREADS
 # Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
@@ -248,7 +249,6 @@ def start_thread_lcd():
     p = Process(target=start_lcd, args=(btnStatusLcd,))
     p.start()
 
-
 # START OPSLAAN DATA
 def opslaan_data():
     try:
@@ -258,7 +258,6 @@ def opslaan_data():
             pass
     except:
         print('Error thread opslaan_data!!!')
-    
     
 def start_thread_opslaan_data():
     print("**** Starting THREAD opslaan data ****")
@@ -296,21 +295,45 @@ def start_thread_live_data():
     # p = Process(target=live_data, args=())
     # p.start()
 
-# START SERVO
-def servo(servoDoorStatus):
+# START SERVO & MAGNETCONTACT
+def servo_magnet(servoDoorStatus):
     try:
+        prevStatus1 = None
+        prevStatus2 = None
         while True:
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
                 print("**** DB -->  DOOR 2 is unlocked with badge****")
                 DataRepository.add_history(None,1,19)
                 servoDoorStatus.value = False
+
+            status1 = magnetcontactDoor.pressed
+            if status1 != prevStatus1:
+                if status1 == 1:
+                    print('**** Magnetcontact door close ****')
+                    DataRepository.add_history(1,2,20)
+                elif status1 == 0 :
+                    print('**** Magnetcontact door open ****')
+                    DataRepository.add_history(1,2,22)
+                prevStatus1 = status1
+                sleep(0.25)
+            
+            status2 = magnetcontactValve.pressed
+            if status2 != prevStatus2:
+                if status2 == 1:
+                    print('**** Magnetcontact valve close ****')
+                    DataRepository.add_history(1,2,1)
+                elif status2 == 0:
+                    print('**** Magnetcontact valve open ****')
+                    DataRepository.add_history(1,2,2)
+                prevStatus2 = status2
+                sleep(0.25)
     except:
-        print('Error thread servo!!!')
+        print('Error thread servo & magnetcontact!!!')
    
-def start_thread_servo():
-    print("**** Starting THREAD servo ****")
-    thread = threading.Thread(target=servo, args=(servoDoorStatus,), daemon=True)
+def start_thread_servo_magnet():
+    print("**** Starting THREAD servo & magnetcontact ****")
+    thread = threading.Thread(target=servo_magnet, args=(servoDoorStatus,), daemon=True)
     thread.start()
 
 
@@ -362,7 +385,6 @@ def read_list_out_Process():
             id = list_data[0]
             socketio.emit('B2F_sendBadgeId', {'badgeid': id})
             sleep(0.5)
-            
     except:
         print('Error thread read_list_out_Process!!!')
 
@@ -378,14 +400,13 @@ if __name__ == '__main__':
         start_thread_live_data()
         start_thread_opslaan_data()
         start_thread_rfid()
-        start_thread_servo()
+        start_thread_servo_magnet()
         start_chrome_thread()
         start_thread_Queue()
         end = time()
         print(f"Threads elapsed time: {(end-start):.3f}s")
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
-        # socketio.run(app, host='0.0.0.0', debug=False, keyfile='/etc/ssl/private/private.key', certfile='/etc/ssl/certs/certificate.crt')
     except KeyboardInterrupt:
         print('KeyboardInterrupt exception is caught')
         # scherm backlight uitzetten
