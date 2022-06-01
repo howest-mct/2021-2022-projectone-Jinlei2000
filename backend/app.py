@@ -1,4 +1,5 @@
 from time import sleep,time
+import datetime
 from RPi import GPIO
 import threading
 
@@ -114,9 +115,6 @@ def rfid(send_badgeid,servoDoorStatus):
                 servoDoorStatus.value = True
     
 
-
-
-
 # CODE VOOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
@@ -166,8 +164,16 @@ def get_user_id():
         password = gegevens['password']
         id = DataRepository.check_user_login(username, password)
         if id is not None:
-            return jsonify(id), 201
+            expires = datetime.timedelta(minutes=20)
+            access_token = create_access_token(identity=username, expires_delta=expires)
+            return jsonify(id,access_token=access_token), 201
         return jsonify(status='error'), 404
+
+@app.route(endpoint + '/protected/', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
     
 @app.route(endpoint + '/info/', methods=['GET'])
 def info():
@@ -270,6 +276,8 @@ def start_thread_opslaan_data():
 def live_data():
     try:
         while True:
+            #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
+
             volume = ultrasonic_sensor.get_distance()
             weight = weight_sensor.get_weight()
             door_status = magnetcontactDoor.pressed
@@ -302,6 +310,9 @@ def servo_magnet(servoDoorStatus):
         prevStatus2 = None
         tijd = None
         while True:
+            #andere servo bedienen van valve door volumeee als vol is dicht doen als die leeg is open
+            #boven een bepaalde limiet sluiten servo valve
+
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
                 print("**** DB -->  DOOR 2 is unlocked with badge****")

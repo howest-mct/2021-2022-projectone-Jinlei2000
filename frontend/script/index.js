@@ -3,6 +3,9 @@
 // #region ***  DOM references                           ***********
 let id;
 let exists = false;
+localStorage.setItem('access_token', '');
+localStorage.setItem('userid', '');
+const page = localStorage.getItem('page');
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
@@ -26,9 +29,9 @@ const callbackCreateUser = function (json) {
   socketio.emit('F2B_addNewUser');
 };
 
-const callbackCreateUserError = function (json){
+const callbackCreateUserError = function (json) {
   showNotification('error', 'no valid username or password', 'Signup');
-}
+};
 
 const callbackCheckBadgeId = function (badges) {
   // console.log('callbackCheckBadgeId: ', badges);
@@ -49,16 +52,30 @@ const callbackCheckBadgeId = function (badges) {
 };
 
 const callbackLogin = function (json) {
-  const id = json.userid;
-  // showNotification('success', 'login successful');
-  // console.log('userid: ', id);
-  socketio.emit('F2B_LoggedInUser');
-  window.location.href = `/welcome.html?userid=${id}`;
-}
+  // console.log(json);
+  const access_token = json.access_token;
+  localStorage.setItem('userid', json.userid);
+  console.log(access_token);
+  localStorage.setItem('access_token', access_token);
+  const url = backend + `/protected/`;
+  console.log(url);
+  handleData(url, callbackProtected, showApiError, 'GET', null, access_token);
+};
 
 const callbackLoginError = function (json) {
   showNotification('error', 'no valid username, password or user dont exists');
-}
+};
+
+const callbackProtected = function (json) {
+  console.log('logged_in_as: ', json.logged_in_as);
+  socketio.emit('F2B_LoggedInUser');
+  console.log('localStorage.userid: ', localStorage.getItem('userid'));
+  // if (!page) {
+  //   window.location.href = `/welcome.html`;
+  // }else {
+  //   window.location.href = `/${page}`;
+  // }
+};
 
 // #endregion
 
@@ -71,12 +88,12 @@ const getAllUsersBadgeId = function () {
 
 // #region ***  Event Listeners - listenTo___            ***********
 const resetInputsValue = function () {
-    document.querySelector('.js-username').value = '';
-    document.querySelector('.js-password').value = '';
-    document.querySelector('.js-input-badgeid').value = '';
-    document.querySelector('.js-username-login').value = '';
-    document.querySelector('.js-password-login').value = '';
-}
+  document.querySelector('.js-username').value = '';
+  document.querySelector('.js-password').value = '';
+  document.querySelector('.js-input-badgeid').value = '';
+  document.querySelector('.js-username-login').value = '';
+  document.querySelector('.js-password-login').value = '';
+};
 
 const toggleLogin = function () {
   const btns = document.querySelectorAll('.js-toggle-login');
@@ -123,7 +140,7 @@ const listenToSignupBtn = function () {
         // console.log('geen geldige gegevens ingevuld');
         showNotification('error', 'no valid username or password or badge id', 'Signup');
       }
-    } 
+    }
   });
 };
 
@@ -138,12 +155,12 @@ const listenToLoginBtn = function () {
         password: password,
       });
       const url = backend + `/users/login/`;
-      handleData(url, callbackLogin, callbackLoginError,'POST',body);
-    }else{
+      handleData(url, callbackLogin, callbackLoginError, 'POST', body);
+    } else {
       showNotification('error', 'username or password is empty', 'Login');
     }
-  })
-}
+  });
+};
 
 const listenToSocket = function () {
   socketio.on('B2F_sendBadgeId', function (payload) {

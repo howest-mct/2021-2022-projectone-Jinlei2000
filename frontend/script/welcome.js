@@ -33,12 +33,10 @@ const welcomeInit = function () {
   htmlUsername = document.querySelector('.js-username');
 
   if (htmlWelcomePage) {
-    id = new URLSearchParams(window.location.search).get('userid');
-    if (id) {
-      userid = id;
-      console.log('userid: ', userid);
-      getUsername(userid);
-    }
+    checkToken('welcome.html');
+    userid = localStorage.getItem('userid');
+    console.log('userid: ', userid);
+    getUsername(userid);
   }
 };
 

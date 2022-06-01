@@ -6,7 +6,6 @@ const socketio = io(`//${lanIP}:443`, {
   path: '/socket.io',
   transports: ['websocket'],
 });
-
 // je kan // gebruiken zo kan die zelf zoeken naar poort
 let backend = `//${lanIP}/api/v1`;
 // #endregion
@@ -54,12 +53,27 @@ const showApiError = function () {
   showNotification('error', 'Something went wrong while fetching data from the api.');
 };
 
+
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
+const tokenValid = function (json) {
+  console.log('logged_in_as: ', json.logged_in_as);
+}
+
+const callbackTokenError = function () {
+  showNotification('error', 'Token is not valid or don\'t have a token!');
+  window.location.href = '/index.html';
+};
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
+const checkToken = function (page) {
+  const token = localStorage.getItem('access_token');
+  localStorage.setItem('page', page);
+  const url = backend + `/protected/`;
+  handleData(url, tokenValid, callbackTokenError, 'GET', null, token);
+}
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
