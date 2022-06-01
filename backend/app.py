@@ -166,7 +166,7 @@ def get_user_id():
         if id is not None:
             expires = datetime.timedelta(minutes=20)
             access_token = create_access_token(identity=username, expires_delta=expires)
-            return jsonify(id,access_token=access_token), 201
+            return jsonify(id=id,access_token=access_token), 201
         return jsonify(status='error'), 404
 
 @app.route(endpoint + '/protected/', methods=['GET'])

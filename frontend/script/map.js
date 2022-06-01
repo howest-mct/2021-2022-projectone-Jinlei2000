@@ -82,6 +82,7 @@ const getCoordinates = function () {
 const mapInit = function () {
   console.log('map.js: init');
   if (document.querySelector('.js-map-page')) {
+    checkToken('map.html');
     getCoordinates();
   }
 };

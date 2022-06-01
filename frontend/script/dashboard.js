@@ -217,6 +217,7 @@ const listenToSocket = function () {
 const dashboardInit = function () {
   console.log('dashboard.js: init');
   if (document.querySelector('.js-dashboard-page')) {
+    checkToken('dashboard.html');
     htmlGeneralInformation = document.querySelector('.js-general-information');
     htmlLiveData = document.querySelector('.js-live-data');
 

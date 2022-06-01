@@ -52,9 +52,9 @@ const callbackCheckBadgeId = function (badges) {
 };
 
 const callbackLogin = function (json) {
-  // console.log(json);
+  // console.log('userid,access_token',json);
   const access_token = json.access_token;
-  localStorage.setItem('userid', json.userid);
+  localStorage.setItem('userid', json.id.userid);
   console.log(access_token);
   localStorage.setItem('access_token', access_token);
   const url = backend + `/protected/`;
@@ -70,11 +70,12 @@ const callbackProtected = function (json) {
   console.log('logged_in_as: ', json.logged_in_as);
   socketio.emit('F2B_LoggedInUser');
   console.log('localStorage.userid: ', localStorage.getItem('userid'));
-  // if (!page) {
-  //   window.location.href = `/welcome.html`;
-  // }else {
-  //   window.location.href = `/${page}`;
-  // }
+  console.log(page)
+  if (!page) {
+    window.location.href = `/welcome.html`;
+  }else {
+    window.location.href = `/${page}`;
+  }
 };
 
 // #endregion

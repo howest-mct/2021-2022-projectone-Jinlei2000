@@ -19,6 +19,7 @@
 const historyInit = function () {
   console.log('history.js: init');
   if (document.querySelector('.js-history-page')) {
+    checkToken('history.html');
     listenToFilterBtns('.js-filter-time');
     listenToFilterBtns('.js-filter-category');
   }

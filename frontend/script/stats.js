@@ -18,6 +18,7 @@
 const statsInit = function () {
   console.log('stats.js: init');
   if (document.querySelector('.js-history-page')) {
+    checkToken('stats.html');
     listenToFilterBtns('.js-filter-time');
   }
 };
