@@ -56,8 +56,14 @@ class DataRepository:
         amount = data['times']
         return amount
 
-    # LOCATION & NAME
+    # LOCATION
     @staticmethod
     def get_info():
         sql = 'SELECT name,address FROM location'
         return Database.get_one_row(sql)
+    
+    @staticmethod
+    def update_location(address,coords,name):
+        sql = 'UPDATE location SET address = %s, coordinates = %s, name = %s'
+        params = [address,coords,name]
+        return Database.execute_sql(sql,params)

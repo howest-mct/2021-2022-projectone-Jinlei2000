@@ -1,14 +1,22 @@
 'use strict';
 
 const handleData = function (url, callbackFunctionName, callbackErrorFunctionName = null, method = 'GET', body = null, token = null) {
+  let header1 = {
+    'content-type': 'application/json',
+  };
+  let header2 = {
+    'content-type': 'application/json',
+    Authorization: 'Bearer ' + token,
+  };
   fetch(url, {
     method: method,
     body: body,
-    headers: {
-      'content-type': 'application/json',
-      // hier een if plaatsen of zo dat ik da niet door stuur naar buiten bv andere api
-      Authorization: 'Bearer ' + token,
-    },
+    // headers: {
+    //   'content-type': 'application/json',
+    //   // hier een if plaatsen of zo dat ik da niet door stuur naar buiten bv andere api
+    //   Authorization: 'Bearer ' + token,
+    // },
+    headers: token ? header2 : header1,
   })
     .then(function (response) {
       if (!response.ok) {

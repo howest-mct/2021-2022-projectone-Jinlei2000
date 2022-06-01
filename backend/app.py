@@ -85,6 +85,7 @@ def poweroff():
     DataRepository.add_history(None,None,30)
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,None,8)
+    #hier nog poweroff plaatsen om te stoppen
     
 
 def demo_callback2(pin):
@@ -175,11 +176,16 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
     
-@app.route(endpoint + '/info/', methods=['GET'])
+@app.route(endpoint + '/info/', methods=['GET','PUT'])
 def info():
     if request.method == 'GET':
         data = DataRepository.get_info()
         return jsonify(data), 201
+    if request.method == 'PUT':
+        gegevens = DataRepository.json_or_formdata(request)
+        DataRepository.update_location(gegevens['address'], gegevens['coordinates'], gegevens['name'])
+        return jsonify(status='updated location'), 201
+
 
 @socketio.on('connect')
 def initial_connection():
@@ -194,6 +200,8 @@ def add_new_user():
 def logged_in_user():
     print("**** DB --> Logged in user ****")
     DataRepository.add_history(None,None,17)
+
+#nog 2 socket om mijn 2 knoppen op te vangen poweroof en deur openenen
     
 
 # ALLE THREADS
@@ -426,8 +434,7 @@ if __name__ == '__main__':
         start_thread_servo_magnet()
         start_chrome_thread()
         start_thread_Queue()
-        end = time()
-        print(f"Threads elapsed time: {(end-start):.3f}s")
+        print(f"Threads elapsed time: {(time()-start):.3f}s")
         print("**** Starting APP ****")
         socketio.run(app, debug=False, host='0.0.0.0')
     except KeyboardInterrupt:

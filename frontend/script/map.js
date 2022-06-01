@@ -35,15 +35,14 @@ const makeMarker = function (coords) {
   let marker = L.marker(coords, { icon: iconTrash }).addTo(layergroup);
   marker.bindPopup(`<h3 class="c-lead c-lead--md u-mb-md u-fw-bold">${name_garbage}</h3><em>${address}</em>`);
 };
-const showMarker = function (json) {
-  // console.log(json);
-  let lon_lat = json.features[0].geometry.coordinates;
-  let adres = json.features[0].properties.address_line2;
-  lon_lat.reverse();
-  // console.log(lon_lat);
-  showMap(lon_lat);
-  makeMarker(lon_lat);
-};
+// const showMarker = function (json) {
+//   // console.log(json);
+//   let lon_lat = json.features[0].geometry.coordinates;
+//   lon_lat.reverse();
+//   // console.log(lon_lat);
+//   showMap(lon_lat);
+//   makeMarker(lon_lat);
+// };
 
 const showMap = function (coords) {
   map = L.map('map').setView(coords, 15);
@@ -67,12 +66,12 @@ const showMap = function (coords) {
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
-const getCoordinates = function () {
-  const myAPIKey = `2bb92724d0cd4edd8a5b0599e269f54c`;
-  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&lang=nl&apiKey=${myAPIKey}`;
-  // console.log(url);
-  handleData(url, showMarker, showApiError);
-};
+// const getCoordinates = function () {
+//   const myAPIKey = `2bb92724d0cd4edd8a5b0599e269f54c`;
+//   const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&lang=nl&apiKey=${myAPIKey}`;
+//   // console.log(url);
+//   handleData(url, showMarker, showApiError);
+// };
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********

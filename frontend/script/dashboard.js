@@ -1,7 +1,8 @@
 'use strict';
 
 // #region ***  DOM references                           ***********
-let htmlGeneralInformation, htmlLiveData;
+let htmlGeneralInformation, htmlLiveData, htmlPopupConfirmBtn;
+let htmlPopupName, htmlPopupLocation;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
@@ -27,17 +28,18 @@ const showGeneralInformation = function (info) {
             </div>
   `;
   togglePopup();
+  listenToPopupConfirmBtn();
 };
 
 const showLiveData = function (data) {
-  console.log('showLiveData');
+  // console.log('showLiveData');
   const volume = data.volume;
   const weight = data.weight;
   const door = data.door;
   const valve = data.valve;
   const openedTimes = data.opened_times;
   const emptiedTimes = data.emptied_times;
-  console.log(`volume: ${volume}, weight: ${weight}, door: ${door}, valve: ${valve}, openedTimes: ${openedTimes}, emptiedTimes: ${emptiedTimes}`);
+  // console.log(`volume: ${volume}, weight: ${weight}, door: ${door}, valve: ${valve}, openedTimes: ${openedTimes}, emptiedTimes: ${emptiedTimes}`);
   htmlLiveData.innerHTML = `
    <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">Live feed</h2>
             <div class="o-layout o-layout--gutter">
@@ -155,18 +157,62 @@ const showLiveData = function (data) {
             </div>
   `;
   listenToQuestions();
+};
 
+const showPopupInputValue = function (info) {
+  htmlPopupName.placeholder = info.name;
+  htmlPopupLocation.placeholder = info.address;
 };
 
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
+const callbackCoords = function (json) {
+  console.log(json);
+  const coords = `${json.features[0].properties.lat},${json.features[0].properties.lon}`;
+  const housenumber = json.features[0].properties.housenumber ? json.features[0].properties.housenumber : '';
+  const city = json.features[0].properties.city ? json.features[0].properties.city : '';
+  const postcode = json.features[0].properties.postcode ? json.features[0].properties.postcode : '';
+  const street = json.features[0].properties.street ? json.features[0].properties.street : json.query.parsed.street;
+  const address = `${street} ${housenumber}, ${postcode} ${city}`;
+  const url = backend + `/info/`;
+  // console.log(address, coords, htmlPopupName.value);
+  const body = JSON.stringify({
+    address: address,
+    coordinates: coords,
+    name: htmlPopupName.value,
+  });
+  handleData(url, callbackAddCoords, showApiError, 'PUT', body)
+};
+
+const callbackCoordsError = function (e) {
+  showNotification('error', 'Address is not valid.');
+};
+
+const callbackAddCoords = function () {
+  document.querySelector('body').classList.remove('has-popup');
+  getGeneralData();
+  showNotification('success', 'Address has been updated.');
+};
+
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
 const getGeneralData = function () {
   const url = backend + '/info/';
   handleData(url, showGeneralInformation, showApiError);
+};
+
+const getPopupData = function () {
+  const url = backend + '/info/';
+  handleData(url, showPopupInputValue, showApiError);
+};
+
+const getCoordinates = function (address) {
+  const myAPIKey = `2bb92724d0cd4edd8a5b0599e269f54c`;
+  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&lang=nl&apiKey=${myAPIKey}`;
+  // console.log(url);
+  handleData(url, callbackCoords, callbackCoordsError);
 };
 // #endregion
 
@@ -198,18 +244,36 @@ const togglePopup = function () {
   for (let i = 0; i < toggleTrigger.length; i++) {
     toggleTrigger[i].addEventListener('click', function () {
       // console.log('Toggle Popup');
+      htmlPopupName.value = '';
+      htmlPopupLocation.value = '';
       document.querySelector('body').classList.toggle('has-popup');
     });
   }
 };
 
+const listenToPopupConfirmBtn = function () {
+  htmlPopupConfirmBtn.addEventListener('click', function () {
+    console.log('Popup Confirm Button clicked');
+    const name = htmlPopupName.value;
+    const location = htmlPopupLocation.value;
+    if (name != '' && location != '') {
+      if (name.length > 3 && location.length > 8) {
+        getCoordinates(location);
+      } else {
+        showNotification('error', 'Name or location is to short, please try again.');
+      }
+    } else {
+      showNotification('error', 'Please fill in the name and location fields');
+    }
+  });
+};
+
 const listenToSocket = function () {
   socketio.on('B2F_live_data', function (data) {
-    console.log('B2F_live_data');
+    // console.log('B2F_live_data');
     // console.log(data);
     showLiveData(data);
   });
-  
 };
 // #endregion
 
@@ -218,10 +282,15 @@ const dashboardInit = function () {
   console.log('dashboard.js: init');
   if (document.querySelector('.js-dashboard-page')) {
     checkToken('dashboard.html');
+
     htmlGeneralInformation = document.querySelector('.js-general-information');
     htmlLiveData = document.querySelector('.js-live-data');
+    htmlPopupConfirmBtn = document.querySelector('.js-popup-confirm-btn');
+    htmlPopupName = document.querySelector('.js-popup-name');
+    htmlPopupLocation = document.querySelector('.js-popup-location');
 
     getGeneralData();
+    getPopupData();
 
     listenToSocket();
     listenToFilterBtns('.js-filter-average');
