@@ -79,9 +79,12 @@ def demo_callback1(pin):
     DataRepository.add_history(1,8,5)
 
 def poweroff():
+    np.show_loading((255,0,0))
+    print("**** DB --> RGB led loading shutting down pi ****")
+    DataRepository.add_history(None,None,30)
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,None,8)
-    np.show_loading((255,0,0))
+    
 
 def demo_callback2(pin):
     global btnStatusPoweroff
@@ -216,6 +219,8 @@ def start_lcd(btnStatusLcd):
         while True:
             if loading == True:
                 np.show_loading()
+                print("**** DB --> RGB led loading starting pi ****")
+                DataRepository.add_history(None,None,29)
                 loading = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
@@ -295,12 +300,22 @@ def servo_magnet(servoDoorStatus):
     try:
         prevStatus1 = None
         prevStatus2 = None
+        tijd = None
         while True:
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
                 print("**** DB -->  DOOR 2 is unlocked with badge****")
                 DataRepository.add_history(None,1,19)
                 servoDoorStatus.value = False
+                tijd = time()
+
+            if servoDoorStatus.value == False and magnetcontactDoor.pressed == True:
+                if tijd is not None:
+                    if((time()-tijd)>20):
+                        servo_door.lock_door()
+                        print("**** DB -->  DOOR 2 is locked****")
+                        DataRepository.add_history(None,1,21)
+                        tijd = None
 
             status1 = magnetcontactDoor.pressed
             if status1 != prevStatus1:
@@ -323,7 +338,8 @@ def servo_magnet(servoDoorStatus):
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
                 sleep(0.25)
-            sleep(0.000001) # 1 µs
+            sleep(0.001) # 1 ms
+
     except:
         print('Error thread servo & magnetcontact!!!')
    
