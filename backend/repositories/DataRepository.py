@@ -50,7 +50,7 @@ class DataRepository:
     # NUMBER OF TIMES OPENED/EMPTIED
     @staticmethod
     def filter_number_of_times_by_time_actionid(day,actionid):
-        sql = 'SELECT COUNT(*) AS times FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval %s DAY) AND NOW()'
+        sql = 'SELECT COUNT(*) AS times FROM history WHERE actionid = %s AND action_datetime BETWEEN (CURRENT_DATE()) AND (CURRENT_DATE() + interval %s DAY)'
         params = [actionid,day]
         data = Database.get_one_row(sql,params)
         amount = data['times']

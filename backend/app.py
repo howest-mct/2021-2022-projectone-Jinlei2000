@@ -345,7 +345,8 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact door open ****')
                     DataRepository.add_history(1,2,22)
                 prevStatus1 = status1
-                sleep(0.25)
+                # sleep(0.25)
+                sleep(0.3)
             
             status2 = magnetcontactValve.pressed
             if status2 != prevStatus2:
@@ -356,7 +357,8 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact valve open ****')
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
-                sleep(0.25)
+                # sleep(0.25)
+                sleep(0.3)
             sleep(0.001) # 1 ms
 
     except:
