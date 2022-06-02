@@ -58,7 +58,7 @@ const showApiError = function () {
 
 // #region ***  Callback-No Visualisation - callback___  ***********
 const tokenValid = function (json) {
-  console.log('logged_in_as: ', json.logged_in_as);
+  // console.log('logged_in_as: ', json.logged_in_as);
 }
 
 const callbackTokenError = function () {

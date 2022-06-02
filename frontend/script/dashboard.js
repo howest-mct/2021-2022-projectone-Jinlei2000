@@ -35,10 +35,13 @@ const showLiveData = function (data) {
   // console.log('showLiveData');
   const volume = data.volume;
   const weight = data.weight;
-  const door = data.door;
-  const valve = data.valve;
+  const door = data.door ? 'close' : 'open';
+  const valve = data.valve ? 'close' : 'open';
   const openedTimes = data.opened_times;
   const emptiedTimes = data.emptied_times;
+
+  const iconDoor = data.door ? 'las la-door-closed' : 'las la-door-open';
+  const iconValve = data.valve ? 'las la-door-closed' : 'las la-door-open';
   // console.log(`volume: ${volume}, weight: ${weight}, door: ${door}, valve: ${valve}, openedTimes: ${openedTimes}, emptiedTimes: ${emptiedTimes}`);
   htmlLiveData.innerHTML = `
    <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">Live feed</h2>
@@ -120,11 +123,11 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg las la-door-closed"></i>
+                    <i class="c-card__icon-lg ${iconDoor}"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 1
-                    <span class="c-card__value">${valve}</span>
+                    <span class="c-card__value">${door}</span>
                   </h3>
                 </div>
               </div>
@@ -139,11 +142,11 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg las la-door-open"></i>
+                    <i class="c-card__icon-lg ${iconValve}"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 2
-                    <span class="c-card__value">${door}</span>
+                    <span class="c-card__value">${valve}</span>
                   </h3>
                 </div>
               </div>
