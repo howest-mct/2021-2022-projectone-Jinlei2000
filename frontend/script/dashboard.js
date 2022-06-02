@@ -185,7 +185,7 @@ const showAverage = function (json) {
   let volumeAverage = 0;
   let weightAverage = 0;
   for (const device of json) {
-    console.log(device);
+    // console.log(device);
     if (device.actionid) {
       if (device.actionid == 9) {
         volumeAverage = device.average;
@@ -228,6 +228,7 @@ const showAverage = function (json) {
                               </h3>
                             </div>
                           </div>`;
+  listenToFilter('.js-filter-average');
 };
 // #endregion
 
@@ -309,6 +310,27 @@ const listenToQuestions = function () {
   }
 };
 
+const listenToFilter = function (htmlFilterClass) {
+  const btns = document.querySelectorAll(htmlFilterClass);
+  for (const btn of btns) {
+    btn.addEventListener('click', function () {
+      // console.log('filter clicked',this);
+      if (!this.classList.contains('c-filter--active')) {
+        for (const btn of btns) {
+          btn.classList.remove('c-filter--active');
+        }
+        this.classList.add('c-filter--active');
+        const filter = this.innerHTML;
+        if (htmlFilterClass == '.js-filter-average') {
+          getAverageData(filter);
+        } else if (htmlFilterClass == '.js-filter-total') {
+          // getTotalData(filter);
+        }
+      }
+    });
+  }
+};
+
 const togglePopup = function () {
   let toggleTrigger = document.querySelectorAll('.js-toggle-popup');
   for (let i = 0; i < toggleTrigger.length; i++) {
@@ -344,6 +366,21 @@ const listenToSocket = function () {
     // console.log(data);
     showLiveData(data);
   });
+
+  // const getActiveFilterTime = function (htmlFilterClass) {
+  //   const btns = document.querySelectorAll(htmlFilterClass);
+  //   for (const btn of btns) {
+  //     if (btn.classList.contains('c-filter--active')) {
+  //       return btn.innerHTML;
+  //     }
+  //   }
+  // };
+
+  // socketio.on('B2F_refresh_data', function () {
+  //   console.log('B2F_refresh_data');
+  //   getAverageData(getActiveFilterTime('.js-average-filter'));
+  //   getTotalData(getActiveFilterTime('.js-total-filter'));
+  // });
 };
 // #endregion
 
@@ -366,7 +403,6 @@ const dashboardInit = function () {
     getPopupData();
 
     listenToSocket();
-    listenToFilterBtns('.js-filter-average');
     listenToFilterBtns('.js-filter-total');
   }
 };

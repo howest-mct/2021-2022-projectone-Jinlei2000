@@ -19,6 +19,8 @@ class Neopixel:
         self.pixels.fill((0, 0, 0))
 
     def __calc_volume_to_neopixel(self, max_volume,min_volume,volume):
+        if volume > max_volume:
+            volume = max_volume
         return int((volume - min_volume) / (max_volume - min_volume) * 24)
 
     def show_value(self, volume):
