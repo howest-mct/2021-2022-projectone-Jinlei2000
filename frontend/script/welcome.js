@@ -1,15 +1,22 @@
 // #region ***  DOM references                           ***********
-let htmlWelcomePage, htmlUsername;
+let htmlWelcomePage, htmlUsername, htmlDeleteBtn;
 let userid;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
 const showUsername = function (user) {
   htmlUsername.innerHTML = `<h1 class="c-lead c-lead--xl u-mb-sm js-username">Welcome, ${user.name}!</h1>`;
+  listenToDeleteBtn()
 };
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
+const callbackDeleteUser = function (){
+  console.log('delete user');
+  localStorage.removeItem('token');
+  localStorage.removeItem('userid');
+  window.location.href = 'index.html';
+}
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
@@ -20,6 +27,13 @@ const getUsername = function (userid) {
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
+const listenToDeleteBtn = function(){
+  htmlDeleteBtn.addEventListener('click', function(){
+    console.log('delete click');
+    const url = backend + `/users/${userid}/`;
+    handleData(url, callbackDeleteUser, showApiError, 'DELETE');
+  })
+}
 // #endregion
 
 // #region ***  Init / DOMContentLoaded                  ***********
@@ -31,6 +45,7 @@ const welcomeInit = function () {
 
   htmlWelcomePage = document.querySelector('.js-welcome-page');
   htmlUsername = document.querySelector('.js-username');
+  htmlDeleteBtn = document.querySelector('.js-delete');
 
   if (htmlWelcomePage) {
     checkToken('welcome.html');

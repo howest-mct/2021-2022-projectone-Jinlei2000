@@ -38,6 +38,13 @@ class DataRepository:
         params = [name,password,badgeid]
         return Database.execute_sql(sql,params)
 
+    # -- DELETE USER
+    @staticmethod
+    def delete_user(userid):
+        sql = 'DELETE FROM user WHERE userid = %s'
+        params = [userid]
+        return Database.execute_sql(sql,params)
+
     # -- GET USER BY USERID
     @staticmethod
     def read_username_by_id(userid):

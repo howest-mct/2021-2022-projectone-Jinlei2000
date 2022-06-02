@@ -151,13 +151,16 @@ def users():
                 return jsonify(badgeid=nieuw_id), 201
         return jsonify(status='error'), 404
 
-@app.route(endpoint + '/users/<userid>/', methods=['GET'])
+@app.route(endpoint + '/users/<userid>/', methods=['GET','DELETE'])
 def user(userid):
     if request.method == 'GET':
         name = DataRepository.read_username_by_id(userid)
         if name is not None:
             return jsonify(name), 201
         return jsonify(status='error'), 404
+    if request.method == 'DELETE':
+        id = DataRepository.delete_user(userid)
+        return jsonify(status='ok'), 201
 
 @app.route(endpoint + '/users/login/', methods=['POST'])
 def get_user_id():
