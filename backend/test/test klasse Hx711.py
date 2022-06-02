@@ -10,7 +10,7 @@ try:
     # waarde afstellen als er niets op zit 
     # later gwn afstellen op plank
     while True:
-        x = input('Enter to read weight: ')
+        # x = input('Enter to read weight: ')
         print('gewicht: ',hx711.get_weight())
 except KeyboardInterrupt as e:
     print(e)

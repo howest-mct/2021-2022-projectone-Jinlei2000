@@ -59,7 +59,7 @@ class DataRepository:
     # LOCATION
     @staticmethod
     def get_info():
-        sql = 'SELECT name,address FROM location'
+        sql = 'SELECT name,address,coordinates FROM location'
         return Database.get_one_row(sql)
     
     @staticmethod

@@ -15,16 +15,16 @@ class HX711:
         GPIO.setwarnings(False)
         GPIO.setup(self.sck, GPIO.OUT)
 
-    # def twos_complement(self, val, nbits):
-    #     """Compute the 2's complement of int value val"""
-    #     if val < 0:
-    #         val = (1 << nbits) + val
-    #     else:
-    #         if (val & (1 << (nbits - 1))) != 0:
-    #             # If sign bit is set.
-    #             # compute negative value.
-    #             val = val - (1 << nbits)
-    #     return val
+    def twos_complement(self, val, nbits):
+        """Compute the 2's complement of int value val"""
+        if val < 0:
+            val = (1 << nbits) + val
+        else:
+            if (val & (1 << (nbits - 1))) != 0:
+                # If sign bit is set.
+                # compute negative value.
+                val = val - (1 << nbits)
+        return val
 
 
     def __read_count(self):
