@@ -55,6 +55,8 @@ btnStatusPoweroff = False
 btnStatusLcd = Value('b', False)
 badgeid = Queue()
 
+# nog een led van de knop aansturen
+
 np = Neopixel(12)
 
 # CODE VOOR HARDWARE
@@ -190,6 +192,12 @@ def info():
 def get_average(time):
     if request.method == 'GET':
         data = DataRepository.filter_average_value_by_time(time)
+        return jsonify(data), 201
+
+@app.route(endpoint + '/history/total/<time>/', methods=['GET'])
+def get_total(time):
+    if request.method == 'GET':
+        data = DataRepository.filter_total_value_by_time(time)
         return jsonify(data), 201
 
 
@@ -329,6 +337,7 @@ def servo_magnet(servoDoorStatus):
 
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
+                sleep(0.5)
                 print("**** DB -->  DOOR 2 is unlocked with badge****")
                 DataRepository.add_history(None,1,19)
                 servoDoorStatus.value = False
@@ -336,8 +345,10 @@ def servo_magnet(servoDoorStatus):
 
             if servoDoorStatus.value == False and magnetcontactDoor.pressed == True:
                 if tijd is not None:
-                    if((time()-tijd)>20):
+                    # print(time()-tijd)
+                    if((time()-tijd)>15):
                         servo_door.lock_door()
+                        sleep(0.5)
                         print("**** DB -->  DOOR 2 is locked****")
                         DataRepository.add_history(None,1,21)
                         tijd = None

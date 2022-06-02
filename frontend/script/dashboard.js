@@ -230,6 +230,72 @@ const showAverage = function (json) {
                           </div>`;
   listenToFilter('.js-filter-average');
 };
+
+const showTotal = function (json) {
+  // console.log(json);
+  let emptiedTotal = 0;
+  let openedTotal = 0;
+  for (const x of json) {
+    // console.log(x);
+    if (x.actionid) {
+      if (x.actionid == 2) {
+        openedTotal = x.total;
+      }else if ((x.actionid == 22)) {
+        emptiedTotal = x.total;
+      }
+    }
+  }
+  // console.log(emptiedTotal, openedTotal);
+  htmlTotal.innerHTML = `<div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
+                            <div class="c-card c-card--feed">
+                              <i class="c-card__icon-lg las la-balance-scale-left"></i>
+                              <h3 class="c-card__title c-card__title--feed">
+                                Weight
+                                <p class="c-loader"></p>
+                                <!-- <span class="c-card__value">20<span class="c-lead c-lead--xl">kg</span></span> -->
+                              </h3>
+                            </div>
+                          </div>
+
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                            <div class="c-card c-card--feed">
+                              <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
+                                <i class="c-card__icon-lg las la-door-open"></i>
+                              </i>
+                              <h3 class="c-card__title c-card__title--feed">
+                                Emptied
+                                <span class="c-card__value">${emptiedTotal}</span>
+                              </h3>
+                            </div>
+                          </div>
+                          <!-- Info card -->
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                            <div class="c-card c-card--feed c-card--info">
+                              <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
+                              <p class="u-mb-clear">Number of times the trash can was emptied.</p>
+                            </div>
+                          </div>
+
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                            <div class="c-card c-card--feed">
+                              <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
+                                <i class="c-card__icon-lg las la-door-open"></i>
+                              </i>
+                              <h3 class="c-card__title c-card__title--feed">
+                                Opened
+                                <span class="c-card__value">${openedTotal}</span>
+                              </h3>
+                            </div>
+                          </div>
+                          <!-- Info card -->
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                            <div class="c-card c-card--feed c-card--info">
+                              <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
+                              <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>
+                            </div>
+                          </div>`;
+  listenToFilter('.js-filter-total');
+};
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
@@ -285,6 +351,11 @@ const getAverageData = function (time) {
   const url = backend + `/history/average/${time}/`;
   handleData(url, showAverage, showApiError);
 };
+
+const getTotalData = function (time) {
+  const url = backend + `/history/total/${time}/`;
+  handleData(url, showTotal, showApiError);
+};
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -324,7 +395,7 @@ const listenToFilter = function (htmlFilterClass) {
         if (htmlFilterClass == '.js-filter-average') {
           getAverageData(filter);
         } else if (htmlFilterClass == '.js-filter-total') {
-          // getTotalData(filter);
+          getTotalData(filter);
         }
       }
     });
@@ -400,10 +471,10 @@ const dashboardInit = function () {
 
     getGeneralData();
     getAverageData('day');
+    getTotalData('all');
     getPopupData();
 
     listenToSocket();
-    listenToFilterBtns('.js-filter-total');
   }
 };
 
