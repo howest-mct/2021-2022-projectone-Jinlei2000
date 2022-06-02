@@ -186,6 +186,12 @@ def info():
         DataRepository.update_location(gegevens['address'], gegevens['coordinates'], gegevens['name'])
         return jsonify(status='updated location'), 201
 
+@app.route(endpoint + '/history/average/<time>/', methods=['GET'])
+def get_average(time):
+    if request.method == 'GET':
+        data = DataRepository.filter_average_value_by_time(time)
+        return jsonify(data), 201
+
 
 @socketio.on('connect')
 def initial_connection():
@@ -316,7 +322,7 @@ def servo_magnet(servoDoorStatus):
     try:
         prevStatus1 = None
         prevStatus2 = None
-        tijd = None
+        tijd = 0
         while True:
             #andere servo bedienen van valve door volumeee als vol is dicht doen als die leeg is open
             #boven een bepaalde limiet sluiten servo valve
@@ -345,8 +351,8 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact door open ****')
                     DataRepository.add_history(1,2,22)
                 prevStatus1 = status1
-                # sleep(0.25)
-                sleep(0.3)
+                sleep(0.25)
+                # sleep(0.3)
             
             status2 = magnetcontactValve.pressed
             if status2 != prevStatus2:
@@ -357,8 +363,8 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact valve open ****')
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
-                # sleep(0.25)
-                sleep(0.3)
+                sleep(0.25)
+                # sleep(0.3)
             sleep(0.001) # 1 ms
 
     except:

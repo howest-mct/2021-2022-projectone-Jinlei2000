@@ -1,7 +1,7 @@
 'use strict';
 
 // #region ***  DOM references                           ***********
-let htmlGeneralInformation, htmlLiveData, htmlPopupConfirmBtn;
+let htmlGeneralInformation, htmlLiveData, htmlAverage, htmlTotal, htmlPopupConfirmBtn;
 let htmlPopupName, htmlPopupLocation;
 // #endregion
 
@@ -29,6 +29,19 @@ const showGeneralInformation = function (info) {
   `;
   togglePopup();
   listenToPopupConfirmBtn();
+};
+
+const calcVolumeToPercent = function (value) {
+  // hier nog echte waarde toevoegen van volume
+  max = 40;
+  min = 10;
+  value = value > max ? max : value;
+  return ((value - min) / (max - min)) * 100;
+};
+
+const calcVolumeIconLayer = function (value) {
+  percent = calcVolumeToPercent(value);
+  return (100 / 54.34) * percent;
 };
 
 const showLiveData = function (data) {
@@ -167,6 +180,55 @@ const showPopupInputValue = function (info) {
   htmlPopupLocation.placeholder = info.address;
 };
 
+const showAverage = function (json) {
+  // console.log(json);
+  let volumeAverage = 0;
+  let weightAverage = 0;
+  for (const device of json) {
+    console.log(device);
+    if (device.actionid) {
+      if (device.actionid == 9) {
+        volumeAverage = device.average;
+      } else if (device.actionid == 10) {
+        weightAverage = device.average;
+      }
+    }
+  }
+  htmlAverage.innerHTML = `<div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
+                            <div class="c-card c-card--feed">
+                              <svg class="c-card__icon-lg" id="Sensor_info" data-name="Sensor info" xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+                                <!-- change the volume with the stroke-width -->
+                                <line class="js-icon-volume-average" x1="23.89" y1="54.04" x2="71.26" y2="54.04" fill="none" stroke="#9aa2cc" stroke-miterlimit="10" stroke-width="0" />
+                                <g id="logo">
+                                  <rect id="Rectangle_13" data-name="Rectangle 13" width="96" height="96" fill="none" />
+                                  <g id="trash-alt-1" transform="translate(11.705 6.172)">
+                                    <path
+                                      id="Path_201"
+                                      data-name="Path 201"
+                                      d="M128.959,43.934h-13.32l-5.5-9.162A7.774,7.774,0,0,0,103.477,31h-16.3a7.774,7.774,0,0,0-6.66,3.772l-5.5,9.162H61.694A2.591,2.591,0,0,0,59.1,46.528v2.594a2.591,2.591,0,0,0,2.594,2.594h2.594v54.33a7.766,7.766,0,0,0,7.764,7.764h46.566a7.766,7.766,0,0,0,7.764-7.764h0V51.7h2.594a2.591,2.591,0,0,0,2.594-2.594V46.51A2.615,2.615,0,0,0,128.959,43.934ZM86.9,39.224a.989.989,0,0,1,.828-.478h15.2a.943.943,0,0,1,.828.478l2.815,4.71h-22.5Zm31.719,66.8H72.034V51.7H118.6v54.33Z"
+                                      transform="translate(-59.1 -31)"
+                                      fill="#001eb3"
+                                    />
+                                  </g>
+                                </g>
+                              </svg>
+
+                              <h3 class="c-card__title c-card__title--feed">
+                                Volume
+                                <span class="c-card__value">${volumeAverage}<span class="c-lead c-lead--xl">%</span></span>
+                              </h3>
+                            </div>
+                          </div>
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
+                            <div class="c-card c-card--feed">
+                              <i class="c-card__icon-lg las la-balance-scale-left"></i>
+                              <h3 class="c-card__title c-card__title--feed">
+                                Weight
+                                <span class="c-card__value">${weightAverage}<span class="c-lead c-lead--xl">kg</span></span>
+                              </h3>
+                            </div>
+                          </div>`;
+};
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
@@ -185,7 +247,7 @@ const callbackCoords = function (json) {
     coordinates: coords,
     name: htmlPopupName.value,
   });
-  handleData(url, callbackAddCoords, showApiError, 'PUT', body)
+  handleData(url, callbackAddCoords, showApiError, 'PUT', body);
 };
 
 const callbackCoordsError = function (e) {
@@ -216,6 +278,11 @@ const getCoordinates = function (address) {
   const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&lang=nl&apiKey=${myAPIKey}`;
   // console.log(url);
   handleData(url, callbackCoords, callbackCoordsError);
+};
+
+const getAverageData = function (time) {
+  const url = backend + `/history/average/${time}/`;
+  handleData(url, showAverage, showApiError);
 };
 // #endregion
 
@@ -288,11 +355,14 @@ const dashboardInit = function () {
 
     htmlGeneralInformation = document.querySelector('.js-general-information');
     htmlLiveData = document.querySelector('.js-live-data');
+    htmlAverage = document.querySelector('.js-average');
+    htmlTotal = document.querySelector('.js-total');
     htmlPopupConfirmBtn = document.querySelector('.js-popup-confirm-btn');
     htmlPopupName = document.querySelector('.js-popup-name');
     htmlPopupLocation = document.querySelector('.js-popup-location');
 
     getGeneralData();
+    getAverageData('day');
     getPopupData();
 
     listenToSocket();
