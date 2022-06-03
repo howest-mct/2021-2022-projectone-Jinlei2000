@@ -1161,6 +1161,42 @@ a:focus {
     font-size: 24px;
 }
 
+.c-icon-eye {
+    color: #8F9197;
+    font-size: 24px;
+    float: right;
+    margin-left: 90%;
+    margin-top: -56px;
+    margin-right: 8px;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+@media (min-width: 576px) {
+    .c-icon-eye {
+        margin-left: 91%;
+    }
+}
+
+@media (min-width: 768px) {
+    .c-icon-eye {
+        margin-left: 92%;
+    }
+}
+
+@media (min-width: 950px) {
+    .c-icon-eye {
+        margin-left: 93%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .c-icon-eye {
+        margin-left: 94%;
+    }
+}
+
 /*
     Component: loading & loader
     ---
