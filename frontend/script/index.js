@@ -70,10 +70,10 @@ const callbackProtected = function (json) {
   console.log('logged_in_as: ', json.logged_in_as);
   socketio.emit('F2B_LoggedInUser');
   console.log('localStorage.userid: ', localStorage.getItem('userid'));
-  console.log(page)
+  console.log(page);
   if (!page) {
     window.location.href = `/welcome.html`;
-  }else {
+  } else {
     window.location.href = `/${page}`;
   }
 };
@@ -163,6 +163,30 @@ const listenToLoginBtn = function () {
   });
 };
 
+const togglePasswordEyeIcon = function () {
+  const btns = document.querySelectorAll('.js-password-eye');
+  for (const btn of btns) {
+    let input;
+    btn.addEventListener('click', function () {
+      if (!document.querySelector('.js-create').classList.contains('u-hidden-card')) {
+        input = document.querySelector('.js-password');
+        input.type == 'password' ? (input.type = 'text') : (input.type = 'password');
+      } else {
+        input = document.querySelector('.js-password-login');
+        input.type == 'password' ? (input.type = 'text') : (input.type = 'password');
+      }
+      if (this.classList.contains('la-eye')) {
+        this.classList.remove('la-eye');
+        this.classList.add('la-eye-slash');
+      }else{
+        this.classList.remove('la-eye-slash');
+        this.classList.add('la-eye');
+      }
+        // this.classList.contains('la-eye') ? this.classList.remove('la-eye') && this.classList.add('la-eye-slash') : this.classList.remove('la-eye-slash') && this.classList.add('la-eye');
+    });
+  }
+};
+
 const listenToSocket = function () {
   socketio.on('B2F_sendBadgeId', function (payload) {
     // console.log('B2F_badgeId: ', payload);
@@ -183,6 +207,7 @@ const indexInit = function () {
     if (document.querySelector('.js-info-badge-id')) {
       toggleInfoBtn();
     }
+    togglePasswordEyeIcon();
     listenToSocket();
     listenToSignupBtn();
     listenToLoginBtn();

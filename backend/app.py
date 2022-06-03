@@ -203,7 +203,6 @@ def get_total(time):
         data = DataRepository.filter_total_value_by_time(time)
         return jsonify(data), 201
 
-
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
