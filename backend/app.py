@@ -12,7 +12,7 @@ from mfrc522 import SimpleMFRC522
 from helpers.Button import Button
 from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 from helpers.HCSR05 import HCSR05
-from helpers.HX711 import HX711
+from helpers.HX711_Weight import HX711_Weight
 from helpers.SG90 import SG90
 from helpers.Neopixel import Neopixel
 
@@ -45,7 +45,7 @@ servoValveStatus = Value('b', False)
 
 ultrasonic_sensor = HCSR05(echo_pin=21,trigger_pin=20)
 
-weight_sensor = HX711(dout_pin=27,sck_pin=22)
+weight_sensor = HX711_Weight(dout_pin=27,sck_pin=22)
 
 reader = SimpleMFRC522()
 buzzer = 16
@@ -201,6 +201,12 @@ def get_average(time):
 def get_total(time):
     if request.method == 'GET':
         data = DataRepository.filter_total_value_by_time(time)
+        return jsonify(data), 201
+
+@app.route(endpoint + '/history/charts/<time>/', methods=['GET'])
+def get_charts(time):
+    if request.method == 'GET':
+        data = DataRepository.filter_chart_data_by_time_actionid(time)
         return jsonify(data), 201
 
 @socketio.on('connect')

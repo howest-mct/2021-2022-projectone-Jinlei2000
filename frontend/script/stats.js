@@ -9,6 +9,10 @@
 // #endregion
 
 // #region ***  Data Access - get___                     ***********
+const getChartData = function (time) {
+  const url = backend + `/stats/${time}/`;
+  handleData(url, 'GET', callbackChartData, showApiError);
+};
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -19,6 +23,7 @@ const statsInit = function () {
   console.log('stats.js: init');
   if (document.querySelector('.js-history-page')) {
     checkToken('stats.html');
+    getChartData('day');
     listenToFilterBtns('.js-filter-time');
   }
 };

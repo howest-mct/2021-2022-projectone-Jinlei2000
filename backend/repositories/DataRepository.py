@@ -95,6 +95,20 @@ class DataRepository:
         result2 = Database.get_one_row(sql_weight)
         result.append(result2)
         return result
+    
+    # -- GET CHART DATA
+    @staticmethod
+    def filter_chart_data_by_time_actionid(time):
+        if time == 'day':
+            sql_volume = ''
+            sql_weight = ''
+        elif time == 'week':
+            sql_volume = 'SELECT FORMAT(AVG(value),1) AS "value", DAYOFWEEK(action_datetime) AS "days" FROM history WHERE actionid = 9 AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
+            sql_weight = 'SELECT FORMAT(AVG(value),1) AS "value", DAYOFWEEK(action_datetime) AS "days" FROM history WHERE actionid = 10 AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
+        result1 = {'volume':Database.get_rows(sql_volume)}
+        result2 = {'weight':Database.get_rows(sql_weight)}
+        result = {result1,result2}
+        return result
 
     # TABLE LOCATION
     # -- GET NAME, ADDRESS AND COORDINATES
