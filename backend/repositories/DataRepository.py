@@ -1,3 +1,4 @@
+from unittest import result
 from .Database import Database
 
 
@@ -83,11 +84,17 @@ class DataRepository:
     def filter_total_value_by_time(time):
         if time == 'all':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) GROUP BY actionid'
+            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied"'
         elif time == 'week':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) AND yearweek(action_datetime) = yearweek(now()) GROUP BY actionid'
+            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied" AND yearweek(action_datetime) = yearweek(now())'
         elif time == 'month':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) AND MONTH(action_datetime) = MONTH(NOW()) AND YEAR(action_datetime) = YEAR(NOW())GROUP BY actionid'
-        return Database.get_rows(sql)
+            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied" AND MONTH(action_datetime) = MONTH(NOW()) AND YEAR(action_datetime) = YEAR(NOW())'
+        result = Database.get_rows(sql)
+        result2 = Database.get_one_row(sql_weight)
+        result.append(result2)
+        return result
 
     # TABLE LOCATION
     # -- GET NAME, ADDRESS AND COORDINATES

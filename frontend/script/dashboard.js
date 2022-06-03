@@ -235,13 +235,16 @@ const showTotal = function (json) {
   // console.log(json);
   let emptiedTotal = 0;
   let openedTotal = 0;
+  let weightTotal = 0;
   for (const x of json) {
     // console.log(x);
     if (x.actionid) {
       if (x.actionid == 2) {
         openedTotal = x.total;
-      }else if ((x.actionid == 22)) {
+      } else if (x.actionid == 22) {
         emptiedTotal = x.total;
+      } else if (x.actionid == 10) {
+        weightTotal = x.total;
       }
     }
   }
@@ -251,8 +254,7 @@ const showTotal = function (json) {
                               <i class="c-card__icon-lg las la-balance-scale-left"></i>
                               <h3 class="c-card__title c-card__title--feed">
                                 Weight
-                                <p class="c-loader"></p>
-                                <!-- <span class="c-card__value">20<span class="c-lead c-lead--xl">kg</span></span> -->
+                                <span class="c-card__value">${weightTotal}<span class="c-lead c-lead--xl">kg</span></span>
                               </h3>
                             </div>
                           </div>

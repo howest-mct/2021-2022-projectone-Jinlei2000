@@ -283,6 +283,8 @@ def start_thread_lcd():
 def opslaan_data():
     try:
         while True:
+            #hier moeten we de data opslaan gewicht en volume
+            # en moeten ook controleren als de gewicht 0 is betekent dat het geleegd is dan een comment toevoegen aan de vorige gewicht data (update)
             #om de 60sec opslaan
             # sleep(60)
             pass
