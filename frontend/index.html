@@ -23,12 +23,13 @@
     <link rel="stylesheet" href="style/screen.css" />
 
     <!-- Get scripts -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
     <script src="supplier/toast/simple-notify.min.js"></script>
     <script src="script/datahandler.js"></script>
     <script src="script/app.js"></script>
     <script src="script/index.js"></script>
   </head>
-  <body>
+  <body class="js-index-page">
     <div class="o-row o-row--login js-create u-hidden-card">
       <div class="o-container u-center">
         <div class="c-card c-card__login">
@@ -62,21 +63,22 @@
           <h2 class="u-ta-center u-mb-md u-fw-regular">Sign up</h2>
           <p class="u-ta-center u-mb-xl u-color-text-light">Create a new account</p>
           <div class="u-column-reverse">
-            <input class="c-input u-mb-lg" type="text" value="" id="username" name="username" required />
+            <input class="c-input u-mb-lg js-username" type="text" value="" id="username" name="username" required />
             <label class="c-input__text c-input__text--light" for="username">Username *</label>
           </div>
           <div class="u-column-reverse">
-            <input class="c-input u-mb-lg" type="text" value="" id="password" name="password" required />
+            <i class="las la-eye c-icon-eye u-mb-clear u-mb-xl js-password-eye"></i>
+            <input class="c-input u-mb-lg js-password" type="password" value="" id="password" name="password" required />
             <label class="c-input__text c-input__text--light" for="password">Password *</label>
           </div>
           <div class="u-column-reverse u-mb-md">
-            <input class="c-input u-mb-lg" type="text" value="" id="badge_id" name="badge_id" required />
+            <input class="c-input u-mb-lg js-input-badgeid" type="text" value="" id="badge_id" name="badge_id" required readonly/>
             <label class="c-input__text c-input__text--light" for="badge_id"
               >Badge id<i class="las la-question-circle c-icon--xs js-info-badge-id c-info"><span class="c-info__text">Scan your badge on the trash can to get the badge number.</span></i></label
             >
           </div>
           <div class="u-ta-center u-mb-xxl">
-            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear">Sign up</button>
+            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear js-signup-btn">Sign up</button>
           </div>
           <p class="u-ta-center u-mb-clear">Already have an account? <a class="js-toggle-login">Log In</a></p>
         </div>
@@ -116,16 +118,16 @@
           <h2 class="u-ta-center u-mb-md u-fw-regular">Log in</h2>
           <p class="u-ta-center u-mb-xl u-color-text-light">Log in to stay connected</p>
           <div class="u-column-reverse">
-            <input class="c-input u-mb-lg" type="text" value="" id="username" name="username" required />
-            <label class="c-input__text c-input__text--light" for="username">Username *</label>
+            <input class="c-input u-mb-lg js-username-login" type="text" value="" id="username2" name="username2" required />
+            <label class="c-input__text c-input__text--light" for="username2">Username *</label>
           </div>
           <div class="u-column-reverse u-mb-md">
-            <input class="c-input u-mb-lg" type="text" value="" id="password" name="password" required />
-            <label class="c-input__text c-input__text--light" for="password">Password *</label>
+            <i class="las la-eye c-icon-eye u-mb-clear u-mb-xxl js-password-eye"></i>
+            <input class="c-input u-mb-lg js-password-login" type="password" value="" id="password2" name="password2" required />
+            <label class="c-input__text c-input__text--light" for="password2">Password *</label>
           </div>
-
           <div class="u-ta-center u-mb-xxl">
-            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear">Log in</button>
+            <button class="o-button-reset c-button c-button-lg u-mr-clear u-mt-clear js-login-btn">Log in</button>
           </div>
           <p class="u-ta-center u-mb-clear">Don't have an account? <a class="js-toggle-login">Create one</a></p>
         </div>

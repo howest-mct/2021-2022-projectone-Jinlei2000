@@ -1,24 +1,16 @@
 'use strict';
 
-const toggleNav = function () {
-  let toggleTrigger = document.querySelectorAll('.js-toggle-nav');
-  for (let i = 0; i < toggleTrigger.length; i++) {
-    toggleTrigger[i].addEventListener('click', function () {
-      // console.log('Toggle Mobile Nav');
-      document.querySelector('body').classList.toggle('has-mobile-nav');
-    });
-  }
-};
+// #region ***  DOM references                           ***********
+const lanIP = `${window.location.hostname}`;
+const socketio = io(`//${lanIP}:443`, {
+  path: '/socket.io',
+  transports: ['websocket'],
+});
+// je kan // gebruiken zo kan die zelf zoeken naar poort
+let backend = `//${lanIP}/api/v1`;
+// #endregion
 
-const listenToLogo = function () {
-  document.querySelectorAll('.js-logo').forEach(function (logo) {
-    logo.addEventListener('click', function () {
-      // console.log('Clicked logo');
-      window.location.href = 'welcome.html';
-    });
-  });
-};
-
+// #region ***  Callback-Visualisation - show___         ***********
 const showNotification = function (type, message, title) {
   // type: succes, error, or warning
   if (type === 'success') {
@@ -57,6 +49,53 @@ const showNotification = function (type, message, title) {
   }
 };
 
+const showApiError = function () {
+  showNotification('error', 'Something went wrong while fetching data from the api.');
+};
+
+
+// #endregion
+
+// #region ***  Callback-No Visualisation - callback___  ***********
+const tokenValid = function (json) {
+  // console.log('logged_in_as: ', json.logged_in_as);
+}
+
+const callbackTokenError = function () {
+  showNotification('error', 'Token is not valid or don\'t have a token!');
+  window.location.href = '/index.html';
+};
+// #endregion
+
+// #region ***  Data Access - get___                     ***********
+const checkToken = function (page) {
+  const token = localStorage.getItem('access_token');
+  localStorage.setItem('page', page);
+  const url = backend + `/protected/`;
+  handleData(url, tokenValid, callbackTokenError, 'GET', null, token);
+}
+// #endregion
+
+// #region ***  Event Listeners - listenTo___            ***********
+const listenToLogo = function () {
+  document.querySelectorAll('.js-logo').forEach(function (logo) {
+    logo.addEventListener('click', function () {
+      // console.log('Clicked logo');
+      window.location.href = 'welcome.html';
+    });
+  });
+};
+
+const toggleNav = function () {
+  let toggleTrigger = document.querySelectorAll('.js-toggle-nav');
+  for (let i = 0; i < toggleTrigger.length; i++) {
+    toggleTrigger[i].addEventListener('click', function () {
+      // console.log('Toggle Mobile Nav');
+      document.querySelector('body').classList.toggle('has-mobile-nav');
+    });
+  }
+};
+
 const listenToFilterBtns = function (htmlFilterClass) {
   const btns = document.querySelectorAll(htmlFilterClass);
   for (const btn of btns) {
@@ -74,16 +113,26 @@ const listenToFilterBtns = function (htmlFilterClass) {
   }
 };
 
+const listenToSocketConnection = function () {
+  try {
+    socketio.on('connect', function () {
+      console.log('verbonden met socket webserver');
+    });
+  } catch (error) {
+    console.log(`socketio don't have connection`);
+    showNotification('error', 'Sockect connection lost!');
+  }
+};
+
+// #endregion
+
+// #region ***  Init / DOMContentLoaded                  ***********
 const init = function () {
   console.log('app.js: init');
+  listenToSocketConnection();
   toggleNav();
   listenToLogo();
-
-  // test
-  //  console.log('app.js: click');
-  //  document.querySelector('.js-click').addEventListener('click', function () {
-  //    showNotification('error', 'je login is gelukt danje!', 'success');
-  //  });
 };
 
 document.addEventListener('DOMContentLoaded', init);
+// #endregion

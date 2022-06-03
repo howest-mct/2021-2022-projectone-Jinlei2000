@@ -23,12 +23,13 @@
     <link rel="stylesheet" href="style/screen.css" />
 
     <!-- Get scripts -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
     <script src="supplier/toast/simple-notify.min.js"></script>
     <script src="script/datahandler.js"></script>
     <script src="script/app.js"></script>
     <script src="script/stats.js"></script>
   </head>
-  <body>
+  <body class="js-stats-page">
     <div class="c-page">
       <header class="o-row u-color-primary-blue o-row--clear-top o-row--header">
         <div class="o-container">
@@ -101,7 +102,7 @@
         </div>
       </header>
 
-      <div class="o-row u-pt-lg">
+      <div class="o-row u-pt-lg c-body">
         <div class="o-container">
           <h1>Stats</h1>
           <div class="c-filter--layout">

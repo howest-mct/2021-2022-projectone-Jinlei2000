@@ -23,12 +23,13 @@
     <link rel="stylesheet" href="style/screen.css" />
 
     <!-- Get scripts -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
     <script src="supplier/toast/simple-notify.min.js"></script>
     <script src="script/datahandler.js"></script>
     <script src="script/app.js"></script>
     <script src="script/dashboard.js"></script>
   </head>
-  <body>
+  <body class="js-dashboard-page">
     <div class="c-page">
       <header class="o-row u-color-primary-blue o-row--clear-top o-row--header">
         <div class="o-container">
@@ -100,11 +101,11 @@
           </div>
         </div>
       </header>
-      <div class="o-row u-pt-lg">
+      <div class="o-row u-pt-lg c-body">
         <div class="o-container">
           <h1>Dashboard</h1>
           <!-- General information -->
-          <section>
+          <section class="js-general-information">
             <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">General information</h2>
             <div class="o-layout o-layout--gutter">
               <div class="o-layout__item u-1-of-2-bp3">
@@ -124,12 +125,29 @@
             </div>
           </section>
           <!-- Live feed -->
-          <section>
+          <section class="js-live-data">
             <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">Live feed</h2>
+
             <div class="o-layout o-layout--gutter">
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
-                  <img class="c-card__icon-lg" src="/img/volume icon.svg" alt="blue trash can icon" />
+                  <svg class="c-card__icon-lg" id="Sensor_info" data-name="Sensor info" xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+                    <!-- change the volume with the stroke-width -->
+                    <line class="js-icon-volume-live-feed" x1="23.89" y1="54.04" x2="71.26" y2="54.04" fill="none" stroke="#9aa2cc" stroke-miterlimit="10" stroke-width="54.34" />
+                    <g id="logo">
+                      <rect id="Rectangle_13" data-name="Rectangle 13" width="96" height="96" fill="none" />
+                      <g id="trash-alt-1" transform="translate(11.705 6.172)">
+                        <path
+                          id="Path_201"
+                          data-name="Path 201"
+                          d="M128.959,43.934h-13.32l-5.5-9.162A7.774,7.774,0,0,0,103.477,31h-16.3a7.774,7.774,0,0,0-6.66,3.772l-5.5,9.162H61.694A2.591,2.591,0,0,0,59.1,46.528v2.594a2.591,2.591,0,0,0,2.594,2.594h2.594v54.33a7.766,7.766,0,0,0,7.764,7.764h46.566a7.766,7.766,0,0,0,7.764-7.764h0V51.7h2.594a2.591,2.591,0,0,0,2.594-2.594V46.51A2.615,2.615,0,0,0,128.959,43.934ZM86.9,39.224a.989.989,0,0,1,.828-.478h15.2a.943.943,0,0,1,.828.478l2.815,4.71h-22.5Zm31.719,66.8H72.034V51.7H118.6v54.33Z"
+                          transform="translate(-59.1 -31)"
+                          fill="#001eb3"
+                        />
+                      </g>
+                    </g>
+                  </svg>
+
                   <h3 class="c-card__title c-card__title--feed">
                     Volume
                     <p class="c-loader"></p>
@@ -138,7 +156,7 @@
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-lg las la-balance-scale-left"></i>
                   <h3 class="c-card__title c-card__title--feed">
@@ -149,7 +167,7 @@
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -162,14 +180,14 @@
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the trash can was emptied.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -182,14 +200,14 @@
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-closed"></i>
@@ -205,11 +223,11 @@
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open, locked = lock.</p>
+                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -225,7 +243,7 @@
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open, locked = lock.</p>
+                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
                 </div>
               </div>
             </div>
@@ -237,10 +255,26 @@
               <button class="o-button-reset c-filter c-filter--active js-filter-average">day</button>
               <button class="o-button-reset c-filter js-filter-average">week</button>
             </div>
-            <div class="o-layout o-layout--gutter">
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1">
+            <div class="o-layout o-layout--gutter js-average">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
-                  <img class="c-card__icon-lg" src="/img/volume icon.svg" alt="blue trash can icon" />
+                  <svg class="c-card__icon-lg" id="Sensor_info" data-name="Sensor info" xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+                    <!-- change the volume with the stroke-width -->
+                    <line class="js-icon-volume-average" x1="23.89" y1="54.04" x2="71.26" y2="54.04" fill="none" stroke="#9aa2cc" stroke-miterlimit="10" stroke-width="0" />
+                    <g id="logo">
+                      <rect id="Rectangle_13" data-name="Rectangle 13" width="96" height="96" fill="none" />
+                      <g id="trash-alt-1" transform="translate(11.705 6.172)">
+                        <path
+                          id="Path_201"
+                          data-name="Path 201"
+                          d="M128.959,43.934h-13.32l-5.5-9.162A7.774,7.774,0,0,0,103.477,31h-16.3a7.774,7.774,0,0,0-6.66,3.772l-5.5,9.162H61.694A2.591,2.591,0,0,0,59.1,46.528v2.594a2.591,2.591,0,0,0,2.594,2.594h2.594v54.33a7.766,7.766,0,0,0,7.764,7.764h46.566a7.766,7.766,0,0,0,7.764-7.764h0V51.7h2.594a2.591,2.591,0,0,0,2.594-2.594V46.51A2.615,2.615,0,0,0,128.959,43.934ZM86.9,39.224a.989.989,0,0,1,.828-.478h15.2a.943.943,0,0,1,.828.478l2.815,4.71h-22.5Zm31.719,66.8H72.034V51.7H118.6v54.33Z"
+                          transform="translate(-59.1 -31)"
+                          fill="#001eb3"
+                        />
+                      </g>
+                    </g>
+                  </svg>
+
                   <h3 class="c-card__title c-card__title--feed">
                     Volume
                     <p class="c-loader"></p>
@@ -248,7 +282,7 @@
                   </h3>
                 </div>
               </div>
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-lg las la-balance-scale-left"></i>
                   <h3 class="c-card__title c-card__title--feed">
@@ -265,12 +299,11 @@
             <div class="c-filter--layout">
               <h2 class="u-mb-clear u-mb-md u-mr-sm c-lead c-lead--xl">Total</h2>
               <button class="o-button-reset c-filter c-filter--active js-filter-total">all</button>
-              <button class="o-button-reset c-filter js-filter-total">day</button>
               <button class="o-button-reset c-filter js-filter-total">week</button>
               <button class="o-button-reset c-filter js-filter-total">month</button>
             </div>
-            <div class="o-layout o-layout--gutter">
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1">
+            <div class="o-layout o-layout--gutter js-total">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-lg las la-balance-scale-left"></i>
                   <h3 class="c-card__title c-card__title--feed">
@@ -281,7 +314,7 @@
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -301,7 +334,7 @@
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -399,16 +432,16 @@
         <h3 class="c-popup__title">Change info<i class="c-card__icon-sm las la-times js-toggle-popup"></i></h3>
         <div class="c-popup__form">
           <div class="u-column-reverse">
-            <input class="c-input" type="text" value="" id="name" name="name" placeholder="Garbage bin 1" />
+            <input class="c-input js-popup-name" type="text" value="" id="name" name="name" placeholder="Garbage bin 1" />
             <label class="c-input__text" for="name">Name</label>
           </div>
           <div class="u-column-reverse u-mb-md">
-            <input class="c-input" type="text" value="" id="location" name="location" placeholder="Marksesteenweg 58, 8500 Kortrijk" />
+            <input class="c-input js-popup-location" type="text" value="" id="location" name="location" placeholder="Marksesteenweg 58, 8500 Kortrijk" />
             <label class="c-input__text" for="location">Location</label>
           </div>
           <div class="c-popup__button">
             <button class="o-button-reset c-button c-button--reversed js-toggle-popup">Cancel</button>
-            <button class="o-button-reset c-button u-mr-clear">Confirm</button>
+            <button class="o-button-reset c-button u-mr-clear js-popup-confirm-btn">Confirm</button>
           </div>
         </div>
       </div>
