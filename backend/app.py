@@ -321,7 +321,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
             opened_times = DataRepository.filter_number_of_times_by_time_actionid(1,2)
             emptied_times = DataRepository.filter_number_of_times_by_time_actionid(1,22)
             socketio.emit('B2F_live_data',{
-                'volume': procent_volume,
+                'volume': volume,
                 'weight': weight,
                 'door': door_status,
                 'valve': valve_status,
@@ -336,7 +336,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     prev_volume = volume
                     print("**** DB --> RGB led show value volume ****")
                     DataRepository.add_history(None,7,11)
-            sleep(0.5) # 500 ms
+            sleep(1) # 500 ms
     except:
         print('Error thread live_data!!!')
 
@@ -414,6 +414,7 @@ def check_volume_servo():
         servoValveStatus = False
         while True:
             if 100 > round(abs((((ultrasonic_sensor.get_distance() - 29) * 100)/17)),0) > 90 and magnetcontactValve.pressed == True:
+                print('fgfgfgfg')
                 servo_valve.lock_valve()
                 sleep(0.5)
                 print("**** DB -->  DOOR 1 is locked****")
@@ -421,6 +422,7 @@ def check_volume_servo():
                 servoValveStatus = True
             
             if 100 > round(abs((((ultrasonic_sensor.get_distance() - 29) * 100)/17)),0) < 90 and magnetcontactValve.pressed == True and servoValveStatus == True:
+                print('opennnnnn')
                 servo_valve.unlock_valve()
                 sleep(0.5)
                 print("**** DB -->  DOOR 1 is unlocked****")

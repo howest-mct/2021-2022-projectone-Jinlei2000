@@ -77,7 +77,7 @@ const showLiveData = function (data) {
 
                   <h3 class="c-card__title c-card__title--feed">
                     Volume
-                    <span class="c-card__value">${volume}<span class="c-lead c-lead--xl">%</span></span>
+                    <span class="c-card__value">${calcVolumeToProcent(volume)}<span class="c-lead c-lead--xl">%</span></span>
                   </h3>
                 </div>
               </div>
@@ -182,7 +182,7 @@ const calcVolumeToProcent = function (volume) {
   result = result > 100 ? 100 : result;
   result = result < 0 ? 0 : result;
   return result;
-}
+};
 
 const showAverage = function (json) {
   // console.log(json);
