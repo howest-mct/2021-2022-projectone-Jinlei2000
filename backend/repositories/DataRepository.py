@@ -98,17 +98,15 @@ class DataRepository:
     
     # -- GET CHART DATA
     @staticmethod
-    def filter_chart_data_by_time_actionid(time):
-        if time == 'day':
-            sql_volume = ''
-            sql_weight = ''
+    def filter_chart_data_by_time_actionid(time,actionid):
+        if time == 'all':
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%d %M") AS "time" FROM history WHERE actionid = %s GROUP BY date(action_datetime)'
+        elif time == 'day':
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%H:00") AS "time" FROM history WHERE actionid = %s AND DATE(action_datetime) = CURRENT_DATE() GROUP BY HOUR(action_datetime)'
         elif time == 'week':
-            sql_volume = 'SELECT FORMAT(AVG(value),1) AS "value", DAYOFWEEK(action_datetime) AS "days" FROM history WHERE actionid = 9 AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
-            sql_weight = 'SELECT FORMAT(AVG(value),1) AS "value", DAYOFWEEK(action_datetime) AS "days" FROM history WHERE actionid = 10 AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
-        result1 = {'volume':Database.get_rows(sql_volume)}
-        result2 = {'weight':Database.get_rows(sql_weight)}
-        result = {result1,result2}
-        return result
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DAYNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
+        params = [actionid]
+        return Database.get_rows(sql,params)
 
     # TABLE LOCATION
     # -- GET NAME, ADDRESS AND COORDINATES

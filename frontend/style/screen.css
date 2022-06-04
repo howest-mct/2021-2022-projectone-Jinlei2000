@@ -1198,6 +1198,18 @@ a:focus {
 }
 
 /*
+    Component: chart
+    ---
+    chart with custom styles
+*/
+
+.c-chart{
+    width: 100%;
+    height: 80%;
+    position: relative;
+}
+
+/*
     Component: loading & loader
     ---
     loading animation with custom styles and rotation

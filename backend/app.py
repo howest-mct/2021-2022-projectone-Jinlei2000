@@ -203,10 +203,10 @@ def get_total(time):
         data = DataRepository.filter_total_value_by_time(time)
         return jsonify(data), 201
 
-@app.route(endpoint + '/history/charts/<time>/', methods=['GET'])
-def get_charts(time):
+@app.route(endpoint + '/history/charts/<time>/<actionid>/', methods=['GET'])
+def get_charts(time,actionid):
     if request.method == 'GET':
-        data = DataRepository.filter_chart_data_by_time_actionid(time)
+        data = DataRepository.filter_chart_data_by_time_actionid(time,actionid)
         return jsonify(data), 201
 
 @socketio.on('connect')
