@@ -105,6 +105,8 @@ class DataRepository:
             sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%H:00") AS "time" FROM history WHERE actionid = %s AND DATE(action_datetime) = CURRENT_DATE() GROUP BY HOUR(action_datetime)'
         elif time == 'week':
             sql = 'SELECT FORMAT(AVG(value),1) AS "value", DAYNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND yearweek(action_datetime) = yearweek(now()) GROUP BY DAYOFWEEK(action_datetime)'
+        elif time == 'month':
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", MONTHNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND YEAR(action_datetime) = YEAR(NOW()) GROUP BY MONTHNAME(action_datetime)'
         params = [actionid]
         return Database.get_rows(sql,params)
 
