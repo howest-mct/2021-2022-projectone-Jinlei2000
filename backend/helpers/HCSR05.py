@@ -28,5 +28,5 @@ class HCSR05:
             end_time = time()
         
         time_range = end_time - start_time
-        return round(time_range * 17150,2)
+        return round(time_range * 17150,1)
     

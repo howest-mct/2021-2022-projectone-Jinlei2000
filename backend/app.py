@@ -58,6 +58,8 @@ badgeid = Queue()
 # nog een led van de knop aansturen
 
 np = Neopixel(12)
+loadingStatus = Value('b', True)
+loadingStatusShutdown = Value('b', False)
 
 # CODE VOOR HARDWARE
 def setup():
@@ -92,6 +94,7 @@ def poweroff():
 
 def demo_callback2(pin):
     global btnStatusPoweroff
+    loadingStatusShutdown.value = True
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
@@ -247,17 +250,16 @@ def start_thread_rfid():
     p.start()
 
 # START LCD
-def start_lcd(btnStatusLcd):
+def start_lcd(btnStatusLcd,loadingStatus):
     tijd = time()
     write_ip_status = True
-    loading = True
     try:
         while True:
-            if loading == True:
+            if loadingStatus.value == True:
                 np.show_loading()
                 print("**** DB --> RGB led loading starting pi ****")
                 DataRepository.add_history(None,None,29)
-                loading = False
+                loadingStatus.value = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
                     print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
@@ -282,7 +284,7 @@ def start_lcd(btnStatusLcd):
 
 def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
-    p = Process(target=start_lcd, args=(btnStatusLcd,))
+    p = Process(target=start_lcd, args=(btnStatusLcd,loadingStatus))
     p.start()
 
 # START OPSLAAN DATA
@@ -305,32 +307,42 @@ def start_thread_opslaan_data():
     p.start()
 
 # START LIVE DATA
-def live_data():
+def live_data(loadingStatus,loadingStatusShutdown):
     try:
+        prev_volume = 30
         while True:
             #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
 
             volume = ultrasonic_sensor.get_distance()
+            procent_volume = round(abs((((volume - 29) * 100)/17)),0)
             weight = weight_sensor.get_weight()
             door_status = magnetcontactDoor.pressed
             valve_status = magnetcontactValve.pressed
             opened_times = DataRepository.filter_number_of_times_by_time_actionid(1,2)
             emptied_times = DataRepository.filter_number_of_times_by_time_actionid(1,22)
             socketio.emit('B2F_live_data',{
-                'volume': volume,
+                'volume': procent_volume,
                 'weight': weight,
                 'door': door_status,
                 'valve': valve_status,
                 'opened_times': opened_times,
                 'emptied_times': emptied_times
             }, broadcast=True)
+            if loadingStatus.value == False and loadingStatusShutdown.value == False:
+                # print(volume-prev_volume)
+                if prev_volume != volume and (0.5 < volume-prev_volume or volume-prev_volume < -0.5):
+                    # print(f'Volume: {volume}, Prev_volume: {prev_volume}')
+                    np.show_value(volume)
+                    prev_volume = volume
+                    print("**** DB --> RGB led show value volume ****")
+                    DataRepository.add_history(None,7,11)
             sleep(0.5) # 500 ms
     except:
         print('Error thread live_data!!!')
 
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Thread(target=live_data, args=(), daemon=True)
+    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True)
     thread.start()
     # p = Process(target=live_data, args=())
     # p.start()
