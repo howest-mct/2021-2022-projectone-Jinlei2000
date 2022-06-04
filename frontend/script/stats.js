@@ -14,7 +14,7 @@ const showChartVolume = function (json) {
   }
   if (!myChartVolume) {
     drawChartVolume(labels, data);
-    console.log('chart volume created😏✍😏😏😏');
+    // console.log('chart volume created😏✍😏😏😏');
   } else {
     updateChart(myChartVolume, labels, data);
   }
@@ -91,7 +91,8 @@ const drawChartVolume = function (time, value) {
     },
   };
 
-  myChartWeight = new Chart(ctx, config);
+  myChartVolume = new Chart(ctx, config);
+  
 };
 
 const showChartWeight = function (json) {
@@ -103,6 +104,7 @@ const showChartWeight = function (json) {
   }
   if (!myChartWeight) {
     drawChartWeight(labels, data);
+    // console.log('chart volume created😏✍😏😏😏');
   } else {
     updateChart(myChartWeight, labels, data);
   }
@@ -180,15 +182,16 @@ const drawChartWeight = function (time, value) {
   };
 
   myChartWeight = new Chart(ctx, config);
+
 };
 
 const updateChart = function (chart, labels, data) {
-  console.log('1', chart.data.labels);
+  // console.log('1', chart.data.labels);
   chart.data.labels = labels;
   chart.data.datasets.forEach((dataset) => {
     dataset.data = data;
   });
-  console.log('2', chart.data.labels);
+  // console.log('2', chart.data.labels);
   chart.update();
 };
 // #endregion
