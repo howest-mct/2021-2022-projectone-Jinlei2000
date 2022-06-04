@@ -178,7 +178,10 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  return Math.round(Math.abs(((volume - 12) * 100) / 17));
+  let result = Math.round(Math.abs(((volume - 12) * 100) / 17));
+  result = result > 100 ? 100 : result;
+  result = result < 0 ? 0 : result;
+  return result;
 }
 
 const showAverage = function (json) {

@@ -74,9 +74,9 @@ class DataRepository:
     @staticmethod
     def filter_average_value_by_time(time):
         if time == 'day':
-            sql = 'SELECT actionid, AVG(value) AS average FROM history WHERE actionid IN (9,10) AND DATE(action_datetime) = CURRENT_DATE() GROUP BY actionid'
+            sql = 'SELECT actionid, FORMAT(AVG(value),1) AS average FROM history WHERE actionid IN (9,10) AND DATE(action_datetime) = CURRENT_DATE() GROUP BY actionid'
         elif time == 'week':
-            sql = 'SELECT actionid, AVG(value) AS average FROM history WHERE actionid IN (9,10) AND yearweek(action_datetime) = yearweek(now()) GROUP BY actionid'
+            sql = 'SELECT actionid, FORMAT(AVG(value),1) AS average FROM history WHERE actionid IN (9,10) AND yearweek(action_datetime) = yearweek(now()) GROUP BY actionid'
         return Database.get_rows(sql)
 
     # -- GET TOTAL VALUE ALL, WEEK, MONTH OF WEIGHT, EMPTIED, OPENED
