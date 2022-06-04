@@ -177,6 +177,10 @@ const showPopupInputValue = function (info) {
   htmlPopupLocation.placeholder = info.address;
 };
 
+const calcVolumeToProcent = function (volume) {
+  return Math.round(Math.abs(((volume - 12) * 100) / 17));
+}
+
 const showAverage = function (json) {
   // console.log(json);
   let volumeAverage = 0;
@@ -212,13 +216,13 @@ const showAverage = function (json) {
                                   c0.1-0.1,0.2-0.2,0.3-0.2h5.1c0.1,0,0.2,0.1,0.3,0.2L8,0.2H0.5L1.5-1.4z M12,20.9H-3.5V2.8H12L12,20.9L12,20.9z"/>
                               </g>
                             </g>
-                            ${calcVolumeIconLayer(volumeAverage)}
+                            ${calcVolumeIconLayer(calcVolumeToProcent(volumeAverage))}
                             </svg>
 
                             
                               <h3 class="c-card__title c-card__title--feed">
                                 Volume
-                                <span class="c-card__value">${volumeAverage}<span class="c-lead c-lead--xl">%</span></span>
+                                <span class="c-card__value">${calcVolumeToProcent(volumeAverage)}<span class="c-lead c-lead--xl">%</span></span>
                               </h3>
                             </div>
                           </div>
