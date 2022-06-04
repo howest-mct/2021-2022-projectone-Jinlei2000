@@ -310,11 +310,29 @@ def start_thread_opslaan_data():
 def live_data(loadingStatus,loadingStatusShutdown):
     try:
         prev_volume = 30
+        servoValveStatus = False
         while True:
             #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
 
             volume = ultrasonic_sensor.get_distance()
+
             procent_volume = round(abs((((volume - 29) * 100)/17)),0)
+            if procent_volume > 100:
+                procent_volume = 100
+            if volume < 0:
+                procent_volume = 0
+            if procent_volume > 90 and servoValveStatus == False and magnetcontactValve.pressed == True:
+                servo_valve.lock_valve()
+                print("**** DB -->  DOOR 1 is locked****")
+                DataRepository.add_history(None,1,3)
+                servoValveStatus = True
+            elif procent_volume < 90 and servoValveStatus == True:
+                servo_valve.unlock_valve()
+                print("**** DB -->  DOOR 1 is unlocked****")
+                DataRepository.add_history(None,1,4)
+                servoValveStatus = False
+
+
             weight = round(weight_sensor.get_weight(),2)
             door_status = magnetcontactDoor.pressed
             valve_status = magnetcontactValve.pressed
@@ -336,7 +354,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     prev_volume = volume
                     print("**** DB --> RGB led show value volume ****")
                     DataRepository.add_history(None,7,11)
-            sleep(1) # 500 ms
+            sleep(0.5) # 500 ms
     except:
         print('Error thread live_data!!!')
 
@@ -408,35 +426,6 @@ def start_thread_servo_magnet():
     thread = threading.Thread(target=servo_magnet, args=(servoDoorStatus,), daemon=True)
     thread.start()
 
-# CHECK VOLUME SERVO
-def check_volume_servo():
-    try: 
-        servoValveStatus = False
-        while True:
-            if 100 > round(abs((((ultrasonic_sensor.get_distance() - 29) * 100)/17)),0) > 90 and magnetcontactValve.pressed == True:
-                print('fgfgfgfg')
-                servo_valve.lock_valve()
-                sleep(0.5)
-                print("**** DB -->  DOOR 1 is locked****")
-                DataRepository.add_history(None,1,3)
-                servoValveStatus = True
-            
-            if 100 > round(abs((((ultrasonic_sensor.get_distance() - 29) * 100)/17)),0) < 90 and magnetcontactValve.pressed == True and servoValveStatus == True:
-                print('opennnnnn')
-                servo_valve.unlock_valve()
-                sleep(0.5)
-                print("**** DB -->  DOOR 1 is unlocked****")
-                DataRepository.add_history(None,1,4)
-                servoValveStatus = False
-            sleep(0.001) # 1 ms
-    except:
-        print('Error thread check_volume_servo!!!')
-
-def start_thread_check_volume_servo():
-    print("**** Starting THREAD check volume servo ****")
-    thread = threading.Thread(target=check_volume_servo, args=(), daemon=True)
-    thread.start()
-
 # START CHROME KIOSK
 def start_chrome_kiosk():
     import os
@@ -501,7 +490,6 @@ if __name__ == '__main__':
         start_thread_opslaan_data()
         start_thread_rfid()
         start_thread_servo_magnet()
-        start_thread_check_volume_servo()
         start_chrome_thread()
         start_thread_Queue()
         print(f"Threads elapsed time: {(time()-start):.3f}s")

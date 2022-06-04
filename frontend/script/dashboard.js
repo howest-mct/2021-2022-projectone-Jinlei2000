@@ -72,7 +72,7 @@ const showLiveData = function (data) {
                                   c0.1-0.1,0.2-0.2,0.3-0.2h5.1c0.1,0,0.2,0.1,0.3,0.2L8,0.2H0.5L1.5-1.4z M12,20.9H-3.5V2.8H12L12,20.9L12,20.9z"/>
                               </g>
                             </g>
-                            ${calcVolumeIconLayer(volume)}
+                            ${calcVolumeIconLayer(calcVolumeToProcent(volume))}
                             </svg>
 
                   <h3 class="c-card__title c-card__title--feed">
@@ -178,7 +178,7 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 12) * 100) / 17));
+  let result = Math.round(Math.abs(((volume - 29) * 100) / 17));
   result = result > 100 ? 100 : result;
   result = result < 0 ? 0 : result;
   return result;
