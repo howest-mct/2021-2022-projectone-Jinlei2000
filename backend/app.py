@@ -110,7 +110,7 @@ def rfid(send_badgeid,servoDoorStatus):
     GPIO.output(buzzer, GPIO.LOW)
     print("**** DB --> Badge was scanned & buzzer rings ****")
     DataRepository.add_history(id,6,23)
-    DataRepository.add_history(id,9,24)
+    DataRepository.add_history(None,9,24)
     #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
     user = DataRepository.check_user_badge_id(id)
     badgeid = user['badgeid']
@@ -289,13 +289,20 @@ def start_thread_lcd():
 def save_data():
     try:
         while True:
-            #hier moeten we de data opslaan gewicht en volume
-            # en moeten ook controleren als de gewicht 0 is betekent dat het geleegd is dan een comment toevoegen aan de vorige gewicht data (update)
-            #om de 60sec opslaan
-            # sleep(60)
-            pass
+            weight = round(weight_sensor.get_weight(),2)
+            last_weight = DataRepository.get_last_value_weight()
+            # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
+            if weight == 0 and last_weight != 0:
+                DataRepository.update_weight()
+            print("**** DB --> Weight ****")
+            DataRepository.add_history(weight,4,10)
+            
+            volume = ultrasonic_sensor.get_distance()
+            print("**** DB --> Volume ****")
+            DataRepository.add_history(volume,3,9)
+            sleep(60)
     except:
-        print('Error thread opslaan_data!!!')
+        print('Error thread save_data!!!')
     
 def start_thread_save_data():
     print("**** Starting THREAD save data ****")
@@ -327,7 +334,6 @@ def live_data(loadingStatus,loadingStatusShutdown):
                 print("**** DB -->  DOOR 1 is unlocked****")
                 DataRepository.add_history(None,1,4)
                 servoValveStatus = False
-
 
             weight = round(weight_sensor.get_weight(),2)
             door_status = magnetcontactDoor.pressed

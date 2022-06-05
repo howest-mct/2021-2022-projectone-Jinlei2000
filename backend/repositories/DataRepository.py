@@ -84,13 +84,13 @@ class DataRepository:
     def filter_total_value_by_time(time):
         if time == 'all':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) GROUP BY actionid'
-            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied"'
+            sql_weight = 'SELECT actionid, FORMAT(AVG(value),1) AS total FROM history WHERE comment = "last weight"'
         elif time == 'week':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) AND yearweek(action_datetime) = yearweek(now()) GROUP BY actionid'
-            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied" AND yearweek(action_datetime) = yearweek(now())'
+            sql_weight = 'SELECT actionid, FORMAT(AVG(value),1) AS total FROM history WHERE comment = "last weight" AND yearweek(action_datetime) = yearweek(now())'
         elif time == 'month':
             sql = 'SELECT actionid, COUNT(*) AS total FROM history WHERE actionid IN (2,22) AND MONTH(action_datetime) = MONTH(NOW()) AND YEAR(action_datetime) = YEAR(NOW())GROUP BY actionid'
-            sql_weight = 'SELECT actionid, COUNT(*) AS total FROM history WHERE comment = "last emptied" AND MONTH(action_datetime) = MONTH(NOW()) AND YEAR(action_datetime) = YEAR(NOW())'
+            sql_weight = 'SELECT actionid, FORMAT(AVG(value),1) AS total FROM history WHERE comment = "last weight" AND MONTH(action_datetime) = MONTH(NOW()) AND YEAR(action_datetime) = YEAR(NOW())'
         result = Database.get_rows(sql)
         result2 = Database.get_one_row(sql_weight)
         result.append(result2)
@@ -109,6 +109,19 @@ class DataRepository:
             sql = 'SELECT FORMAT(AVG(value),1) AS "value", MONTHNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND YEAR(action_datetime) = YEAR(NOW()) GROUP BY MONTHNAME(action_datetime) ORDER BY action_datetime'
         params = [actionid]
         return Database.get_rows(sql,params)
+    
+    # -- LAST VALUE WEIGHT
+    @staticmethod
+    def get_last_value_weight():
+        sql = 'SELECT value FROM history WHERE actionid = 10 ORDER BY historyid DESC LIMIT 1'
+        result = Database.get_one_row(sql)
+        return float(result['value'])
+    
+    # -- UPDATE WEIGHT 
+    @staticmethod
+    def update_weight():
+        sql = 'UPDATE history SET comment = "last weight" WHERE actionid = 10 ORDER BY historyid DESC LIMIT 1'
+        return Database.execute_sql(sql)
 
     # TABLE LOCATION
     # -- GET NAME, ADDRESS AND COORDINATES

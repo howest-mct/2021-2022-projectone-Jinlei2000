@@ -1,3 +1,4 @@
+from random import sample
 from RPi import GPIO
 from time import sleep,time
 
@@ -14,19 +15,23 @@ class HCSR05:
         GPIO.setup(self.trigger, GPIO.OUT)
 
     def get_distance(self):
-        GPIO.output(self.trigger, GPIO.LOW)
-        sleep(0.01) # 10ms
+        sample = 0
+        for i in range(0,10):
+            GPIO.output(self.trigger, GPIO.LOW)
+            sleep(0.01) # 10ms
 
-        GPIO.output(self.trigger, GPIO.HIGH)
-        sleep(0.00001) # 10us
-        GPIO.output(self.trigger, GPIO.LOW)
+            GPIO.output(self.trigger, GPIO.HIGH)
+            sleep(0.00001)
+            GPIO.output(self.trigger, GPIO.LOW)
 
-        while GPIO.input(self.echo) == 0:
-            start_time = time()
+            while GPIO.input(self.echo) == 0:
+                start_time = time()
 
-        while GPIO.input(self.echo) == 1:
-            end_time = time()
-        
-        time_range = end_time - start_time
-        return round(time_range * 17150,1)
+            while GPIO.input(self.echo) == 1:
+                end_time = time()
+            
+            time_range = end_time - start_time
+            sample += time_range
+        result_time_range = sample/10
+        return round(result_time_range * 17150,1)
     
