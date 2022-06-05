@@ -12,6 +12,12 @@ class Lcd_4bits_i2c:
 
     def init_LCD(self):
         # 1) Function set
+        self.__send_instruction(0x30)
+        sleep(0.02)
+        self.__send_instruction(0x30)
+        sleep(0.02)
+        self.__send_instruction(0x30)
+        sleep(0.001)
         self.__set_enable(((0x28 & 0xf0)>>2)) # 4-bit mode eerste keer goed zetten, anders krijg je niets terug.
         self.__send_instruction(0x28)
         # 2) Display on & cursor on & blink on

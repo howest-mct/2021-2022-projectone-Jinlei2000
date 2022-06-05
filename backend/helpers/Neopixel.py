@@ -19,17 +19,21 @@ class Neopixel:
         self.pixels.fill((0, 0, 0))
 
     def __calc_volume_to_neopixel(self, max_volume,min_volume,volume):
-        if volume > max_volume:
+        # print('volume: ',volume)
+        if volume < max_volume:
             volume = max_volume
-        return int((volume - min_volume) / (max_volume - min_volume) * 24)
+        if volume > min_volume:
+            volume = min_volume
+        return abs(int(((volume - 29) * 24)/17))
 
     def show_value(self, volume):
-        amount1 = self.__calc_volume_to_neopixel(100,0, volume)
+        amount1 = self.__calc_volume_to_neopixel(12,29, volume)
+        # print(amount1)
         amount2 = amount1 - 8
         amount3 = amount1 - 16
         amounts = [amount1,amount2,amount3]
         rgb = [(0,255,0),(255,140,0),(255,0,0)] # green, orange, red
-        print(amounts)
+        # print(amounts)
         if amount1 != self.prevAmount:
             self.__reset()
             for i in range(3):

@@ -31,17 +31,10 @@ const showGeneralInformation = function (info) {
   listenToPopupConfirmBtn();
 };
 
-const calcVolumeToPercent = function (value) {
-  // hier nog echte waarde toevoegen van volume
-  max = 40;
-  min = 10;
-  value = value > max ? max : value;
-  return ((value - min) / (max - min)) * 100;
-};
-
-const calcVolumeIconLayer = function (value) {
-  percent = calcVolumeToPercent(value);
-  return (100 / 54.34) * percent;
+const calcVolumeIconLayer = function (procent) {
+  const height = (18.1 / 100) * procent;
+  const y = Math.abs(((height - 27) * 18) / 18);
+  return `<rect x="8.2" y="${y}" class="st2" width="15.5" height="${height}"/>`;
 };
 
 const showLiveData = function (data) {
@@ -61,26 +54,30 @@ const showLiveData = function (data) {
             <div class="o-layout o-layout--gutter">
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                 <div class="c-card c-card--feed">
-                  <svg class="c-card__icon-lg" id="Sensor_info" data-name="Sensor info" xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-                    <!-- change the volume with the stroke-width -->
-                    <line class="js-icon-volume-live-feed" x1="23.89" y1="54.04" x2="71.26" y2="54.04" fill="none" stroke="#9aa2cc" stroke-miterlimit="10" stroke-width="54.34" />
-                    <g id="logo">
-                      <rect id="Rectangle_13" data-name="Rectangle 13" width="96" height="96" fill="none" />
-                      <g id="trash-alt-1" transform="translate(11.705 6.172)">
-                        <path
-                          id="Path_201"
-                          data-name="Path 201"
-                          d="M128.959,43.934h-13.32l-5.5-9.162A7.774,7.774,0,0,0,103.477,31h-16.3a7.774,7.774,0,0,0-6.66,3.772l-5.5,9.162H61.694A2.591,2.591,0,0,0,59.1,46.528v2.594a2.591,2.591,0,0,0,2.594,2.594h2.594v54.33a7.766,7.766,0,0,0,7.764,7.764h46.566a7.766,7.766,0,0,0,7.764-7.764h0V51.7h2.594a2.591,2.591,0,0,0,2.594-2.594V46.51A2.615,2.615,0,0,0,128.959,43.934ZM86.9,39.224a.989.989,0,0,1,.828-.478h15.2a.943.943,0,0,1,.828.478l2.815,4.71h-22.5Zm31.719,66.8H72.034V51.7H118.6v54.33Z"
-                          transform="translate(-59.1 -31)"
-                          fill="#001eb3"
-                        />
-                      </g>
-                    </g>
-                  </svg>
+                  
+                <svg version="1.1" id="Sensor_info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                              y="0px" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;height:96px;" xml:space="preserve">
+                            <style type="text/css">
+                              .st0{fill:none;}
+                              .st1{fill:#001EB3;}
+                              .st2{fill:#9AA2CC;}
+                            </style>
+                            <rect id="svgEditorBackground" class="st0" width="32" height="32"/>
+                            <g id="logo">
+                              <rect id="Rectangle_13" class="st0" width="32" height="32"/>
+                              <g id="trash-alt-1" transform="translate(11.705 6.172)">
+                                <path id="Path_201" class="st1" d="M15.5,0.2H11L9.2-2.9C8.7-3.6,7.9-4.1,7-4.1H1.6c-0.9,0-1.8,0.5-2.2,1.3l-1.8,3.1h-4.4
+                                  c-0.5,0-0.9,0.4-0.9,0.9c0,0,0,0,0,0v0.9c0,0.5,0.4,0.9,0.9,0.9c0,0,0,0,0,0h0.9v18.1c0,1.4,1.2,2.6,2.6,2.6H12
+                                  c1.4,0,2.6-1.2,2.6-2.6l0,0V2.8h0.9c0.5,0,0.9-0.4,0.9-0.9c0,0,0,0,0,0V1.1C16.3,0.6,16,0.2,15.5,0.2z M1.5-1.4
+                                  c0.1-0.1,0.2-0.2,0.3-0.2h5.1c0.1,0,0.2,0.1,0.3,0.2L8,0.2H0.5L1.5-1.4z M12,20.9H-3.5V2.8H12L12,20.9L12,20.9z"/>
+                              </g>
+                            </g>
+                            ${calcVolumeIconLayer(calcVolumeToProcent(volume))}
+                            </svg>
 
                   <h3 class="c-card__title c-card__title--feed">
                     Volume
-                    <span class="c-card__value">${volume}<span class="c-lead c-lead--xl">%</span></span>
+                    <span class="c-card__value">${calcVolumeToProcent(volume)}<span class="c-lead c-lead--xl">%</span></span>
                   </h3>
                 </div>
               </div>
@@ -95,7 +92,7 @@ const showLiveData = function (data) {
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 0)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -107,14 +104,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info ${checkStatusCardInfo('.js-card-info', 0)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the trash can was emptied.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 1)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -126,14 +123,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info ${checkStatusCardInfo('.js-card-info', 1)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 2)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg ${iconDoor}"></i>
@@ -145,14 +142,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 2)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 3)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg ${iconValve}"></i>
@@ -164,7 +161,7 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 3)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
@@ -178,6 +175,13 @@ const showLiveData = function (data) {
 const showPopupInputValue = function (info) {
   htmlPopupName.placeholder = info.name;
   htmlPopupLocation.placeholder = info.address;
+};
+
+const calcVolumeToProcent = function (volume) {
+  let result = Math.round(Math.abs(((volume - 29) * 100) / 17));
+  result = result > 100 ? 100 : result;
+  result = result < 0 ? 0 : result;
+  return result;
 };
 
 const showAverage = function (json) {
@@ -196,26 +200,32 @@ const showAverage = function (json) {
   }
   htmlAverage.innerHTML = `<div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1">
                             <div class="c-card c-card--feed">
-                              <svg class="c-card__icon-lg" id="Sensor_info" data-name="Sensor info" xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
-                                <!-- change the volume with the stroke-width -->
-                                <line class="js-icon-volume-average" x1="23.89" y1="54.04" x2="71.26" y2="54.04" fill="none" stroke="#9aa2cc" stroke-miterlimit="10" stroke-width="0" />
-                                <g id="logo">
-                                  <rect id="Rectangle_13" data-name="Rectangle 13" width="96" height="96" fill="none" />
-                                  <g id="trash-alt-1" transform="translate(11.705 6.172)">
-                                    <path
-                                      id="Path_201"
-                                      data-name="Path 201"
-                                      d="M128.959,43.934h-13.32l-5.5-9.162A7.774,7.774,0,0,0,103.477,31h-16.3a7.774,7.774,0,0,0-6.66,3.772l-5.5,9.162H61.694A2.591,2.591,0,0,0,59.1,46.528v2.594a2.591,2.591,0,0,0,2.594,2.594h2.594v54.33a7.766,7.766,0,0,0,7.764,7.764h46.566a7.766,7.766,0,0,0,7.764-7.764h0V51.7h2.594a2.591,2.591,0,0,0,2.594-2.594V46.51A2.615,2.615,0,0,0,128.959,43.934ZM86.9,39.224a.989.989,0,0,1,.828-.478h15.2a.943.943,0,0,1,.828.478l2.815,4.71h-22.5Zm31.719,66.8H72.034V51.7H118.6v54.33Z"
-                                      transform="translate(-59.1 -31)"
-                                      fill="#001eb3"
-                                    />
-                                  </g>
-                                </g>
-                              </svg>
+                              
+                            
+                            <svg version="1.1" id="Sensor_info" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                              y="0px" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32; height:96px;" xml:space="preserve">
+                            <style type="text/css">
+                              .st0{fill:none;}
+                              .st1{fill:#001EB3;}
+                              .st2{fill:#9AA2CC;}
+                            </style>
+                            <rect id="svgEditorBackground" class="st0" width="32" height="32"/>
+                            <g id="logo">
+                              <rect id="Rectangle_13" class="st0" width="32" height="32"/>
+                              <g id="trash-alt-1" transform="translate(11.705 6.172)">
+                                <path id="Path_201" class="st1" d="M15.5,0.2H11L9.2-2.9C8.7-3.6,7.9-4.1,7-4.1H1.6c-0.9,0-1.8,0.5-2.2,1.3l-1.8,3.1h-4.4
+                                  c-0.5,0-0.9,0.4-0.9,0.9c0,0,0,0,0,0v0.9c0,0.5,0.4,0.9,0.9,0.9c0,0,0,0,0,0h0.9v18.1c0,1.4,1.2,2.6,2.6,2.6H12
+                                  c1.4,0,2.6-1.2,2.6-2.6l0,0V2.8h0.9c0.5,0,0.9-0.4,0.9-0.9c0,0,0,0,0,0V1.1C16.3,0.6,16,0.2,15.5,0.2z M1.5-1.4
+                                  c0.1-0.1,0.2-0.2,0.3-0.2h5.1c0.1,0,0.2,0.1,0.3,0.2L8,0.2H0.5L1.5-1.4z M12,20.9H-3.5V2.8H12L12,20.9L12,20.9z"/>
+                              </g>
+                            </g>
+                            ${calcVolumeIconLayer(calcVolumeToProcent(volumeAverage))}
+                            </svg>
 
+                            
                               <h3 class="c-card__title c-card__title--feed">
                                 Volume
-                                <span class="c-card__value">${volumeAverage}<span class="c-lead c-lead--xl">%</span></span>
+                                <span class="c-card__value">${calcVolumeToProcent(volumeAverage)}<span class="c-lead c-lead--xl">%</span></span>
                               </h3>
                             </div>
                           </div>
@@ -229,6 +239,15 @@ const showAverage = function (json) {
                             </div>
                           </div>`;
   listenToFilter('.js-filter-average');
+};
+
+const checkStatusCardInfo = function (htmlClass,number) {
+  const htmlCards= document.querySelectorAll(`${htmlClass}`);
+  if (!htmlCards[number].classList.contains('u-hidden-card')) {
+    return '';
+  }else{
+    return 'u-hidden-card';
+  }
 };
 
 const showTotal = function (json) {
@@ -259,7 +278,7 @@ const showTotal = function (json) {
                             </div>
                           </div>
 
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 4)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                                 <i class="c-card__icon-lg las la-door-open"></i>
@@ -271,14 +290,14 @@ const showTotal = function (json) {
                             </div>
                           </div>
                           <!-- Info card -->
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 4)}">
                             <div class="c-card c-card--feed c-card--info">
                               <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                               <p class="u-mb-clear">Number of times the trash can was emptied.</p>
                             </div>
                           </div>
 
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 5)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                                 <i class="c-card__icon-lg las la-door-open"></i>
@@ -290,7 +309,7 @@ const showTotal = function (json) {
                             </div>
                           </div>
                           <!-- Info card -->
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 5)}">
                             <div class="c-card c-card--feed c-card--info">
                               <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                               <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>

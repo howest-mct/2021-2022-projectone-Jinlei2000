@@ -12,7 +12,7 @@ from mfrc522 import SimpleMFRC522
 from helpers.Button import Button
 from helpers.Lcd_4bits_i2c import Lcd_4bits_i2c
 from helpers.HCSR05 import HCSR05
-from helpers.HX711 import HX711
+from helpers.HX711_Weight import HX711_Weight
 from helpers.SG90 import SG90
 from helpers.Neopixel import Neopixel
 
@@ -27,7 +27,7 @@ from selenium import webdriver
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# VARIABELEN
+# VARIABLES
 btnLcdPin = Button(5)
 btnPoweroffPin = Button(6)
 
@@ -45,7 +45,7 @@ servoValveStatus = Value('b', False)
 
 ultrasonic_sensor = HCSR05(echo_pin=21,trigger_pin=20)
 
-weight_sensor = HX711(dout_pin=27,sck_pin=22)
+weight_sensor = HX711_Weight(dout_pin=27,sck_pin=22)
 
 reader = SimpleMFRC522()
 buzzer = 16
@@ -58,8 +58,10 @@ badgeid = Queue()
 # nog een led van de knop aansturen
 
 np = Neopixel(12)
+loadingStatus = Value('b', True)
+loadingStatusShutdown = Value('b', False)
 
-# CODE VOOR HARDWARE
+# CODE FOR HARDWARE
 def setup():
     print("**** DB --> Pi is starting up ****")
     DataRepository.add_history(None,None,28)
@@ -92,6 +94,7 @@ def poweroff():
 
 def demo_callback2(pin):
     global btnStatusPoweroff
+    loadingStatusShutdown.value = True
     print("---- Poweroff Pi Button pressed ----")
     btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
@@ -107,7 +110,7 @@ def rfid(send_badgeid,servoDoorStatus):
     GPIO.output(buzzer, GPIO.LOW)
     print("**** DB --> Badge was scanned & buzzer rings ****")
     DataRepository.add_history(id,6,23)
-    DataRepository.add_history(id,9,24)
+    DataRepository.add_history(None,9,24)
     #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
     user = DataRepository.check_user_badge_id(id)
     badgeid = user['badgeid']
@@ -118,7 +121,7 @@ def rfid(send_badgeid,servoDoorStatus):
                 servoDoorStatus.value = True
     
 
-# CODE VOOR FLASK
+# CODE FOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False,engineio_logger=False, ping_timeout=1)
@@ -136,7 +139,7 @@ endpoint = '/api/v1'
 
 @app.route('/')
 def hallo():
-    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+    return "Server is running, Welcome to the server"
 
 @app.route(endpoint + '/users/', methods=['GET','POST'])
 def users():
@@ -203,6 +206,12 @@ def get_total(time):
         data = DataRepository.filter_total_value_by_time(time)
         return jsonify(data), 201
 
+@app.route(endpoint + '/history/charts/<time>/<actionid>/', methods=['GET'])
+def get_charts(time,actionid):
+    if request.method == 'GET':
+        data = DataRepository.filter_chart_data_by_time_actionid(time,actionid)
+        return jsonify(data), 201
+
 @socketio.on('connect')
 def initial_connection():
     print('A new client connect')
@@ -220,9 +229,9 @@ def logged_in_user():
 #nog 2 socket om mijn 2 knoppen op te vangen poweroof en deur openenen
     
 
-# ALLE THREADS
-# Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket.
+# ALL THREADS
+# Important!!! Debugging must be OFF on server startup, otherwise thread will start twice
+# only work with the packages gevent and gevent-websocket.
 
 # START RFID
 def start_rfid(send_badgeid,servoDoorStatus):
@@ -235,23 +244,20 @@ def start_rfid(send_badgeid,servoDoorStatus):
     
 def start_thread_rfid():
     print("**** Starting THREAD rfid ****")
-    # thread = threading.Timer(15, show_ip)
-    # thread.start()
     p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
     p.start()
 
 # START LCD
-def start_lcd(btnStatusLcd):
+def start_lcd(btnStatusLcd,loadingStatus):
     tijd = time()
     write_ip_status = True
-    loading = True
     try:
         while True:
-            if loading == True:
+            if loadingStatus.value == True:
                 np.show_loading()
                 print("**** DB --> RGB led loading starting pi ****")
                 DataRepository.add_history(None,None,29)
-                loading = False
+                loadingStatus.value = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
                     print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
@@ -276,36 +282,60 @@ def start_lcd(btnStatusLcd):
 
 def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
-    p = Process(target=start_lcd, args=(btnStatusLcd,))
+    p = Process(target=start_lcd, args=(btnStatusLcd,loadingStatus))
     p.start()
 
-# START OPSLAAN DATA
-def opslaan_data():
+# START SAVE DATA
+def save_data():
     try:
         while True:
-            #hier moeten we de data opslaan gewicht en volume
-            # en moeten ook controleren als de gewicht 0 is betekent dat het geleegd is dan een comment toevoegen aan de vorige gewicht data (update)
-            #om de 60sec opslaan
-            # sleep(60)
-            pass
+            weight = round(weight_sensor.get_weight(),2)
+            last_weight = DataRepository.get_last_value_weight()
+            # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
+            if weight == 0 and last_weight != 0:
+                DataRepository.update_weight()
+            print("**** DB --> Weight ****")
+            DataRepository.add_history(weight,4,10)
+            
+            volume = ultrasonic_sensor.get_distance()
+            print("**** DB --> Volume ****")
+            DataRepository.add_history(volume,3,9)
+            sleep(60)
     except:
-        print('Error thread opslaan_data!!!')
+        print('Error thread save_data!!!')
     
-def start_thread_opslaan_data():
-    print("**** Starting THREAD opslaan data ****")
-    # thread = threading.Timer(60, opslaan_data)
-    # thread.start()
-    p = Process(target=opslaan_data, args=())
+def start_thread_save_data():
+    print("**** Starting THREAD save data ****")
+    p = Process(target=save_data, args=())
     p.start()
 
 # START LIVE DATA
-def live_data():
+def live_data(loadingStatus,loadingStatusShutdown):
     try:
+        prev_volume = 30
+        servoValveStatus = False
         while True:
             #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
 
             volume = ultrasonic_sensor.get_distance()
-            weight = weight_sensor.get_weight()
+
+            procent_volume = round(abs((((volume - 29) * 100)/17)),0)
+            if procent_volume > 100:
+                procent_volume = 100
+            if volume < 0:
+                procent_volume = 0
+            if procent_volume > 90 and servoValveStatus == False and magnetcontactValve.pressed == True:
+                servo_valve.lock_valve()
+                print("**** DB -->  DOOR 1 is locked****")
+                DataRepository.add_history(None,1,3)
+                servoValveStatus = True
+            elif procent_volume < 90 and servoValveStatus == True:
+                servo_valve.unlock_valve()
+                print("**** DB -->  DOOR 1 is unlocked****")
+                DataRepository.add_history(None,1,4)
+                servoValveStatus = False
+
+            weight = round(weight_sensor.get_weight(),2)
             door_status = magnetcontactDoor.pressed
             valve_status = magnetcontactValve.pressed
             opened_times = DataRepository.filter_number_of_times_by_time_actionid(1,2)
@@ -318,16 +348,22 @@ def live_data():
                 'opened_times': opened_times,
                 'emptied_times': emptied_times
             }, broadcast=True)
+            if loadingStatus.value == False and loadingStatusShutdown.value == False:
+                # print(volume-prev_volume)
+                if prev_volume != volume and (1.5 < volume-prev_volume or volume-prev_volume < -1.5):
+                    # print(f'Volume: {volume}, Prev_volume: {prev_volume}')
+                    np.show_value(volume)
+                    prev_volume = volume
+                    print("**** DB --> RGB led show value volume ****")
+                    DataRepository.add_history(None,7,11)
             sleep(0.5) # 500 ms
     except:
         print('Error thread live_data!!!')
 
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Thread(target=live_data, args=(), daemon=True)
+    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True)
     thread.start()
-    # p = Process(target=live_data, args=())
-    # p.start()
 
 # START SERVO & MAGNETCONTACT
 def servo_magnet(servoDoorStatus):
@@ -336,9 +372,6 @@ def servo_magnet(servoDoorStatus):
         prevStatus2 = None
         tijd = 0
         while True:
-            #andere servo bedienen van valve door volumeee als vol is dicht doen als die leeg is open
-            #boven een bepaalde limiet sluiten servo valve
-
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
                 sleep(0.5)
@@ -390,7 +423,6 @@ def start_thread_servo_magnet():
     thread = threading.Thread(target=servo_magnet, args=(servoDoorStatus,), daemon=True)
     thread.start()
 
-
 # START CHROME KIOSK
 def start_chrome_kiosk():
     import os
@@ -424,8 +456,6 @@ def start_chrome_kiosk():
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
-    # chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
-    # chromeThread.start()
     p = Process(target=start_chrome_kiosk, args=())
     p.start()
 
@@ -452,7 +482,7 @@ if __name__ == '__main__':
         setup()
         start_thread_lcd()
         start_thread_live_data()
-        start_thread_opslaan_data()
+        start_thread_save_data()
         start_thread_rfid()
         start_thread_servo_magnet()
         start_chrome_thread()
