@@ -2,9 +2,29 @@
 // #region ***  DOM references                           ***********
 let filter = 'all';
 let myChartVolume, myChartWeight;
+let htmlDiscriptions;
 // #endregion
 
 // #region ***  Callback-Visualisation - show___         ***********
+const addDiscription = function () {
+  let htmlString = '';
+  // console.log(filter,' 👌👌👌👌👌');
+  if (filter == 'all') {
+    htmlString = 'All time';
+  } else if (filter == 'week') {
+    htmlString = 'Last 7 days';
+  } else if (filter == 'month') {
+    htmlString = 'Current month';
+  } else if (filter == 'day') {
+    htmlString = 'Last 24 hours';
+  }
+
+  htmlDiscriptions = document.querySelectorAll('.js-description');
+  for (const desc of htmlDiscriptions) {
+    desc.innerHTML = htmlString;
+  }
+};
+
 const showChartVolume = function (json) {
   let labels = [];
   let data = [];
@@ -92,7 +112,7 @@ const drawChartVolume = function (time, value) {
   };
 
   myChartVolume = new Chart(ctx, config);
-  
+  addDiscription();
 };
 
 const showChartWeight = function (json) {
@@ -119,12 +139,12 @@ const drawChartWeight = function (time, value) {
       datasets: [
         {
           label: 'weight',
-          backgroundColor: 'white', 
-          borderColor: '#264AFF', 
-          data: value, 
+          backgroundColor: 'white',
+          borderColor: '#264AFF',
+          data: value,
           fill: {
             target: 'start',
-            above: '#3B5CFF', 
+            above: '#3B5CFF',
           },
         },
       ],
@@ -182,7 +202,7 @@ const drawChartWeight = function (time, value) {
   };
 
   myChartWeight = new Chart(ctx, config);
-
+  addDiscription();
 };
 
 const updateChart = function (chart, labels, data) {
@@ -193,6 +213,7 @@ const updateChart = function (chart, labels, data) {
   });
   // console.log('2', chart.data.labels);
   chart.update();
+  addDiscription();
 };
 // #endregion
 
@@ -222,7 +243,7 @@ const listenToFilter = function (htmlFilterClass) {
         }
         this.classList.add('c-filter--active');
         filter = this.innerHTML;
-        console.log(filter);
+        // console.log(filter);
         getChartVolume(filter);
         getChartWeight(filter);
       }
