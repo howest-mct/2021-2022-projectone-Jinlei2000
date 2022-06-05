@@ -92,7 +92,7 @@ const showLiveData = function (data) {
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 0)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -104,14 +104,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info ${checkStatusCardInfo('.js-card-info', 0)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the trash can was emptied.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 1)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg las la-door-open"></i>
@@ -123,14 +123,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card-info ${checkStatusCardInfo('.js-card-info', 1)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 2)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg ${iconDoor}"></i>
@@ -142,14 +142,14 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 2)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
                 </div>
               </div>
 
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 3)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                     <i class="c-card__icon-lg ${iconValve}"></i>
@@ -161,7 +161,7 @@ const showLiveData = function (data) {
                 </div>
               </div>
               <!-- Info card -->
-              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+              <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 3)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                   <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
@@ -241,6 +241,15 @@ const showAverage = function (json) {
   listenToFilter('.js-filter-average');
 };
 
+const checkStatusCardInfo = function (htmlClass,number) {
+  const htmlCards= document.querySelectorAll(`${htmlClass}`);
+  if (!htmlCards[number].classList.contains('u-hidden-card')) {
+    return '';
+  }else{
+    return 'u-hidden-card';
+  }
+};
+
 const showTotal = function (json) {
   // console.log(json);
   let emptiedTotal = 0;
@@ -269,7 +278,7 @@ const showTotal = function (json) {
                             </div>
                           </div>
 
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 4)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                                 <i class="c-card__icon-lg las la-door-open"></i>
@@ -281,14 +290,14 @@ const showTotal = function (json) {
                             </div>
                           </div>
                           <!-- Info card -->
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 4)}">
                             <div class="c-card c-card--feed c-card--info">
                               <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                               <p class="u-mb-clear">Number of times the trash can was emptied.</p>
                             </div>
                           </div>
 
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 5)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
                                 <i class="c-card__icon-lg las la-door-open"></i>
@@ -300,7 +309,7 @@ const showTotal = function (json) {
                             </div>
                           </div>
                           <!-- Info card -->
-                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info u-hidden-card">
+                          <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 5)}">
                             <div class="c-card c-card--feed c-card--info">
                               <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
                               <p class="u-mb-clear">Number of times the lid has been opened from the garbage can.</p>
