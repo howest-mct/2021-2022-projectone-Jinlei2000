@@ -68,6 +68,7 @@ const showMap = function (coords) {
 const getCoordinates = function () {
   const url = backend + '/info/';
   handleData(url, showMarker, showApiError);
+  
 };
 // #endregion
 
