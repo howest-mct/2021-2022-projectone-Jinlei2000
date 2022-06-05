@@ -1173,6 +1173,10 @@ a:focus {
     cursor: pointer;
 }
 
+.c-icon-eye:hover {
+    color: #264AFF;
+}
+
 @media (min-width: 576px) {
     .c-icon-eye {
         margin-left: 91%;

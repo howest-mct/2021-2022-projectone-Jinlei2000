@@ -100,13 +100,13 @@ class DataRepository:
     @staticmethod
     def filter_chart_data_by_time_actionid(time,actionid):
         if time == 'all':
-            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%d %M") AS "time" FROM history WHERE actionid = %s GROUP BY date(action_datetime)'
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%d %M") AS "time" FROM history WHERE actionid = %s GROUP BY date(action_datetime) ORDER BY action_datetime'
         elif time == 'day':
-            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%H:00") AS "time" FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval 1 DAY) AND NOW() GROUP BY HOUR(action_datetime)'
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DATE_FORMAT(action_datetime,"%H:00") AS "time" FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval 1 DAY) AND NOW() GROUP BY HOUR(action_datetime) ORDER BY action_datetime'
         elif time == 'week':
-            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DAYNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval 6 DAY) AND NOW() GROUP BY DAYOFWEEK(action_datetime)'
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", DAYNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND action_datetime BETWEEN (NOW() - interval 6 DAY) AND NOW() GROUP BY DAYOFWEEK(action_datetime) ORDER BY action_datetime'
         elif time == 'month':
-            sql = 'SELECT FORMAT(AVG(value),1) AS "value", MONTHNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND YEAR(action_datetime) = YEAR(NOW()) GROUP BY MONTHNAME(action_datetime)'
+            sql = 'SELECT FORMAT(AVG(value),1) AS "value", MONTHNAME(action_datetime) AS "time" FROM history WHERE actionid = %s AND YEAR(action_datetime) = YEAR(NOW()) GROUP BY MONTHNAME(action_datetime) ORDER BY action_datetime'
         params = [actionid]
         return Database.get_rows(sql,params)
 

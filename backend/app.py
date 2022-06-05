@@ -27,7 +27,7 @@ from selenium import webdriver
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# VARIABELEN
+# VARIABLES
 btnLcdPin = Button(5)
 btnPoweroffPin = Button(6)
 
@@ -61,7 +61,7 @@ np = Neopixel(12)
 loadingStatus = Value('b', True)
 loadingStatusShutdown = Value('b', False)
 
-# CODE VOOR HARDWARE
+# CODE FOR HARDWARE
 def setup():
     print("**** DB --> Pi is starting up ****")
     DataRepository.add_history(None,None,28)
@@ -121,7 +121,7 @@ def rfid(send_badgeid,servoDoorStatus):
                 servoDoorStatus.value = True
     
 
-# CODE VOOR FLASK
+# CODE FOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!'
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False,engineio_logger=False, ping_timeout=1)
@@ -139,7 +139,7 @@ endpoint = '/api/v1'
 
 @app.route('/')
 def hallo():
-    return "Server is running, er zijn momenteel geen API endpoints beschikbaar."
+    return "Server is running, Welcome to the server"
 
 @app.route(endpoint + '/users/', methods=['GET','POST'])
 def users():
@@ -229,9 +229,9 @@ def logged_in_user():
 #nog 2 socket om mijn 2 knoppen op te vangen poweroof en deur openenen
     
 
-# ALLE THREADS
-# Belangrijk!!! Debugging moet UIT staan op start van de server, anders start de thread dubbel op
-# werk enkel met de packages gevent en gevent-websocket.
+# ALL THREADS
+# Important!!! Debugging must be OFF on server startup, otherwise thread will start twice
+# only work with the packages gevent and gevent-websocket.
 
 # START RFID
 def start_rfid(send_badgeid,servoDoorStatus):
@@ -244,8 +244,6 @@ def start_rfid(send_badgeid,servoDoorStatus):
     
 def start_thread_rfid():
     print("**** Starting THREAD rfid ****")
-    # thread = threading.Timer(15, show_ip)
-    # thread.start()
     p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
     p.start()
 
@@ -287,8 +285,8 @@ def start_thread_lcd():
     p = Process(target=start_lcd, args=(btnStatusLcd,loadingStatus))
     p.start()
 
-# START OPSLAAN DATA
-def opslaan_data():
+# START SAVE DATA
+def save_data():
     try:
         while True:
             #hier moeten we de data opslaan gewicht en volume
@@ -299,11 +297,9 @@ def opslaan_data():
     except:
         print('Error thread opslaan_data!!!')
     
-def start_thread_opslaan_data():
-    print("**** Starting THREAD opslaan data ****")
-    # thread = threading.Timer(60, opslaan_data)
-    # thread.start()
-    p = Process(target=opslaan_data, args=())
+def start_thread_save_data():
+    print("**** Starting THREAD save data ****")
+    p = Process(target=save_data, args=())
     p.start()
 
 # START LIVE DATA
@@ -362,8 +358,6 @@ def start_thread_live_data():
     print("**** Starting THREAD live data ****")
     thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True)
     thread.start()
-    # p = Process(target=live_data, args=())
-    # p.start()
 
 # START SERVO & MAGNETCONTACT
 def servo_magnet(servoDoorStatus):
@@ -372,9 +366,6 @@ def servo_magnet(servoDoorStatus):
         prevStatus2 = None
         tijd = 0
         while True:
-            #andere servo bedienen van valve door volumeee als vol is dicht doen als die leeg is open
-            #boven een bepaalde limiet sluiten servo valve
-
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
                 sleep(0.5)
@@ -459,8 +450,6 @@ def start_chrome_kiosk():
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
-    # chromeThread = threading.Thread(target=start_chrome_kiosk, args=(), daemon=True)
-    # chromeThread.start()
     p = Process(target=start_chrome_kiosk, args=())
     p.start()
 
@@ -487,7 +476,7 @@ if __name__ == '__main__':
         setup()
         start_thread_lcd()
         start_thread_live_data()
-        start_thread_opslaan_data()
+        start_thread_save_data()
         start_thread_rfid()
         start_thread_servo_magnet()
         start_chrome_thread()
