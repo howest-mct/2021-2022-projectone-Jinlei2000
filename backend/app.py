@@ -24,8 +24,8 @@ from repositories.DataRepository import DataRepository
 
 from selenium import webdriver
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 
 # VARIABLES
 btnLcdPin = Button(5)
@@ -123,7 +123,7 @@ def rfid(send_badgeid,servoDoorStatus):
 
 # CODE FOR FLASK
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'geheim!'
+app.config['SECRET_KEY'] = 'geheim!!!!!'
 socketio = SocketIO(app, cors_allowed_origins="*", logger=False,engineio_logger=False, ping_timeout=1)
 jwt = JWTManager(app)
 CORS(app)
@@ -289,6 +289,7 @@ def start_thread_lcd():
 def save_data():
     try:
         while True:
+            #hier nog een sockect emit plaatsen da je pagina kan refreshen van alle paginas behalve map.html, index.html and welcome.html
             weight = round(weight_sensor.get_weight(),2)
             last_weight = DataRepository.get_last_value_weight()
             # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
@@ -357,8 +358,8 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     print("**** DB --> RGB led show value volume ****")
                     DataRepository.add_history(None,7,11)
             sleep(0.5) # 500 ms
-    except:
-        print('Error thread live_data!!!')
+    except Exception as e:
+        print('Error thread live_data!!! ',e)
 
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
