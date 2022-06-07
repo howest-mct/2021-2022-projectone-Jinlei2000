@@ -195,6 +195,9 @@ const showAverage = function (json) {
         volumeAverage = device.average;
       } else if (device.actionid == 10) {
         weightAverage = device.average;
+        if(weightAverage == 0) {
+          weightAverage = 0
+        }
       }
     }
   }
