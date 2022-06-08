@@ -21,7 +21,18 @@ const historyInit = function () {
   if (document.querySelector('.js-history-page')) {
     checkToken('history.html');
     listenToFilterBtns('.js-filter-time');
-    listenToFilterBtns('.js-filter-category');
+    $('.js-table').DataTable({
+      info: false,
+      lengthChange: false,
+      pageLength: 15,
+      responsive: true,
+      // ordering: false,
+      order: [],
+      language: {
+        search: '_INPUT_',
+        searchPlaceholder: 'Search ...',
+      },
+    });
   }
 };
 

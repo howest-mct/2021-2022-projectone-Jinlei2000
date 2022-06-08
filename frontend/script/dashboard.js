@@ -178,9 +178,9 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 29) * 100) / 17));
+  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 16.5));
   result = result > 100 ? 100 : result;
-  result = result < 0 ? 0 : result;
+  result = result < 5 ? 0 : result;
   return result;
 };
 
@@ -193,8 +193,13 @@ const showAverage = function (json) {
     if (device.actionid) {
       if (device.actionid == 9) {
         volumeAverage = device.average;
+        // console.log(volumeAverage);
       } else if (device.actionid == 10) {
         weightAverage = device.average;
+        // console.log(weightAverage);
+        if(weightAverage == 0) {
+          weightAverage = 0
+        }
       }
     }
   }

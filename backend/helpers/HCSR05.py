@@ -23,15 +23,17 @@ class HCSR05:
             GPIO.output(self.trigger, GPIO.HIGH)
             sleep(0.00001)
             GPIO.output(self.trigger, GPIO.LOW)
-
-            while GPIO.input(self.echo) == 0:
+            start = time()
+            start_time = 0
+            while time() - start < 1000000 and GPIO.input(self.echo) == 0:
                 start_time = time()
-
-            while GPIO.input(self.echo) == 1:
-                end_time = time()
-            
-            time_range = end_time - start_time
-            sample += time_range
+            if time() - start < 1000000:
+                start = time()
+                while time() - start < 1000000 and  GPIO.input(self.echo) == 1:
+                    end_time = time()
+                
+                time_range = end_time - start_time
+                sample += time_range
         result_time_range = sample/10
         return round(result_time_range * 17150,1)
     

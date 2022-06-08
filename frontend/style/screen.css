@@ -895,7 +895,7 @@ a:focus {
 
 .c-card:hover {
     border-color: #264AFF;
-    transform: translateY(-7px);
+    /* transform: translateY(-7px); */
     box-shadow: 0px 10px 15px -3px rgba(77, 106, 255, 10%), 0px 4px 6px -2px rgba(77, 106, 255, 5%);
 }
 
@@ -1289,7 +1289,7 @@ a:focus {
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 16px;
-    min-width: 768px;
+    min-width: 576px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     border-radius: 5px;
     overflow: hidden;

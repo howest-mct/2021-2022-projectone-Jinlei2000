@@ -14,6 +14,7 @@ class SG90:
 
         self.pwm = GPIO.PWM(self.pin, 50)
         self.pwm.start(0)
+        # self.lock_door()
     
     def __set_angle(self, angle):
         # bereken: (100%/20ms)*0,5ms = 2.5% duty-cycle --> min

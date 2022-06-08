@@ -18,11 +18,14 @@
     <link rel="stylesheet" href="supplier/icons/css/line-awesome.min.css" />
 
     <!-- Get styles -->
+    <link rel="stylesheet" href="supplier/jquery-datatables/jquery.dataTables.css" />
     <link rel="stylesheet" href="supplier/toast/simple-notify.min.css" />
     <link rel="stylesheet" href="style/normalize.css" />
     <link rel="stylesheet" href="style/screen.css" />
 
     <!-- Get scripts -->
+    <script src="supplier/jquery-datatables/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
     <script src="supplier/toast/simple-notify.min.js"></script>
     <script src="script/datahandler.js"></script>
@@ -84,10 +87,10 @@
               <nav class="c-nav">
                 <ul class="o-list c-nav__list u-mb-clear">
                   <li class="c-nav__item">
-                    <a class="c-nav__link c-nav__link--button"> <span class="c-nav__icon las la-door-open"></span>Open </a>
+                    <a class="c-nav__link c-nav__link--button js-open-btn"> <span class="c-nav__icon las la-door-open"></span>Open </a>
                   </li>
                   <li class="c-nav__item">
-                    <a class="c-nav__link c-nav__link--button"> <span class="c-nav__icon las la-power-off"></span>Poweroff </a>
+                    <a class="c-nav__link c-nav__link--button js-poweroff-btn"> <span class="c-nav__icon las la-power-off"></span>Poweroff </a>
                   </li>
                 </ul>
               </nav>
@@ -113,25 +116,14 @@
               <button class="o-button-reset c-filter js-filter-time" data-time="7">week</button>
               <button class="o-button-reset c-filter js-filter-time" data-time="30">month</button>
             </div>
-            <div class="c-filter--layout">
-              <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">Filter by category</h2>
-              <button class="o-button-reset c-filter c-filter--active js-filter-category" data-category="0">all</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(9)">volume</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(10)">weight</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(1,2,3,4,18,19,20,21,22,26)">doors</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(23,19,24)">rfid</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(27)">led</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(25,8,28)">power</button>
-              <button class="o-button-reset c-filter js-filter-category" data-category="(14,15,17)">user</button>
-            </div>
           </div>
         </div>
         <div class="o-row u-pt-clear u-pt-sm">
           <div class="o-container">
-            <h2 class="u-mb-clear u-mb-md c-lead c-lead--xl">Table</h2>
             <div class="c-table--scroll">
-              <table class="c-table">
+              <table class="c-table js-table">
                 <thead>
+                  <h2 class="u-mb-sm c-lead c-lead--xl">Table</h2>
                   <tr>
                     <th>Name</th>
                     <th>Date</th>
@@ -140,6 +132,216 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>YYYY/MM/DD UU:MM</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>11 m</td>
+                    <td>Door 1 opequghjg sidfhsdi sdhfs ihdfsojf dsifhsdj siofhsdj dsiofhsd isdhfsjdf osfhdks oisdfhsned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>osdfsdfpen</td>
+                    <td>Door 2 opesfsdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>opsdfsdfen</td>
+                    <td>Door 1 opedfsfdned</td>
+                  </tr>
+                  <tr>
+                    <td>Door 2</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 2 opened</td>
+                  </tr>
+                  <tr>
+                    <td>Door 1</td>
+                    <td>12.12.2019</td>
+                    <td>open</td>
+                    <td>Door 1 opened</td>
+                  </tr>
                   <tr>
                     <td>Door 1</td>
                     <td>12.12.2019</td>
@@ -235,10 +437,10 @@
           <nav class="c-nav">
             <ul class="o-list c-nav__list u-mb-clear">
               <li class="c-nav__item">
-                <a class="c-nav__link c-link-cta"> <span class="c-nav__icon las la-door-open"></span>Open </a>
+                <a class="c-nav__link c-link-cta js-open-btn"> <span class="c-nav__icon las la-door-open"></span>Open </a>
               </li>
               <li class="c-nav__item">
-                <a class="c-nav__link c-link-cta"> <span class="c-nav__icon las la-power-off"></span>Poweroff </a>
+                <a class="c-nav__link c-link-cta js-poweroff-btn"> <span class="c-nav__icon las la-power-off"></span>Poweroff </a>
               </li>
             </ul>
           </nav>
