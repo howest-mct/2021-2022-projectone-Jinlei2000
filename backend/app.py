@@ -229,9 +229,27 @@ def logged_in_user():
     print("**** DB --> Logged in user ****")
     DataRepository.add_history(None,None,17)
 
-#nog 2 socket om mijn 2 knoppen op te vangen poweroof en deur openenen
+@socketio.on('F2B_buttons')
+def buttons(payload):
+    btn_type = payload['button']
+    if btn_type == 'poweroff':
+        print("**** DB --> Remote poweroff button pressed ****")
+        DataRepository.add_history(None,None,25)
+        socketio.emit('B2F_button', {'message': 'poweroff'})
+        poweroff()
+    if btn_type == 'open':
+        if magnetcontactDoor.pressed == True:
+                print("**** DB -->  Remote open button pressed****")
+                DataRepository.add_history(None,None,26)
+                servo_door.unlock_door()
+                sleep(0.5)
+                print("**** DB -->  DOOR 2 is unlocked with badge****")
+                DataRepository.add_history(None,1,19)
+                socketio.emit('B2F_button', {'message': 'opening'})
+        else:
+            socketio.emit('B2F_button', {'message': 'already opened'})
     
-
+    
 # ALL THREADS
 # Important!!! Debugging must be OFF on server startup, otherwise thread will start twice
 # only work with the packages gevent and gevent-websocket.
@@ -303,6 +321,10 @@ def save_data():
                 DataRepository.add_history(weight,4,10)
                 
                 volume = ultrasonic_sensor.get_distance()
+                if volume < 12:
+                    volume = 12
+                if volume > 29:
+                    volume = 29
                 print("**** DB --> Volume ****")
                 DataRepository.add_history(volume,3,9)
                 sleep(60)
@@ -328,7 +350,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
 
                 volume = ultrasonic_sensor.get_distance()
 
-                procent_volume = round(abs((((volume - 28.5) * 100)/17)),0)
+                procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
                 if procent_volume > 100:
                     procent_volume = 100
                 if procent_volume < 5:

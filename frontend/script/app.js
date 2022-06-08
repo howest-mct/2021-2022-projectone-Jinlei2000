@@ -113,6 +113,24 @@ const listenToFilterBtns = function (htmlFilterClass) {
   }
 };
 
+const listenToNavBtns = function () {
+  const poweroffBtns = document.querySelectorAll('.js-poweroff-btn');
+  const openBtns = document.querySelectorAll('.js-open-btn');
+  for (const p of poweroffBtns) {
+    p.addEventListener('click', function () {
+      console.log('poweroff clicked');
+      socketio.emit('F2B_buttons',{button: 'poweroff'});
+    });
+  }
+  for (const o of openBtns) {
+    o.addEventListener('click', function () {
+      console.log('open clicked');
+      socketio.emit('F2B_buttons', { button: 'open' });
+    });
+  }
+
+}
+
 const listenToSocketConnection = function () {
   try {
     socketio.on('connect', function () {
@@ -122,6 +140,17 @@ const listenToSocketConnection = function () {
     console.log(`socketio don't have connection`);
     showNotification('error', 'Sockect connection lost!');
   }
+  socketio.on('B2F_button', function (data) {
+    console.log('B2F_button', data);
+    const message = data.message;
+    if (message == 'poweroff') {
+      showNotification('warning', 'Raspberry Pi is going to poweroff!');
+    } else if (message == 'opening') {
+      showNotification('success', 'Door is open now.');
+    }else if (message == 'already opened') {
+      showNotification('warning', 'Door is already open.');
+    }
+  })
 };
 
 // #endregion
@@ -132,6 +161,7 @@ const init = function () {
   listenToSocketConnection();
   toggleNav();
   listenToLogo();
+  listenToNavBtns();
 };
 
 document.addEventListener('DOMContentLoaded', init);

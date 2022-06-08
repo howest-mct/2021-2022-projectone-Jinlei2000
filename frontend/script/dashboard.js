@@ -178,7 +178,7 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 17));
+  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 16.5));
   result = result > 100 ? 100 : result;
   result = result < 5 ? 0 : result;
   return result;

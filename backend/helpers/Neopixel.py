@@ -24,10 +24,10 @@ class Neopixel:
             volume = max_volume
         if volume > min_volume:
             volume = min_volume
-        return abs(int(((volume - 28.5) * 24)/17))
+        return abs(int(((volume - 28.5) * 24)/16.5))
 
     def show_value(self, volume):
-        amount1 = self.__calc_volume_to_neopixel(12,29, volume)
+        amount1 = self.__calc_volume_to_neopixel(12,28.5, volume)
         # print(amount1)
         amount2 = amount1 - 8
         amount3 = amount1 - 16
