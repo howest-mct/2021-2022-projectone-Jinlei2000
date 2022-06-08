@@ -30,6 +30,7 @@ from selenium import webdriver
 # VARIABLES
 btnLcdPin = Button(5)
 btnPoweroffPin = Button(6)
+btnPoweroffLed = 13
 
 magnetcontactDoor = Button(19)
 magnetcontactValve = Button(26)
@@ -69,8 +70,9 @@ def setup():
     GPIO.setmode(GPIO.BCM)
 
     GPIO.setup(buzzer,GPIO.OUT)
-    GPIO.setup(backlight_lcd,GPIO.OUT)
+    GPIO.setup((backlight_lcd,btnPoweroffLed),GPIO.OUT)
     GPIO.output(backlight_lcd,GPIO.LOW)
+    GPIO.output(btnPoweroffLed,GPIO.HIGH)
 
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
@@ -89,6 +91,7 @@ def poweroff():
     DataRepository.add_history(None,None,30)
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,None,8)
+    GPIO.output(btnPoweroffLed,GPIO.LOW)
     #hier nog poweroff plaatsen om te stoppen
     
 
@@ -325,7 +328,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
 
                 volume = ultrasonic_sensor.get_distance()
 
-                procent_volume = round(abs((((volume - 29) * 100)/17)),0)
+                procent_volume = round(abs((((volume - 28.5) * 100)/17)),0)
                 if procent_volume > 100:
                     procent_volume = 100
                 if procent_volume < 5:
@@ -380,7 +383,7 @@ def servo_magnet(servoDoorStatus):
         prevStatus1 = None
         prevStatus2 = None
         tijd = 0
-        if servoDoorStatus.value == False:
+        if servoDoorStatus.value == True:
             servo_door.lock_door()
         while True:
             if servoDoorStatus.value == True:
@@ -504,6 +507,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('KeyboardInterrupt exception is caught')
         # scherm backlight uitzetten
+        GPIO.output(btnPoweroffLed,GPIO.LOW)
         GPIO.output(backlight_lcd, GPIO.LOW)
         # scherm leegmaken en 8 bits instellen
         lcd.cursorOn()

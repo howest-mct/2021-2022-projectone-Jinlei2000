@@ -26,7 +26,7 @@ const addDiscription = function () {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 29) * 100) / 17));
+  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 17));
   result = result > 100 ? 100 : result;
   result = result < 0 ? 0 : result;
   // console.log('volume: ', volume, 'result: ', result);
