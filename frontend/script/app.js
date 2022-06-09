@@ -96,23 +96,6 @@ const toggleNav = function () {
   }
 };
 
-const listenToFilterBtns = function (htmlFilterClass) {
-  const btns = document.querySelectorAll(htmlFilterClass);
-  for (const btn of btns) {
-    btn.addEventListener('click', function () {
-      // console.log('filter clicked',this);
-      if (!this.classList.contains('c-filter--active')) {
-        for (const btn of btns) {
-          btn.classList.remove('c-filter--active');
-        }
-        this.classList.add('c-filter--active');
-        // console.log(this.getAttribute('data-filter'));
-        // return this.getAttribute('data-filter');
-      }
-    });
-  }
-};
-
 const listenToNavBtns = function () {
   const poweroffBtns = document.querySelectorAll('.js-poweroff-btn');
   const openBtns = document.querySelectorAll('.js-open-btn');

@@ -88,9 +88,9 @@ def demo_callback1(pin):
 def poweroff():
     np.show_loading((255,0,0))
     print("**** DB --> RGB led loading shutting down pi ****")
-    DataRepository.add_history(None,None,30)
+    DataRepository.add_history(None,7,30)
     print("**** DB --> Pi is shutting down ****")
-    DataRepository.add_history(None,None,8)
+    DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
     #hier nog poweroff plaatsen om te stoppen
     
@@ -197,6 +197,12 @@ def info():
         DataRepository.update_location(gegevens['address'], gegevens['coordinates'], gegevens['name'])
         return jsonify(status='updated location'), 201
 
+@app.route(endpoint + '/history/<time>/', methods=['GET'])
+def get_history(time):
+    if request.method == 'GET':
+        data = DataRepository.filter_history_by_time(time)
+        return jsonify(table=data), 201
+
 @app.route(endpoint + '/history/average/<time>/', methods=['GET'])
 def get_average(time):
     if request.method == 'GET':
@@ -277,7 +283,7 @@ def start_lcd(btnStatusLcd,loadingStatus):
             if loadingStatus.value == True:
                 np.show_loading()
                 print("**** DB --> RGB led loading starting pi ****")
-                DataRepository.add_history(None,None,29)
+                DataRepository.add_history(None,7,29)
                 loadingStatus.value = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
@@ -327,6 +333,8 @@ def save_data():
                     volume = 29
                 print("**** DB --> Volume ****")
                 DataRepository.add_history(volume,3,9)
+                print("**** DB --> RGB led show value volume ****")
+                DataRepository.add_history(None,7,11)
                 sleep(60)
             except Exception as e:
                 print('save_data gecrasht!!',e)
@@ -385,8 +393,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
                         # print(f'Volume: {volume}, Prev_volume: {prev_volume}')
                         np.show_value(volume)
                         prev_volume = volume
-                        print("**** DB --> RGB led show value volume ****")
-                        DataRepository.add_history(None,7,11)
+                        
                 sleep(0.5) # 500 ms
             except Exception as e:
                 print('live_data gecrasht!!',e)
