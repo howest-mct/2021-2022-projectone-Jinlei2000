@@ -34,6 +34,10 @@ const showTable = function (json) {
                     <td>${item.description}</td>
                    </tr>`;
   }
+
+  if ($.fn.DataTable.isDataTable('.js-table')) {
+    $('.js-table').DataTable().destroy();
+  }
   htmlDataTable.innerHTML = htmlString;
   $('.js-table').DataTable({
     info: false,
@@ -47,6 +51,7 @@ const showTable = function (json) {
       searchPlaceholder: 'Search ...',
     },
   });
+  listenToFilter('.js-filter-time');
 };
 // #endregion
 
