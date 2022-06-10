@@ -15,6 +15,7 @@ try:
         x = input("Enter open: ")
         servo_door.unlock_door()
         servo_valve.unlock_valve()
+  
         
 except KeyboardInterrupt as e:
     print(e)

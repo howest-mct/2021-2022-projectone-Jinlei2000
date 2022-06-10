@@ -82,6 +82,13 @@ const listenToFilter = function (htmlFilterClass) {
     });
   }
 };
+
+const listenToSocket = function () {
+  socketio.on('B2F_refresh_data', function () {
+    console.log('B2F_refresh_data');
+    getHistory(filter);
+  });
+};
 // #endregion
 
 // #region ***  Init / DOMContentLoaded                  ***********
@@ -93,6 +100,8 @@ const historyInit = function () {
     checkToken('history.html');
 
     getHistory('all');
+
+    listenToSocket();
   }
 };
 

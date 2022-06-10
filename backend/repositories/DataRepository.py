@@ -123,6 +123,15 @@ class DataRepository:
             return 0.0
         return float(result['value'])
     
+    # -- LAST VALUE VOLUME
+    @staticmethod
+    def get_last_value_volume():
+        sql = 'SELECT value FROM history WHERE actionid = 9 ORDER BY historyid DESC LIMIT 1'
+        result = Database.get_one_row(sql)
+        if result == None:
+            return 28
+        return int(result['value'])
+    
     # -- UPDATE WEIGHT 
     @staticmethod
     def update_weight():

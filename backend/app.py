@@ -317,25 +317,31 @@ def save_data():
     try:
         while True:
             try:
-                #hier nog een sockect emit plaatsen da je pagina kan refreshen van alle paginas behalve map.html, index.html and welcome.html
-                weight = round(weight_sensor.get_weight(),2)
-                last_weight = DataRepository.get_last_value_weight()
-                # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
-                if weight == 0 and last_weight != 0:
-                    DataRepository.update_weight()
-                print("**** DB --> Weight ****")
-                DataRepository.add_history(weight,4,10)
-                
-                volume = ultrasonic_sensor.get_distance()
-                if volume < 12:
-                    volume = 12
-                if volume > 29:
-                    volume = 29
-                print("**** DB --> Volume ****")
-                DataRepository.add_history(volume,3,9)
-                print("**** DB --> RGB led show value volume ****")
-                DataRepository.add_history(None,7,11)
-                sleep(60)
+                if magnetcontactValve.pressed == True:
+                    #hier nog een sockect emit plaatsen da je pagina kan refreshen van alle paginas behalve map.html, index.html and welcome.html
+                    weight = round(weight_sensor.get_weight(),2)
+                    last_weight = DataRepository.get_last_value_weight()
+                    # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
+                    if weight == 0 and last_weight != 0:
+                        DataRepository.update_weight()
+                    if weight != last_weight:
+                        print("**** DB --> Weight ****")
+                        DataRepository.add_history(weight,4,10)
+                    
+                    volume = round(ultrasonic_sensor.get_distance())
+                    last_volume = DataRepository.get_last_value_volume()
+                    if volume < 12:
+                        volume = 12
+                    if volume > 28:
+                        volume = 28
+                    # print(volume,' ',type(volume),'/',last_volume,' ',type(last_volume))
+                    if volume != last_volume and magnetcontactValve.pressed == True:
+                        print("**** DB --> Volume ****")
+                        DataRepository.add_history(volume,3,9)
+                        print("**** DB --> RGB led show value volume ****")
+                        DataRepository.add_history(None,7,11)
+                    socketio.emit('B2F_refresh_data')
+                    sleep(60)
             except Exception as e:
                 print('save_data gecrasht!!',e)
                 sleep(60)
@@ -344,18 +350,19 @@ def save_data():
     
 def start_thread_save_data():
     print("**** Starting THREAD save data ****")
-    p = Process(target=save_data, args=())
-    p.start()
+    # p = Process(target=save_data, args=())
+    # p.start()
+    thread = threading.Thread(target=save_data, args=(), daemon=True)
+    thread.start()
 
 # START LIVE DATA
 def live_data(loadingStatus,loadingStatusShutdown):
     try:
         prev_volume = 30
         servoValveStatus = False
+        servo_valve.unlock_valve()
         while True:
             try:
-                #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
-
                 volume = ultrasonic_sensor.get_distance()
 
                 procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
@@ -387,13 +394,16 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     'opened_times': opened_times,
                     'emptied_times': emptied_times
                 }, broadcast=True)
-                if loadingStatus.value == False and loadingStatusShutdown.value == False:
+                if loadingStatus.value == False and loadingStatusShutdown.value == False and magnetcontactValve.pressed == True:
                     # print(volume-prev_volume)
+                    if procent_volume == 0:
+                        np.show_value(28.5)
+                        prev_volume = 28.5
                     if prev_volume != volume and (1.5 < volume-prev_volume or volume-prev_volume < -1.5):
                         # print(f'Volume: {volume}, Prev_volume: {prev_volume}')
                         np.show_value(volume)
                         prev_volume = volume
-                        
+
                 sleep(0.5) # 500 ms
             except Exception as e:
                 print('live_data gecrasht!!',e)
@@ -414,6 +424,8 @@ def servo_magnet(servoDoorStatus):
         tijd = 0
         if servoDoorStatus.value == True:
             servo_door.lock_door()
+        else:
+            servo_door.unlock_door()
         while True:
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
@@ -454,7 +466,7 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact valve open ****')
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
-                sleep(0.25)
+                sleep(1)
                 # sleep(0.3)
             sleep(0.001) # 1 ms
 

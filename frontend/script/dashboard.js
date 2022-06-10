@@ -464,20 +464,21 @@ const listenToSocket = function () {
     showLiveData(data);
   });
 
-  // const getActiveFilterTime = function (htmlFilterClass) {
-  //   const btns = document.querySelectorAll(htmlFilterClass);
-  //   for (const btn of btns) {
-  //     if (btn.classList.contains('c-filter--active')) {
-  //       return btn.innerHTML;
-  //     }
-  //   }
-  // };
+  const getActiveFilterTime = function (htmlClass) {
+    const btns = document.querySelectorAll(htmlClass);
+    for (const btn of btns) {
+      if (btn.classList.contains('c-filter--active')) {
+        console.log(btn.innerHTML);
+        return btn.innerHTML;
+      }
+    }
+  };
 
-  // socketio.on('B2F_refresh_data', function () {
-  //   console.log('B2F_refresh_data');
-  //   getAverageData(getActiveFilterTime('.js-average-filter'));
-  //   getTotalData(getActiveFilterTime('.js-total-filter'));
-  // });
+  socketio.on('B2F_refresh_data', function () {
+    console.log('B2F_refresh_data');
+    getAverageData(getActiveFilterTime('.js-filter-average'));
+    getTotalData(getActiveFilterTime('.js-filter-total'));
+  });
 };
 // #endregion
 
