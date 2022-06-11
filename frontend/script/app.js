@@ -134,6 +134,11 @@ const listenToSocketConnection = function () {
       showNotification('warning', 'Door is already open.');
     }
   })
+   socketio.on('B2F_full_volume', function () {
+    if (!document.querySelector('.js-index-page')) {
+      showNotification('warning', 'The trash can is full.');
+    }
+   });
 };
 
 // #endregion

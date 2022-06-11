@@ -479,6 +479,8 @@ const listenToSocket = function () {
     getAverageData(getActiveFilterTime('.js-filter-average'));
     getTotalData(getActiveFilterTime('.js-filter-total'));
   });
+
+ 
 };
 // #endregion
 

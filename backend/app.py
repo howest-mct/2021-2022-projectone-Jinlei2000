@@ -6,6 +6,7 @@ import threading
 from repositories.DataRepository import DataRepository
 
 from multiprocessing import Process, Queue, Value 
+from subprocess import call 
 
 from mfrc522 import SimpleMFRC522
 
@@ -86,6 +87,8 @@ def demo_callback1(pin):
     DataRepository.add_history(1,8,5)
 
 def poweroff():
+    lcd.write("Powering off...")
+    GPIO.output(backlight_lcd, GPIO.HIGH)
     np.show_loading((255,0,0))
     print("**** DB --> RGB led loading shutting down pi ****")
     DataRepository.add_history(None,7,30)
@@ -93,6 +96,7 @@ def poweroff():
     DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
     #hier nog poweroff plaatsen om te stoppen
+    call("sudo poweroff", shell=True)
     
 
 def demo_callback2(pin):
@@ -375,6 +379,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     print("**** DB -->  DOOR 1 is locked****")
                     DataRepository.add_history(None,1,3)
                     servoValveStatus = True
+                    socketio.emit('B2F_full_volume', broadcast=True)
                 elif procent_volume < 90 and servoValveStatus == True:
                     servo_valve.unlock_valve()
                     print("**** DB -->  DOOR 1 is unlocked****")
