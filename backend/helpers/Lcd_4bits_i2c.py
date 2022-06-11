@@ -94,6 +94,7 @@ class Lcd_4bits_i2c:
             self.__write(f'VRY => {cijfers}')
 
     def write(self,value):
+        self.clear_LCD()
         self.__write(value)
 
     def get_ip_wlan0(self):

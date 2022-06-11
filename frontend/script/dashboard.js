@@ -504,6 +504,8 @@ const dashboardInit = function () {
     getPopupData();
 
     listenToSocket();
+
+    changeColor();
   }
 };
 

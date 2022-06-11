@@ -1222,6 +1222,58 @@ a:focus {
 }
 
 /*
+    Component: color-picker
+    ---
+    Color picker component
+*/
+
+.c-color-picker {
+    display: flex;
+    margin-top: 16px;
+}
+
+.c-color {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+    background-color: #264AFF;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.c-color:hover {
+    transform: translateY(-3px);
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    transition: all .25s ease-in-out;
+}
+
+.c-color-darkblue {
+    background-color: #001EB3;
+}
+
+.c-color-green {
+    background-color: #77C66E;
+}
+
+.c-color-darkgreen {
+    background-color: #22632d;
+}
+
+.c-color i {
+    font-size: 24px;
+    color: white;
+    display: none;
+}
+
+.c-color-active i {
+    display: inline-block;
+}
+
+/*
     Component: loading & loader
     ---
     loading animation with custom styles and rotation

@@ -87,6 +87,7 @@ def demo_callback1(pin):
     DataRepository.add_history(1,8,5)
 
 def poweroff():
+    socketio.emit('B2F_button', {'message': 'poweroff'})
     lcd.write("Powering off...")
     GPIO.output(backlight_lcd, GPIO.HIGH)
     np.show_loading((255,0,0))
@@ -95,6 +96,7 @@ def poweroff():
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
+    sleep(1)
     #hier nog poweroff plaatsen om te stoppen
     call("sudo poweroff", shell=True)
     
@@ -245,7 +247,6 @@ def buttons(payload):
     if btn_type == 'poweroff':
         print("**** DB --> Remote poweroff button pressed ****")
         DataRepository.add_history(None,None,25)
-        socketio.emit('B2F_button', {'message': 'poweroff'})
         poweroff()
     if btn_type == 'open':
         if magnetcontactDoor.pressed == True:
@@ -364,7 +365,9 @@ def live_data(loadingStatus,loadingStatusShutdown):
     try:
         prev_volume = 30
         servoValveStatus = False
+        servo_valve.lock_valve()
         servo_valve.unlock_valve()
+        sleep(0.5)
         while True:
             try:
                 volume = ultrasonic_sensor.get_distance()

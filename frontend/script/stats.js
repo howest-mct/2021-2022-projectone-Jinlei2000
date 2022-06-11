@@ -280,6 +280,7 @@ const statsInit = function () {
 
     listenToSocket();
 
+    changeColor();
   }
 };
 

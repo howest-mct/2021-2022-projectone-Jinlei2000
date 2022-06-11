@@ -102,6 +102,8 @@ const historyInit = function () {
     getHistory('all');
 
     listenToSocket();
+
+    changeColor();
   }
 };
 

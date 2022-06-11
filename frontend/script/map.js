@@ -81,6 +81,8 @@ const mapInit = function () {
   if (document.querySelector('.js-map-page')) {
     checkToken('map.html');
     getCoordinates();
+
+    changeColor();
   }
 };
 
