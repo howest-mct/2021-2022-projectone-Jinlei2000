@@ -1,10 +1,10 @@
 # Project one
 
 ## Table of Contents
-1. [About smart garbage](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/edit/master/readme.md#about-smart-garbage)
-   - [Sensors/actuators](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/edit/master/readme.md#sensors/actuators)
-   - [Feature on site](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/edit/master/readme.md#feature-on-site)
-2. [Technologies](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/edit/master/readme.md#tchnologies)
+1. [About smart garbage](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#about-smart-garbage)
+   - [Sensors/actuators](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#sensors/actuators)
+   - [Feature on site](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#feature-on-site)
+2. [Technologies](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#tchnologies)
 
 ## About Smart garbage
 
