@@ -18,6 +18,9 @@ My project is a smart trash can using a Raspberry Pi. Its purpose is to easily k
 
 The smart trash can is intended for city staff/businesses who can efficiently empty their trash cans because they can see which trash cans are full.
 
+Feed the can, man. Keep track of your consumed waste with Smart Garbage.
+Green city, clean city, my dream city. Keep track of your consumed waste with Smart Garbage.
+
 ### Sensors/Actuators
 
 These are all my used sensors and actuators:
@@ -58,13 +61,25 @@ These are all used programming languages and libraries.
 - [Goapify](https://www.geoapify.com/)
 
 ## Getting Started
+### Setting Up the Raspberry Pi
+Before we can run the code we are going to prepare the raspberry pi.
+1. Downloading Raspberry Pi OS.
+Go to [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/) and download image --> (Raspberry Pi OS with desktop).
+2. Writing image to your SD Card.
+When it is finished downloading, you can write the image to your sd card with (recommend 8 or 16GB) [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/)
 
+
+
+### The circuit diagram
+We are going to connect the circuit of the Smart garbage. go to [instructables]() link!!!! to see the scheme for more detail.
+
+### Create a database
 
 ## Contact
 
 Lei Jin - [lei.jin@student.howest.be](mailto:lei.jin@student.howest.be)
 
-Project Link: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
+Source code: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
 
 ## Acknowledgments
 - [Line awesome](https://icons8.com/line-awesome)
