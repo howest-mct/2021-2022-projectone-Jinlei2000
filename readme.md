@@ -12,7 +12,7 @@
 
 ## About Smart Garbage
 
-I am an MCT student from howest in Kortrijk, Belgium.
+I am an MCT student from Howest in Kortrijk, Belgium.
 
 My project is a smart trash can using a Raspberry Pi. Its purpose is to easily keep track of how much trash is produced over a period of time. When the bin is full, the garbage collector can be notified.
 
@@ -68,8 +68,7 @@ Before we can run the code we are going to prepare the raspberry pi.
 Go to [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/) and download image --> (Raspberry Pi OS with desktop). This may take a while.
 
 2. Writing image to your SD Card.
-When it is finished downloading, you can write the image to your sd card with (recommend 8 or 16GB) [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/)
-how to do this? [Tutorial Video](https://www.youtube.com/watch?v=D2TISpT7yLI)
+When it is finished downloading, you can write the image to your sd card with (recommend 8 or 16GB) [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/). How to do this? [Tutorial Video](https://youtu.be/D2TISpT7yLI?t=115)
 
 
 ### The circuit diagram
