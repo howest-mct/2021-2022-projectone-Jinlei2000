@@ -1,12 +1,16 @@
 # Project one
 
 ## Table of Contents
-1. [About smart garbage](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#about-smart-garbage)
-   - [Sensors/actuators](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#sensorsactuators)
+1. [About Smart garbage](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#about-smart-garbage)
+   - [Sensors/Actuators](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#sensorsactuators)
    - [Feature on site](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#feature-on-site)
 2. [Technologies](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#technologies)
+3. [Getting Started](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#getting-started)
+4. [Contact](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#contact)
+5. [Acknowledgments](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#acknowledgments)
+6. [Instructables](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#instructables)
 
-## About Smart garbage
+## About Smart Garbage
 
 I am an MCT student from howest in Kortrijk, Belgium.
 
@@ -14,7 +18,7 @@ My project is a smart trash can using a Raspberry Pi. Its purpose is to easily k
 
 The smart trash can is intended for city staff/businesses who can efficiently empty their trash cans because they can see which trash cans are full.
 
-### Sensors/actuators
+### Sensors/Actuators
 
 These are all my used sensors and actuators:
 - **Weight sensor** to measure weight.
@@ -53,25 +57,18 @@ These are all used programming languages and libraries.
 - [Chart.js](https://www.chartjs.org/)
 - [Goapify](https://www.geoapify.com/)
 
+## Getting Started
+
+
 ## Contact
 
-Lei Jin - [lei.jin@student.howest.be](lei.jin@student.howest.be)
+Lei Jin - [lei.jin@student.howest.be](mailto:lei.jin@student.howest.be)
 
-Project Link: (mailto:https://github.com/howest-mct/2021-2022-projectone-Jinlei2000)
+Project Link: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
 
 ## Acknowledgments
 - [Line awesome](https://icons8.com/line-awesome)
 - [Inter webfonts](https://rsms.me/inter/)
-- 
-
-
-
-Hoe kan een externe persoon (die niets weet over de "ProjectOne" opdracht) het project snel runnen op de eigen pc?
-Op github vind je verschillende voorbeelden hoe je een readme.md bestand kan structureren.
-- [Voorbeeld 1](https://github.com/othneildrew/Best-README-Template)
-- [Voorbeeld 2](https://github.com/tsungtwu/flask-example/blob/master/README.md)
-- [Voorbeeld 3](https://github.com/twbs/bootstrap/blob/main/README.md)
-- [Voorbeeld 4](https://www.makeareadme.com/)
 
 ## Inhoud
 Zoals je kan zien is er geen "vaste" structuur voor zo'n document. Je bepaalt zelf hoe je het bestand via markdown structureert. Zorg ervoor dat het document minimaal op volgende vragen een antwoord biedt.
@@ -83,4 +80,4 @@ Zoals je kan zien is er geen "vaste" structuur voor zo'n document. Je bepaalt ze
 - Zijn er poorten die extra aandacht vereisen in de back- en/of front-end code?
   
 ## Instructables
-Plaats zeker een link naar de Instructables zodat het project kan nagebouwd worden!
+If you want to recreate my project you will find a well-documented guide on [instructables](https://www.instructables.com/preview/EZKOKHRL20FZQ8B/).link aaanpassss!!!!!
