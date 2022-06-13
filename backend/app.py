@@ -78,7 +78,6 @@ def setup():
     btnLcdPin.on_press(demo_callback1)
     btnPoweroffPin.on_press(demo_callback2)
 
-
 def demo_callback1(pin):
     global btnStatusLcd
     print("---- LCD Button pressed ----")
@@ -230,36 +229,39 @@ def get_charts(time,actionid):
         data = DataRepository.filter_chart_data_by_time_actionid(time,actionid)
         return jsonify(data), 201
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
+try:
+    @socketio.on('connect')
+    def initial_connection():
+        print('A new client connect')
 
-@socketio.on('F2B_addNewUser')
-def add_new_user():
-    print("**** DB --> New User added ****")
-    DataRepository.add_history(None,None,14)
+    @socketio.on('F2B_addNewUser')
+    def add_new_user():
+        print("**** DB --> New User added ****")
+        DataRepository.add_history(None,None,14)
 
-@socketio.on('F2B_LoggedInUser')
-def logged_in_user():
-    print("**** DB --> Logged in user ****")
-    DataRepository.add_history(None,None,17)
+    @socketio.on('F2B_LoggedInUser')
+    def logged_in_user():
+        print("**** DB --> Logged in user ****")
+        DataRepository.add_history(None,None,17)
 
-@socketio.on('F2B_buttons')
-def buttons(payload):
-    btn_type = payload['button']
-    if btn_type == 'poweroff':
-        print("**** DB --> Remote poweroff button pressed ****")
-        DataRepository.add_history(None,None,25)
-        poweroff()
-    if btn_type == 'open':
-        if magnetcontactDoor.pressed == True:
-                print("**** DB -->  Remote open button pressed****")
-                DataRepository.add_history(None,None,26)
-                servoDoorStatus.value = True
-                socketio.emit('B2F_button', {'message': 'opening'})
-        else:
-            socketio.emit('B2F_button', {'message': 'already opened'})
-    
+    @socketio.on('F2B_buttons')
+    def buttons(payload):
+        btn_type = payload['button']
+        if btn_type == 'poweroff':
+            print("**** DB --> Remote poweroff button pressed ****")
+            DataRepository.add_history(None,None,25)
+            poweroff()
+        if btn_type == 'open':
+            if magnetcontactDoor.pressed == True:
+                    print("**** DB -->  Remote open button pressed****")
+                    DataRepository.add_history(None,None,26)
+                    servoDoorStatus.value = True
+                    socketio.emit('B2F_button', {'message': 'opening'})
+            else:
+                socketio.emit('B2F_button', {'message': 'already opened'})
+except Exception as e:
+    print("socket crashed!! ",e)
+        
     
 # ALL THREADS
 # Important!!! Debugging must be OFF on server startup, otherwise thread will start twice
@@ -391,7 +393,8 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     print("**** DB -->  DOOR 1 is unlocked****")
                     DataRepository.add_history(None,1,4)
                     servoValveStatus = False
-
+                if magnetcontactValve.pressed == False:
+                    volume = prev_volume
                 weight = round(weight_sensor.get_weight(),2)
                 door_status = magnetcontactDoor.pressed
                 valve_status = magnetcontactValve.pressed
@@ -478,7 +481,7 @@ def servo_magnet(servoDoorStatus):
                         print('**** Magnetcontact valve open ****')
                         DataRepository.add_history(1,2,2)
                     prevStatus2 = status2
-                    sleep(1)
+                    sleep(0.75)
                     # sleep(0.3)
                 sleep(0.001) # 1 ms
             except Exception as e:
@@ -532,12 +535,15 @@ def start_chrome_thread():
 def read_list_out_Process():
     try:
         while True:
-            # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
-            list_data = badgeid.get()
-            # print(">>", list_data)
-            id = list_data[0]
-            socketio.emit('B2F_sendBadgeId', {'badgeid': id})
-            sleep(0.5)
+            try:
+                # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
+                list_data = badgeid.get()
+                # print(">>", list_data)
+                id = list_data[0]
+                socketio.emit('B2F_sendBadgeId', {'badgeid': id})
+                sleep(0.5)
+            except Exception as e:
+                print('read_list_out_Process crashed!!',e)
     except:
         print('Error thread read_list_out_Process!!!')
 
@@ -547,18 +553,21 @@ def start_thread_Queue():
 
 if __name__ == '__main__':
     try:
-        start = time()
-        setup()
-        start_thread_lcd()
-        start_thread_live_data()
-        start_thread_save_data()
-        start_thread_rfid()
-        start_thread_servo_magnet()
-        # start_chrome_thread()
-        start_thread_Queue()
-        print(f"Threads elapsed time: {(time()-start):.3f}s")
-        print("**** Starting APP ****")
-        socketio.run(app, debug=False, host='0.0.0.0')
+        try:
+            start = time()
+            setup()
+            start_thread_lcd()
+            start_thread_live_data()
+            start_thread_save_data()
+            start_thread_rfid()
+            start_thread_servo_magnet()
+            # start_chrome_thread()
+            start_thread_Queue()
+            print(f"Threads elapsed time: {(time()-start):.3f}s")
+            print("**** Starting APP ****")
+            socketio.run(app, debug=False, host='0.0.0.0')
+        except Exception as e:
+            print('Error main!!!',e)
     except KeyboardInterrupt:
         print('KeyboardInterrupt exception is caught')
         # LCD backlight off
