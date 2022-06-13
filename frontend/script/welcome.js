@@ -34,6 +34,24 @@ const listenToDeleteBtn = function(){
     handleData(url, callbackDeleteUser, showApiError, 'DELETE');
   })
 }
+
+const listenToChangeColor = function () {
+  const colorBtns = document.querySelectorAll('.c-color');
+  for (const c of colorBtns) {
+    c.addEventListener('click', function () {
+      // console.log('color clicked');
+      if (!this.classList.contains('c-color-active')) {
+        const colorBtns = document.querySelectorAll('.c-color');
+        colorBtns.forEach(function (btn) {
+          btn.classList.remove('c-color-active');
+        });
+        this.classList.add('c-color-active');
+        localStorage.setItem('color', this.value);
+        changeColor();
+      }
+    });
+  }
+};
 // #endregion
 
 // #region ***  Init / DOMContentLoaded                  ***********
@@ -52,6 +70,9 @@ const welcomeInit = function () {
     userid = localStorage.getItem('userid');
     console.log('userid: ', userid);
     getUsername(userid);
+
+    listenToChangeColor();
+    changeColor();
   }
 };
 

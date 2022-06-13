@@ -258,6 +258,14 @@ const listenToFilter = function (htmlFilterClass) {
     });
   }
 };
+
+const listenToSocket = function () {
+  socketio.on('B2F_refresh_data', function () {
+    console.log('B2F_refresh_data');
+    getChartWeight(filter);
+    getChartVolume(filter);
+  });
+}
 // #endregion
 
 // #region ***  Init / DOMContentLoaded                  ***********
@@ -265,9 +273,14 @@ const statsInit = function () {
   console.log('stats.js: init');
   if (document.querySelector('.js-stats-page')) {
     checkToken('stats.html');
+
     getChartWeight('all');
     getChartVolume('all');
     listenToFilter('.js-filter-time');
+
+    listenToSocket();
+
+    changeColor();
   }
 };
 

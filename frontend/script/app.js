@@ -53,16 +53,15 @@ const showApiError = function () {
   showNotification('error', 'Something went wrong while fetching data from the api.');
 };
 
-
 // #endregion
 
 // #region ***  Callback-No Visualisation - callback___  ***********
 const tokenValid = function (json) {
   // console.log('logged_in_as: ', json.logged_in_as);
-}
+};
 
 const callbackTokenError = function () {
-  showNotification('error', 'Token is not valid or don\'t have a token!');
+  showNotification('error', "Token is not valid or don't have a token!");
   window.location.href = '/index.html';
 };
 // #endregion
@@ -73,7 +72,7 @@ const checkToken = function (page) {
   localStorage.setItem('page', page);
   const url = backend + `/protected/`;
   handleData(url, tokenValid, callbackTokenError, 'GET', null, token);
-}
+};
 // #endregion
 
 // #region ***  Event Listeners - listenTo___            ***********
@@ -96,30 +95,13 @@ const toggleNav = function () {
   }
 };
 
-const listenToFilterBtns = function (htmlFilterClass) {
-  const btns = document.querySelectorAll(htmlFilterClass);
-  for (const btn of btns) {
-    btn.addEventListener('click', function () {
-      // console.log('filter clicked',this);
-      if (!this.classList.contains('c-filter--active')) {
-        for (const btn of btns) {
-          btn.classList.remove('c-filter--active');
-        }
-        this.classList.add('c-filter--active');
-        // console.log(this.getAttribute('data-filter'));
-        // return this.getAttribute('data-filter');
-      }
-    });
-  }
-};
-
 const listenToNavBtns = function () {
   const poweroffBtns = document.querySelectorAll('.js-poweroff-btn');
   const openBtns = document.querySelectorAll('.js-open-btn');
   for (const p of poweroffBtns) {
     p.addEventListener('click', function () {
       console.log('poweroff clicked');
-      socketio.emit('F2B_buttons',{button: 'poweroff'});
+      socketio.emit('F2B_buttons', { button: 'poweroff' });
     });
   }
   for (const o of openBtns) {
@@ -128,8 +110,7 @@ const listenToNavBtns = function () {
       socketio.emit('F2B_buttons', { button: 'open' });
     });
   }
-
-}
+};
 
 const listenToSocketConnection = function () {
   try {
@@ -147,10 +128,49 @@ const listenToSocketConnection = function () {
       showNotification('warning', 'Raspberry Pi is going to poweroff!');
     } else if (message == 'opening') {
       showNotification('success', 'Door is open now.');
-    }else if (message == 'already opened') {
+    } else if (message == 'already opened') {
       showNotification('warning', 'Door is already open.');
     }
-  })
+  });
+  socketio.on('B2F_full_volume', function () {
+    if (!document.querySelector('.js-index-page')) {
+      showNotification('warning', 'The trash can is full.');
+    }
+  });
+};
+
+const changeColor = function () {
+  const color = localStorage.getItem('color');
+  // console.log('change color to: ', color);
+  if (color) {
+    if (document.querySelectorAll('.u-color-primary-blue').length > 0) {
+      document.querySelectorAll('.u-color-primary-blue').forEach(function (el) {
+        el.classList.add('u-color');
+      });
+      document.querySelectorAll('.u-color-primary-blue').forEach(function (el) {
+        el.classList.remove('u-color-primary-blue');
+      });
+    }
+    document.querySelectorAll('.u-color').forEach(function (el) {
+      el.style.backgroundColor = color;
+    });
+
+    if (document.querySelector('.js-welcome-page')) {
+      const colorBtns = document.querySelectorAll('.c-color');
+      const arrayColors = ['#264AFF', '#001EB3', '#77C66E', '#22632d'];
+      // console.log('color: ', color);
+
+      colorBtns.forEach(function (el) {
+        el.classList.remove('c-color-active');
+      });
+      // console.log('arrayColors: ', arrayColors);
+      for (let i = 0; i < arrayColors.length; i++) {
+        if (color === arrayColors[i]) {
+          colorBtns[i].classList.add('c-color-active');
+        }
+      }
+    }
+  }
 };
 
 // #endregion

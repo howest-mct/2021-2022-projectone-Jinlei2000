@@ -6,6 +6,7 @@ import threading
 from repositories.DataRepository import DataRepository
 
 from multiprocessing import Process, Queue, Value 
+from subprocess import call 
 
 from mfrc522 import SimpleMFRC522
 
@@ -86,13 +87,18 @@ def demo_callback1(pin):
     DataRepository.add_history(1,8,5)
 
 def poweroff():
+    socketio.emit('B2F_button', {'message': 'poweroff'})
+    lcd.write("Powering off...")
+    GPIO.output(backlight_lcd, GPIO.HIGH)
     np.show_loading((255,0,0))
     print("**** DB --> RGB led loading shutting down pi ****")
-    DataRepository.add_history(None,None,30)
+    DataRepository.add_history(None,7,30)
     print("**** DB --> Pi is shutting down ****")
-    DataRepository.add_history(None,None,8)
+    DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
+    sleep(1)
     #hier nog poweroff plaatsen om te stoppen
+    call("sudo poweroff", shell=True)
     
 
 def demo_callback2(pin):
@@ -197,6 +203,12 @@ def info():
         DataRepository.update_location(gegevens['address'], gegevens['coordinates'], gegevens['name'])
         return jsonify(status='updated location'), 201
 
+@app.route(endpoint + '/history/<time>/', methods=['GET'])
+def get_history(time):
+    if request.method == 'GET':
+        data = DataRepository.filter_history_by_time(time)
+        return jsonify(table=data), 201
+
 @app.route(endpoint + '/history/average/<time>/', methods=['GET'])
 def get_average(time):
     if request.method == 'GET':
@@ -235,16 +247,12 @@ def buttons(payload):
     if btn_type == 'poweroff':
         print("**** DB --> Remote poweroff button pressed ****")
         DataRepository.add_history(None,None,25)
-        socketio.emit('B2F_button', {'message': 'poweroff'})
         poweroff()
     if btn_type == 'open':
         if magnetcontactDoor.pressed == True:
                 print("**** DB -->  Remote open button pressed****")
                 DataRepository.add_history(None,None,26)
-                servo_door.unlock_door()
-                sleep(0.5)
-                print("**** DB -->  DOOR 2 is unlocked with badge****")
-                DataRepository.add_history(None,1,19)
+                servoDoorStatus.value = True
                 socketio.emit('B2F_button', {'message': 'opening'})
         else:
             socketio.emit('B2F_button', {'message': 'already opened'})
@@ -277,7 +285,7 @@ def start_lcd(btnStatusLcd,loadingStatus):
             if loadingStatus.value == True:
                 np.show_loading()
                 print("**** DB --> RGB led loading starting pi ****")
-                DataRepository.add_history(None,None,29)
+                DataRepository.add_history(None,7,29)
                 loadingStatus.value = False
             if btnStatusLcd.value == True:
                 if write_ip_status == True:
@@ -311,23 +319,31 @@ def save_data():
     try:
         while True:
             try:
-                #hier nog een sockect emit plaatsen da je pagina kan refreshen van alle paginas behalve map.html, index.html and welcome.html
-                weight = round(weight_sensor.get_weight(),2)
-                last_weight = DataRepository.get_last_value_weight()
-                # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
-                if weight == 0 and last_weight != 0:
-                    DataRepository.update_weight()
-                print("**** DB --> Weight ****")
-                DataRepository.add_history(weight,4,10)
-                
-                volume = ultrasonic_sensor.get_distance()
-                if volume < 12:
-                    volume = 12
-                if volume > 29:
-                    volume = 29
-                print("**** DB --> Volume ****")
-                DataRepository.add_history(volume,3,9)
-                sleep(60)
+                if magnetcontactValve.pressed == True:
+                    #hier nog een sockect emit plaatsen da je pagina kan refreshen van alle paginas behalve map.html, index.html and welcome.html
+                    weight = round(weight_sensor.get_weight(),2)
+                    last_weight = DataRepository.get_last_value_weight()
+                    # print(f'weight: {weight}, last weight:  {last_weight}, {type(last_weight)}')
+                    if weight == 0 and last_weight != 0:
+                        DataRepository.update_weight()
+                    if weight != last_weight:
+                        print("**** DB --> Weight ****")
+                        DataRepository.add_history(weight,4,10)
+                    
+                    volume = round(ultrasonic_sensor.get_distance())
+                    last_volume = DataRepository.get_last_value_volume()
+                    if volume < 12:
+                        volume = 12
+                    if volume > 28:
+                        volume = 28
+                    # print(volume,' ',type(volume),'/',last_volume,' ',type(last_volume))
+                    if volume != last_volume and magnetcontactValve.pressed == True:
+                        print("**** DB --> Volume ****")
+                        DataRepository.add_history(volume,3,9)
+                        print("**** DB --> RGB led show value volume ****")
+                        DataRepository.add_history(None,7,11)
+                    socketio.emit('B2F_refresh_data')
+                    sleep(60)
             except Exception as e:
                 print('save_data gecrasht!!',e)
                 sleep(60)
@@ -336,18 +352,21 @@ def save_data():
     
 def start_thread_save_data():
     print("**** Starting THREAD save data ****")
-    p = Process(target=save_data, args=())
-    p.start()
+    # p = Process(target=save_data, args=())
+    # p.start()
+    thread = threading.Thread(target=save_data, args=(), daemon=True)
+    thread.start()
 
 # START LIVE DATA
 def live_data(loadingStatus,loadingStatusShutdown):
     try:
         prev_volume = 30
         servoValveStatus = False
+        servo_valve.lock_valve()
+        servo_valve.unlock_valve()
+        sleep(0.5)
         while True:
             try:
-                #volume door geven aan neopixel en dan pixels tonen van volume en kijken op
-
                 volume = ultrasonic_sensor.get_distance()
 
                 procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
@@ -360,6 +379,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     print("**** DB -->  DOOR 1 is locked****")
                     DataRepository.add_history(None,1,3)
                     servoValveStatus = True
+                    socketio.emit('B2F_full_volume', broadcast=True)
                 elif procent_volume < 90 and servoValveStatus == True:
                     servo_valve.unlock_valve()
                     print("**** DB -->  DOOR 1 is unlocked****")
@@ -379,14 +399,16 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     'opened_times': opened_times,
                     'emptied_times': emptied_times
                 }, broadcast=True)
-                if loadingStatus.value == False and loadingStatusShutdown.value == False:
+                if loadingStatus.value == False and loadingStatusShutdown.value == False and magnetcontactValve.pressed == True:
                     # print(volume-prev_volume)
+                    if procent_volume == 0:
+                        np.show_value(28.5)
+                        prev_volume = 28.5
                     if prev_volume != volume and (1.5 < volume-prev_volume or volume-prev_volume < -1.5):
                         # print(f'Volume: {volume}, Prev_volume: {prev_volume}')
                         np.show_value(volume)
                         prev_volume = volume
-                        print("**** DB --> RGB led show value volume ****")
-                        DataRepository.add_history(None,7,11)
+
                 sleep(0.5) # 500 ms
             except Exception as e:
                 print('live_data gecrasht!!',e)
@@ -407,6 +429,8 @@ def servo_magnet(servoDoorStatus):
         tijd = 0
         if servoDoorStatus.value == True:
             servo_door.lock_door()
+        else:
+            servo_door.unlock_door()
         while True:
             if servoDoorStatus.value == True:
                 servo_door.unlock_door()
@@ -447,7 +471,7 @@ def servo_magnet(servoDoorStatus):
                     print('**** Magnetcontact valve open ****')
                     DataRepository.add_history(1,2,2)
                 prevStatus2 = status2
-                sleep(0.25)
+                sleep(1)
                 # sleep(0.3)
             sleep(0.001) # 1 ms
 
