@@ -14,12 +14,12 @@
 
 I am an MCT student from Howest in Kortrijk, Belgium.
 
-My project is a smart trash can using a Raspberry Pi. Its purpose is to easily keep track of how much trash is produced over a period of time. When the bin is full, the garbage collector can be notified.
+My project is a **Smart garbage** using a Raspberry Pi. Its purpose is to easily keep **track of how much trash is produced** over a period of time. When the bin is full, the garbage collector can be notified.
 
 The smart trash can is intended for city staff/businesses who can efficiently empty their trash cans because they can see which trash cans are full.
 
-Feed the can, man. Keep track of your consumed waste with Smart Garbage.
-Green city, clean city, my dream city. Keep track of your consumed waste with Smart Garbage.
+**Feed the can, man. Keep track of your consumed waste with Smart Garbage.
+Green city, clean city, my dream city. Keep track of your consumed waste with Smart Garbage.**
 
 ### Sensors/Actuators
 
@@ -70,7 +70,13 @@ Go to [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/)
 2. Writing image to your SD Card.
 When it is finished downloading, you can write the image to your sd card with (recommend 8 or 16GB) [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/). How to do this? [Tutorial Video](https://youtu.be/D2TISpT7yLI?t=115)
 
-3. 
+3. Configuring the SD Card
+When writing is done, we can start setting up the SD Card.
+
+- Open file explorer.
+- Go to my pc --> find **boot** disk
+- Create a new file **ssh** without extension.
+- Open the file cmdline.txt with [Notepad++](https://notepad-plus-plus.org/downloads/)
 
 
 ### The circuit diagram
