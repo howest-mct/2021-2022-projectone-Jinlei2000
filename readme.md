@@ -70,6 +70,8 @@ Go to [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/)
 2. Writing image to your SD Card.
 When it is finished downloading, you can write the image to your sd card with (recommend 8 or 16GB) [Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/). How to do this? [Tutorial Video](https://youtu.be/D2TISpT7yLI?t=115)
 
+3. 
+
 
 ### The circuit diagram
 We are going to connect the circuit of the Smart garbage. go to [instructables]() link!!!! to see the scheme for more detail.
