@@ -164,3 +164,4 @@ class DataRepository:
         sql = 'UPDATE location SET address = %s, coordinates = %s, name = %s'
         params = [address,coords,name]
         return Database.execute_sql(sql,params)
+

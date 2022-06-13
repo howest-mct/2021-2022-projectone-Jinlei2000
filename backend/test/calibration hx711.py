@@ -20,6 +20,7 @@ try:
               reading)
     else:
         print('invalid data', reading)
+    
 
     # In order to calculate the conversion ratio to some units, in my case I want grams,
     # you must have known weight.

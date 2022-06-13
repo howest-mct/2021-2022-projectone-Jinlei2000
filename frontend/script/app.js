@@ -133,7 +133,7 @@ const listenToSocketConnection = function () {
     }
   });
   socketio.on('B2F_full_volume', function () {
-    if (!document.querySelector('.js-index-page')) {
+    if (document.querySelector('.js-dashboard-page') ) {
       showNotification('warning', 'The trash can is full.');
     }
   });

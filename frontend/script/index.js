@@ -72,7 +72,7 @@ const callbackProtected = function (json) {
   console.log('localStorage.userid: ', localStorage.getItem('userid'));
   console.log(page);
   if (!page) {
-    window.location.href = `/welcome.html`;
+    window.location.href = `/home.html`;
   } else {
     window.location.href = `/${page}`;
   }
