@@ -56,6 +56,7 @@ const HomeInit = function () {
     checkToken('home.html');
     listenToSockect();
     getName();
+    changeColor();
   }
 };
 
