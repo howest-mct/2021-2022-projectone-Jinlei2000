@@ -252,10 +252,7 @@ def buttons(payload):
         if magnetcontactDoor.pressed == True:
                 print("**** DB -->  Remote open button pressed****")
                 DataRepository.add_history(None,None,26)
-                servo_door.unlock_door()
-                sleep(0.5)
-                print("**** DB -->  DOOR 2 is unlocked with badge****")
-                DataRepository.add_history(None,1,19)
+                servoDoorStatus.value = True
                 socketio.emit('B2F_button', {'message': 'opening'})
         else:
             socketio.emit('B2F_button', {'message': 'already opened'})
