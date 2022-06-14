@@ -208,75 +208,7 @@ Before we can run the code we are going to prepare the raspberry pi.
 
       Replace the following lines with the following lines and change DocumentRoot to the path of your project (SAVE: CTRL + X > Y > Enter):
 
-      ```bash
-      <VirtualHost *:80>
-         # The ServerName directive sets the request scheme, hostname and port that
-         # the server uses to identify itself. This is used when creating
-         # redirection URLs. In the context of virtual hosts, the ServerName
-         # specifies what hostname must appear in the request's Host: header to
-         # match this virtual host. For the default virtual host (this file this
-         # value is not decisive as it is used as a last resort host regardless.
-         # However, you must set it for any further virtual host explicitly.
-         #ServerName www.example.com
-
-         ServerAdmin webmaster@localhost
-         DocumentRoot <project_directory>/frontend
-
-         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-         # error, crit, alert, emerg.
-         # It is also possible to configure the loglevel for particular
-         # modules, e.g.
-         #LogLevel info ssl:warn
-
-         ErrorLog ${APACHE_LOG_DIR}/error.log
-         CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-         # For most configuration files from conf-available/, which are
-         # enabled or disabled at a global level, it is possible to
-         # include a line for only one particular virtual host. For example the
-         # following line enables the CGI configuration for this host only
-         # after it has been globally disabled with "a2disconf".
-         #Include conf-available/serve-cgi-bin.conf
-
-         RewriteEngine On
-         RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
-
-      </VirtualHost>
-
-      <VirtualHost *:443>
-         ServerAdmin webmaster@localhost
-         DocumentRoot <project_directory>/frontend
-         ErrorLog ${APACHE_LOG_DIR}/error.log
-         CustomLog ${APACHE_LOG_DIR}/access.log combined
-         SSLEngine on
-         SSLProtocol all -SSLv2
-         SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
-         SSLCertificateFile "/etc/ssl/certs/certificate.crt"
-         SSLCertificateKeyFile "/etc/ssl/private/private.key"
-
-      SSLProxyEngine on //apache log told me about this
-      SSLProxyVerify none
-      SSLProxyCheckPeerCN off
-      SSLProxyCheckPeerName off
-      SSLProxyCheckPeerExpire off
-
-      RewriteEngine on
-      RewriteCond %{HTTP:Upgrade} websocket [NC]
-      RewriteRule /(.*) ws://localhost:5000/$1 [P,L]
-      # RewriteRule /(.*) http://localhost:5000/$1 [P,L]
-
-
-      RewriteEngine On
-      RewriteCond %{REQUEST_URI}  ^/socket.io            [NC]
-      RewriteCond %{QUERY_STRING} transport=websocket    [NC]
-      RewriteRule /(.*)           ws://localhost:5000/$1 [P,L]
-
-      ProxyPass        /socket.io http://localhost:5000/socket.io
-      ProxyPassReverse /socket.io http://localhost:5000/socket.io
-
-      ProxyPass        /api/v1 http://localhost:5000/api/v1
-      ProxyPassReverse /api/v1 http://localhost:5000/api/v1
-      ```
+      Go to [GitHub](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/apache%20file.txt) copy apache file
 
       Now restart the Apache.
 
