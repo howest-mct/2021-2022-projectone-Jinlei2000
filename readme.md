@@ -185,128 +185,127 @@ Before we can run the code we are going to prepare the raspberry pi.
    - MySQL Server Port: 3306
    - Username: USERNAME
    - Password: PASSWORD
-
+<br><br>
 10. Apache\
    Install Apache and configuration.
 
-   ```bash
-   sudo apt install apache2
-   ```
+      ```bash
+      sudo apt install apache2
+      ```
+      Some plugins:
 
-   Some plugins:
+      ```bash
+      sudo a2enmod proxy_http
+      sudo a2enmod rewrite
+      sudo a2enmod ssl
+      ```
 
-   ```bash
-   sudo a2enmod proxy_http
-   sudo a2enmod rewrite
-   sudo a2enmod ssl
-   ```
+      Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com self-signed-certificate-https-in-raspberry-pi-with-apache/)
+      Change some configurations.
 
-   Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com self-signed-certificate-https-in-raspberry-pi-with-apache/)
-   Change some configurations.
+      ```bash
+      nano /etc/apache2/sites-available/000-default.conf
+      ```
 
-   ```bash
-   nano /etc/apache2/sites-available/000-default.conf
-   ```
+      Replace the following lines with the following lines and change DocumentRoot to the path of your project (SAVE: CTRL + X > Y > Enter):
 
-   Replace the following lines with the following lines and change DocumentRoot to the path of your project (SAVE: CTRL + X > Y > Enter):
+      ```bash
+      <VirtualHost *:80>
+         # The ServerName directive sets the request scheme, hostname and port that
+         # the server uses to identify itself. This is used when creating
+         # redirection URLs. In the context of virtual hosts, the ServerName
+         # specifies what hostname must appear in the request's Host: header to
+         # match this virtual host. For the default virtual host (this file this
+         # value is not decisive as it is used as a last resort host regardless.
+         # However, you must set it for any further virtual host explicitly.
+         #ServerName www.example.com
 
-   ```bash
-   <VirtualHost *:80>
-      # The ServerName directive sets the request scheme, hostname and port that
-      # the server uses to identify itself. This is used when creating
-      # redirection URLs. In the context of virtual hosts, the ServerName
-      # specifies what hostname must appear in the request's Host: header to
-      # match this virtual host. For the default virtual host (this file this
-      # value is not decisive as it is used as a last resort host regardless.
-      # However, you must set it for any further virtual host explicitly.
-      #ServerName www.example.com
+         ServerAdmin webmaster@localhost
+         DocumentRoot <project_directory>/frontend
 
-      ServerAdmin webmaster@localhost
-      DocumentRoot <project_directory>/frontend
+         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+         # error, crit, alert, emerg.
+         # It is also possible to configure the loglevel for particular
+         # modules, e.g.
+         #LogLevel info ssl:warn
 
-      # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-      # error, crit, alert, emerg.
-      # It is also possible to configure the loglevel for particular
-      # modules, e.g.
-      #LogLevel info ssl:warn
+         ErrorLog ${APACHE_LOG_DIR}/error.log
+         CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-      ErrorLog ${APACHE_LOG_DIR}/error.log
-      CustomLog ${APACHE_LOG_DIR}/access.log combined
+         # For most configuration files from conf-available/, which are
+         # enabled or disabled at a global level, it is possible to
+         # include a line for only one particular virtual host. For example the
+         # following line enables the CGI configuration for this host only
+         # after it has been globally disabled with "a2disconf".
+         #Include conf-available/serve-cgi-bin.conf
 
-      # For most configuration files from conf-available/, which are
-      # enabled or disabled at a global level, it is possible to
-      # include a line for only one particular virtual host. For example the
-      # following line enables the CGI configuration for this host only
-      # after it has been globally disabled with "a2disconf".
-      #Include conf-available/serve-cgi-bin.conf
+         RewriteEngine On
+         RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+
+      </VirtualHost>
+
+      <VirtualHost *:443>
+         ServerAdmin webmaster@localhost
+         DocumentRoot <project_directory>/frontend
+         ErrorLog ${APACHE_LOG_DIR}/error.log
+         CustomLog ${APACHE_LOG_DIR}/access.log combined
+         SSLEngine on
+         SSLProtocol all -SSLv2
+         SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+         SSLCertificateFile "/etc/ssl/certs/certificate.crt"
+         SSLCertificateKeyFile "/etc/ssl/private/private.key"
+
+      SSLProxyEngine on //apache log told me about this
+      SSLProxyVerify none
+      SSLProxyCheckPeerCN off
+      SSLProxyCheckPeerName off
+      SSLProxyCheckPeerExpire off
+
+      RewriteEngine on
+      RewriteCond %{HTTP:Upgrade} websocket [NC]
+      RewriteRule /(.*) ws://localhost:5000/$1 [P,L]
+      # RewriteRule /(.*) http://localhost:5000/$1 [P,L]
+
 
       RewriteEngine On
-      RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+      RewriteCond %{REQUEST_URI}  ^/socket.io            [NC]
+      RewriteCond %{QUERY_STRING} transport=websocket    [NC]
+      RewriteRule /(.*)           ws://localhost:5000/$1 [P,L]
 
-   </VirtualHost>
+      ProxyPass        /socket.io http://localhost:5000/socket.io
+      ProxyPassReverse /socket.io http://localhost:5000/socket.io
 
-   <VirtualHost *:443>
-      ServerAdmin webmaster@localhost
-      DocumentRoot <project_directory>/frontend
-      ErrorLog ${APACHE_LOG_DIR}/error.log
-      CustomLog ${APACHE_LOG_DIR}/access.log combined
-      SSLEngine on
-      SSLProtocol all -SSLv2
-      SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
-      SSLCertificateFile "/etc/ssl/certs/certificate.crt"
-      SSLCertificateKeyFile "/etc/ssl/private/private.key"
+      ProxyPass        /api/v1 http://localhost:5000/api/v1
+      ProxyPassReverse /api/v1 http://localhost:5000/api/v1
+      ```
 
-   SSLProxyEngine on //apache log told me about this
-   SSLProxyVerify none
-   SSLProxyCheckPeerCN off
-   SSLProxyCheckPeerName off
-   SSLProxyCheckPeerExpire off
+      Now restart the Apache.
 
-   RewriteEngine on
-   RewriteCond %{HTTP:Upgrade} websocket [NC]
-   RewriteRule /(.*) ws://localhost:5000/$1 [P,L]
-   # RewriteRule /(.*) http://localhost:5000/$1 [P,L]
+      ```bash
+      sudo systemctl restart apache2
+      ```
 
+      check the status of Apache.
 
-   RewriteEngine On
-   RewriteCond %{REQUEST_URI}  ^/socket.io            [NC]
-   RewriteCond %{QUERY_STRING} transport=websocket    [NC]
-   RewriteRule /(.*)           ws://localhost:5000/$1 [P,L]
+      ```bash
+      sudo systemctl status apache2
+      ```
 
-   ProxyPass        /socket.io http://localhost:5000/socket.io
-   ProxyPassReverse /socket.io http://localhost:5000/socket.io
-
-   ProxyPass        /api/v1 http://localhost:5000/api/v1
-   ProxyPassReverse /api/v1 http://localhost:5000/api/v1
-   ```
-
-   Now restart the Apache.
-
-   ```bash
-   sudo systemctl restart apache2
-   ```
-
-   check the status of Apache.
-
-   ```bash
-   sudo systemctl status apache2
-   ```
-
-   ```bash
-   Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset:
-   enabled)
-   Active: active (running) since ...
-   ```
+      ```bash
+      Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset:
+      enabled)
+      Active: active (running) since ...
+      ```
 
 11. Run the server.\
-   Last things to be done.
-   Go to [Geoapify](https://www.geoapify.com/tutorial/how-to-implement-geocoding-javascript-tutorial) create account and make a new project. Now copy the API key. Then go to the project directory on the PI (frontend > script > dashboard.js > line 371) and paste the API key.
+    Last things to be done.
+    Go to [Geoapify](https://www.geoapify.com/tutorial/how-to-implement-geocoding-javascript-tutorial) create account and make a new project. Now copy the API key. Then go to the project directory on the PI (frontend > script > dashboard.js > line 371) and paste the API key.
 
+      Ready to run everything :satisfied:.
 
-   Ready to run everything :satisfied:.
-   ```bash
-   /bin/python3 <project_directory>/backend/app.py
-   ```
+      ```bash
+      /bin/python3 <project_directory>/backend/app.py
+      ```
 
 ### The circuit diagram
 
@@ -322,16 +321,6 @@ Source code: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
 
 - [Line awesome](https://icons8.com/line-awesome)
 - [Inter webfonts](https://rsms.me/inter/)
-
-## Inhoud
-
-Zoals je kan zien is er geen "vaste" structuur voor zo'n document. Je bepaalt zelf hoe je het bestand via markdown structureert. Zorg ervoor dat het document minimaal op volgende vragen een antwoord biedt.
-
-- Wat is de structuur van het project?
-- Wat moet er gebeuren met de database? Hoe krijgt de persoon dit up and running?
-- Moeten er settings worden veranderd in de backend code voor de database?
-- Runt de back- en front-end code direct? Of moeten er nog commando's worden ingegeven?
-- Zijn er poorten die extra aandacht vereisen in de back- en/of front-end code?
 
 ## Instructables
 
