@@ -1434,6 +1434,8 @@ a:focus {
     }
 }
 
+
+
 /*------------------------------------*\
   #UTILITIES
 \*------------------------------------*/
@@ -1443,6 +1445,10 @@ a:focus {
     ---
     random utility functions
 */
+
+.u-rotate-90 {
+    transform: rotate(90deg);
+}
 
 .u-td-none {
     text-decoration: none;

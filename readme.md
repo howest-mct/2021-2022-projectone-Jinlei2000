@@ -7,9 +7,9 @@
    - [Feature on site](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#feature-on-site)
 2. [Technologies](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#technologies)
 3. [Getting Started](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#getting-started)
-4. [Contact](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#contact)
-5. [Acknowledgments](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#acknowledgments)
-6. [Instructables](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#instructables)
+4. [Instructables](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#instructables)
+5. [Contact](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#contact)
+6. [Acknowledgments](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/readme.md#acknowledgments)
 
 ## About Smart Garbage
 
@@ -19,8 +19,7 @@ My project is a **Smart garbage** using a Raspberry Pi. Its purpose is to easily
 
 The smart trash can is intended for city staff/businesses who can efficiently empty their trash cans because they can see which trash cans are full.
 
-**Feed the can, man. Keep track of your consumed waste with Smart Garbage.
-Green city, clean city, my dream city. Keep track of your consumed waste with Smart Garbage.**
+**Green city, clean city, my dream city. Keep track of your consumed waste with Smart Garbage.**
 
 ### Sensors/Actuators
 
@@ -200,7 +199,7 @@ Before we can run the code we are going to prepare the raspberry pi.
       sudo a2enmod ssl
       ```
 
-      Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com self-signed-certificate-https-in-raspberry-pi-with-apache/)
+      Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com/self-signed-certificate-https-in-raspberry-pi-with-apache/)
       Change some configurations.
 
       ```bash
@@ -311,6 +310,10 @@ Before we can run the code we are going to prepare the raspberry pi.
 
 We are going to connect the circuit of the Smart garbage. go to [instructables]() link!!!! to see the scheme for more detail.
 
+## Instructables
+
+If you want to recreate my project you will find a well-documented guide on [instructables](https://www.instructables.com/preview/EZKOKHRL20FZQ8B/).link aaanpassss!!!!!
+
 ## Contact
 
 Lei Jin - [lei.jin@student.howest.be](mailto:lei.jin@student.howest.be)
@@ -322,6 +325,4 @@ Source code: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
 - [Line awesome](https://icons8.com/line-awesome)
 - [Inter webfonts](https://rsms.me/inter/)
 
-## Instructables
 
-If you want to recreate my project you will find a well-documented guide on [instructables](https://www.instructables.com/preview/EZKOKHRL20FZQ8B/).link aaanpassss!!!!!

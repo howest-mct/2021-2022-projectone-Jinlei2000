@@ -114,7 +114,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 1)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg las la-door-open"></i>
+                    <i class="c-card__icon-lg las la-door-open u-rotate-90"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Opened
@@ -133,7 +133,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 2)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg ${iconDoor}"></i>
+                    <i class="c-card__icon-lg ${iconDoor} u-rotate-90"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 1
@@ -305,7 +305,7 @@ const showTotal = function (json) {
                           <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 5)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                                <i class="c-card__icon-lg las la-door-open"></i>
+                                <i class="c-card__icon-lg las la-door-open u-rotate-90"></i>
                               </i>
                               <h3 class="c-card__title c-card__title--feed">
                                 Opened
@@ -459,7 +459,7 @@ const listenToPopupConfirmBtn = function () {
 
 const listenToSocket = function () {
   socketio.on('B2F_live_data', function (data) {
-    // console.log('B2F_live_data');
+    console.log('B2F_live_data 😁😁😁😁😁😁');
     // console.log(data);
     showLiveData(data);
   });

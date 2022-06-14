@@ -1,3 +1,4 @@
+import multiprocessing
 from time import sleep,time
 import datetime
 from RPi import GPIO
@@ -131,7 +132,6 @@ def rfid(send_badgeid,servoDoorStatus):
     except Exception as e:
         print("rfid crashed!! ",e)
     
-
 # CODE FOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!!!!!'
@@ -233,6 +233,7 @@ try:
     @socketio.on('connect')
     def initial_connection():
         print('A new client connect')
+        
 
     @socketio.on('F2B_addNewUser')
     def add_new_user():
@@ -280,6 +281,8 @@ def start_thread_rfid():
     print("**** Starting THREAD rfid ****")
     p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
     p.start()
+    # thread = threading.Thread(target=start_rfid, args=(badgeid,servoDoorStatus,), daemon=True)
+    # thread.start()
 
 # START LCD
 def start_lcd(btnStatusLcd,loadingStatus):
@@ -321,6 +324,8 @@ def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
     p = Process(target=start_lcd, args=(btnStatusLcd,loadingStatus))
     p.start()
+    # thread = threading.Thread(target=start_lcd, args=(btnStatusLcd,loadingStatus), daemon=True)
+    # thread.start()
 
 # START SAVE DATA
 def save_data():
@@ -366,7 +371,7 @@ def start_thread_save_data():
     thread.start()
 
 # START LIVE DATA
-def live_data(loadingStatus,loadingStatusShutdown):
+def live_data(loadingStatus,loadingStatusShutdown): 
     try:
         prev_volume = 30
         servoValveStatus = False
@@ -427,7 +432,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
 
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True)
+    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True) 
     thread.start()
 
 # START SERVO & MAGNETCONTACT
@@ -483,7 +488,7 @@ def servo_magnet(servoDoorStatus):
                     prevStatus2 = status2
                     sleep(0.75)
                     # sleep(0.3)
-                sleep(0.001) # 1 ms
+                sleep(0.00001)
             except Exception as e:
                 print('servo_magnet crashed!!',e)
                 sleep(0.5)
@@ -561,8 +566,8 @@ if __name__ == '__main__':
             start_thread_save_data()
             start_thread_rfid()
             start_thread_servo_magnet()
-            # start_chrome_thread()
             start_thread_Queue()
+            # start_chrome_thread()
             print(f"Threads elapsed time: {(time()-start):.3f}s")
             print("**** Starting APP ****")
             socketio.run(app, debug=False, host='0.0.0.0')
