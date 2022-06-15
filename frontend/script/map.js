@@ -38,7 +38,7 @@ const showMarker = function (json) {
   const coords = json.coordinates.split(',');
   const name = json.name;
   const address = json.address;
-  console.log(coords, name, address);
+  // console.log(coords, name, address);
   showMap(coords);
   makeMarker(coords,name,address);
 };

@@ -122,7 +122,7 @@ const listenToSocketConnection = function () {
     showNotification('error', 'Sockect connection lost!');
   }
   socketio.on('B2F_button', function (data) {
-    console.log('B2F_button', data);
+    // console.log('B2F_button', data);
     const message = data.message;
     if (message == 'poweroff') {
       showNotification('warning', 'Raspberry Pi is going to poweroff!');

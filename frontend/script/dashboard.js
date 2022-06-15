@@ -178,7 +178,8 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 16.5));
+  const value = volume == 0 ? 28.5 : volume;
+  let result = Math.round(Math.abs(((value - 28.5) * 100) / 16.5));
   result = result > 100 ? 100 : result;
   result = result < 5 ? 0 : result;
   return result;
@@ -468,7 +469,7 @@ const listenToSocket = function () {
     const btns = document.querySelectorAll(htmlClass);
     for (const btn of btns) {
       if (btn.classList.contains('c-filter--active')) {
-        console.log(btn.innerHTML);
+        // console.log(btn.innerHTML);
         return btn.innerHTML;
       }
     }

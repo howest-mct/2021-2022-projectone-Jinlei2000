@@ -10,7 +10,7 @@ const showName = function (data) {
 
 const showStatusVolume = function (volumePercent) {
   let htmlString = ``;
-  console.log('showStatusVolume', volumePercent);
+  // console.log('showStatusVolume', volumePercent);
   if (volumePercent == 0) {
     htmlString = `<span class="c-card__circle c-card__circle--green"></span>empty`;
   } else if (volumePercent > 90) {
@@ -42,7 +42,7 @@ const calcVolumeToProcent = function (volume) {
 
 const listenToSockect = function () {
   socketio.on('B2F_live_data', function (payload) {
-    console.log('B2F_live_data');
+    // console.log('B2F_live_data');
     const volumePercent = calcVolumeToProcent(payload.volume);
     showStatusVolume(volumePercent);
   });
