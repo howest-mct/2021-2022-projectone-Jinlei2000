@@ -241,58 +241,54 @@ Before we can run the code we are going to prepare the raspberry pi.
 12. Automatic starting of the software (services).\
    If you follow this your raspberry pi is booting your software will start automatically. I have 2 files that need to be started. One is [app.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/app.py) and other is [powerbtn.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/powerbtn.py).
 
-   Create the file and put the contents of the following lines in it:
-   ```bash	
-   nano /etc/systemd/system/smartgarbage.service
-   ```
-   **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
-   ```bash	
-   [Unit]
-   Description=smartgarbage
-   After=network.target
-   [Service]
-   ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/app.py
-   WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
-   StandardOutput=inherit
-   StandardError=inherit
-   Restart=always
-   User=root
-   [Install]
-   WantedBy=multi-user.target
-   ```
-   Save the file (CTRL + X > Y).
-   Now we are going to create the second service for the powerbtn.py
-   ```bash	
-   nano /etc/systemd/system/powerbtn.service
-   ```
-   **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
-   ```bash	
-   [Unit]
-   Description=powerbtn
-   After=network.target
-   [Service]
-   ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/powerbtn.py
-   WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
-   StandardOutput=inherit
-   StandardError=inherit
-   Restart=always
-   User=root
-   [Install]
-   WantedBy=multi-user.target
-   ```
-   Notify the system of the new service Next, inform the system that the new service should be active.
-   ```bash	
-   sudo systemctl enable powerbtn.service
-   ```	
-   Restart the system.
-   ```bash
-   sudo reboot
-   ```	
-   You can now use the power button to turn the app.py script on or off. If you hold the power button longer than 6 seconds the raspberry pi will shutdown.
-
-
-
-
+      Create the file and put the contents of the following lines in it:
+      ```bash	
+      nano /etc/systemd/system/smartgarbage.service
+      ```
+      **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
+      ```bash	
+      [Unit]
+      Description=smartgarbage
+      After=network.target
+      [Service]
+      ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/app.py
+      WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
+      StandardOutput=inherit
+      StandardError=inherit
+      Restart=always
+      User=root
+      [Install]
+      WantedBy=multi-user.target
+      ```
+      Save the file (CTRL + X > Y).\
+      Now we are going to create the second service for the powerbtn.py
+      ```bash	
+      nano /etc/systemd/system/powerbtn.service
+      ```
+      **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
+      ```bash	
+      [Unit]
+      Description=powerbtn
+      After=network.target
+      [Service]
+      ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/powerbtn.py
+      WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
+      StandardOutput=inherit
+      StandardError=inherit
+      Restart=always
+      User=root
+      [Install]
+      WantedBy=multi-user.target
+      ```
+      Notify the system of the new service Next, inform the system that the new service should be active.
+      ```bash	
+      sudo systemctl enable powerbtn.service
+      ```	
+      Restart the system.
+      ```bash
+      sudo reboot
+      ```	
+      You can now use the power button to turn the app.py script on or off. If you hold the power button longer than 6 seconds the raspberry pi will shutdown.<br><br>
 
 ### The circuit diagram
 
