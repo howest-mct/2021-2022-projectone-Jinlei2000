@@ -116,6 +116,10 @@ const listenToSocketConnection = function () {
   try {
     socketio.on('connect', function () {
       console.log('verbonden met socket webserver');
+      
+    socketio.on('connect_error', (err) => {
+        console.log(`connect_error due to ${err.message}`);
+      });
     });
   } catch (error) {
     console.log(`socketio don't have connection`);

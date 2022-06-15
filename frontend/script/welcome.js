@@ -61,8 +61,6 @@ const listenToChangeColor = function () {
 const welcomeInit = function () {
   console.log('welcome.js: init');
 
-  
-
   if (htmlWelcomePage) {
     htmlWelcomePage = document.querySelector('.js-welcome-page');
     htmlUsername = document.querySelector('.js-username');

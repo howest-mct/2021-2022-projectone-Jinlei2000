@@ -235,7 +235,7 @@ Before we can run the code we are going to prepare the raspberry pi.
       Ready to run everything :satisfied:.
 
       ```bash
-      /bin/python3 <project_directory>/backend/app.py
+      sudo /bin/python3 <project_directory>/backend/app.py
       ```
 
 ### The circuit diagram

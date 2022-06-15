@@ -133,7 +133,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 2)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg ${iconDoor} u-rotate-90"></i>
+                    <i class="c-card__icon-lg ${iconDoor}"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 1
@@ -145,14 +145,14 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 2)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
+                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
                 </div>
               </div>
 
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 3)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg ${iconValve}"></i>
+                    <i class="c-card__icon-lg ${iconValve} u-rotate-90"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 2
@@ -164,7 +164,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 3)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
+                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
                 </div>
               </div>
             </div>

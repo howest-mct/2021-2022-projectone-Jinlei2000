@@ -53,12 +53,10 @@ weight_sensor = HX711_Weight(dout_pin=27,sck_pin=22)
 reader = SimpleMFRC522()
 buzzer = 16
 
-btnStatusPoweroff = False
 
 btnStatusLcd = Value('b', False)
 badgeid = Queue()
 
-# nog een led van de knop aansturen
 
 np = Neopixel(12)
 loadingStatus = Value('b', True)
@@ -77,7 +75,7 @@ def setup():
     GPIO.output(btnPoweroffLed,GPIO.HIGH)
 
     btnLcdPin.on_press(demo_callback1)
-    btnPoweroffPin.on_press(demo_callback2)
+    btnPoweroffPin.on_release(demo_callback2)
 
 def demo_callback1(pin):
     global btnStatusLcd
@@ -85,6 +83,13 @@ def demo_callback1(pin):
     btnStatusLcd.value = True
     print("**** DB --> LCD Button pressed ****")
     DataRepository.add_history(1,8,5)
+
+def cleanup():
+    print("**** Cleaning up ****")
+    GPIO.output(btnPoweroffLed,GPIO.LOW)
+    GPIO.output(backlight_lcd, GPIO.LOW)
+    lcd.clear_LCD()
+    # GPIO.cleanup() 
 
 def poweroff():
     socketio.emit('B2F_button', {'message': 'poweroff'})
@@ -96,19 +101,16 @@ def poweroff():
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
+    cleanup()
     sleep(1)
-    #hier nog poweroff plaatsen om te stoppen
     call("sudo poweroff", shell=True)
-    
 
 def demo_callback2(pin):
-    global btnStatusPoweroff
-    loadingStatusShutdown.value = True
+    cleanup()
+    # loadingStatusShutdown.value = True
     print("---- Poweroff Pi Button pressed ----")
-    btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
-    poweroff()
 
 def rfid(send_badgeid,servoDoorStatus):
     try:
@@ -292,10 +294,13 @@ def start_lcd(btnStatusLcd,loadingStatus):
         while True:
             try:
                 if loadingStatus.value == True:
+                    lcd.write("Starting...")
+                    GPIO.output(backlight_lcd, GPIO.HIGH)
                     np.show_loading()
                     print("**** DB --> RGB led loading starting pi ****")
                     DataRepository.add_history(None,7,29)
                     loadingStatus.value = False
+                    
                 if btnStatusLcd.value == True:
                     if write_ip_status == True:
                         print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
@@ -438,8 +443,8 @@ def start_thread_live_data():
 # START SERVO & MAGNETCONTACT
 def servo_magnet(servoDoorStatus):
     try:
-        prevStatus1 = None
-        prevStatus2 = None
+        prevStatus1 = 1
+        prevStatus2 = 1
         tijd = 0
         if servoDoorStatus.value == True:
             servo_door.lock_door()
@@ -519,6 +524,7 @@ def start_chrome_kiosk():
         # options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
         options.add_argument('--kiosk')
+        options.add_argument('--remote-debugging-port=9923')
         # chrome_options.add_argument('--no-sandbox')         
         # options.add_argument("disable-infobars")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -528,8 +534,8 @@ def start_chrome_kiosk():
         driver.get("http://localhost")
         while True:
             pass
-    except:
-        print('Error thread chrome!!!')
+    except Exception as e:
+        print('Error thread chrome!!!',e)
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
@@ -550,7 +556,7 @@ def read_list_out_Process():
             except Exception as e:
                 print('read_list_out_Process crashed!!',e)
     except:
-        print('Error thread read_list_out_Process!!!')
+        print('Error thread read_list_out_Process!!!',e)
 
 def start_thread_Queue():
     xThread = threading.Thread(target=read_list_out_Process, args=(), daemon=True)
