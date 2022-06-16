@@ -50,7 +50,7 @@ try:
                     print("**** DB --> Pi is shutting down ****")
                     DataRepository.add_history(None,10,8)
                     sleep(2)
-                    # call("sudo poweroff", shell=True)
+                    call("sudo poweroff", shell=True)
         except Exception as e:
             print(e)
 except Exception as e:
