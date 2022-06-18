@@ -150,7 +150,7 @@ Before we can run the code we are going to prepare the raspberry pi.
    ```
 
 9. Database\
-   Install MariaDB and configuration.
+    Install MariaDB and configuration.
 
    ```bash
    sudo apt install mariadb-server mariadb-client -y
@@ -184,115 +184,129 @@ Before we can run the code we are going to prepare the raspberry pi.
    - MySQL Server Port: 3306
    - Username: USERNAME
    - Password: PASSWORD
-<br><br>
+     <br><br>
+
 10. Apache\
-   Install Apache and configuration.
+    Install Apache and configuration.
 
-      ```bash
-      sudo apt install apache2
-      ```
-      Some plugins:
+    ```bash
+    sudo apt install apache2
+    ```
 
-      ```bash
-      sudo a2enmod proxy_http
-      sudo a2enmod rewrite
-      sudo a2enmod ssl
-      ```
+    Some plugins:
 
-      Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com/self-signed-certificate-https-in-raspberry-pi-with-apache/)
-      Change some configurations.
+    ```bash
+    sudo a2enmod proxy_http
+    sudo a2enmod rewrite
+    sudo a2enmod ssl
+    ```
 
-      ```bash
-      nano /etc/apache2/sites-available/000-default.conf
-      ```
+    Follow this link to configure Self Signed Certificate for https: [Tutorial](https://peppe8o.com/self-signed-certificate-https-in-raspberry-pi-with-apache/)
+    Change some configurations.
 
-      Replace the following lines with the following lines and change DocumentRoot to the path of your project (SAVE: CTRL + X > Y > Enter):
+    ```bash
+    nano /etc/apache2/sites-available/000-default.conf
+    ```
 
-      Go to [GitHub](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/apache%20file.txt) copy apache file
+    Replace the following lines with the following lines and change DocumentRoot to the path of your project (SAVE: CTRL + X > Y > Enter):
 
-      Now restart the Apache.
+    Go to [GitHub](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/apache%20file.txt) copy apache file
 
-      ```bash
-      sudo systemctl restart apache2
-      ```
+    Now restart the Apache.
 
-      check the status of Apache.
+    ```bash
+    sudo systemctl restart apache2
+    ```
 
-      ```bash
-      sudo systemctl status apache2
-      ```
+    check the status of Apache.
 
-      ```bash
-      Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset:
-      enabled)
-      Active: active (running) since ...
-      ```
+    ```bash
+    sudo systemctl status apache2
+    ```
+
+    ```bash
+    Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset:
+    enabled)
+    Active: active (running) since ...
+    ```
 
 11. Run the server.\
     Last things to be done.
     Go to [Geoapify](https://www.geoapify.com/tutorial/how-to-implement-geocoding-javascript-tutorial) create account and make a new project. Now copy the API key. Then go to the project directory on the PI (frontend > script > dashboard.js > line 371) and paste the API key.
 
-      Ready to run everything :satisfied:.
+    Ready to run everything :satisfied:.
 
-      ```bash
-      sudo /bin/python3 <project_directory>/backend/app.py
-      ```
+    ```bash
+    sudo /bin/python3 <project_directory>/backend/app.py
+    ```
 
 12. Automatic starting of the software (services).\
-   If you follow this your raspberry pi is booting your software will start automatically. I have 2 files that need to be started. One is [app.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/app.py) and other is [powerbtn.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/powerbtn.py).
+    If you follow this your raspberry pi is booting your software will start automatically. I have 2 files that need to be started. One is [app.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/app.py) and other is [powerbtn.py](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/blob/master/backend/powerbtn.py).
 
-      Create the file and put the contents of the following lines in it:
-      ```bash	
-      nano /etc/systemd/system/smartgarbage.service
-      ```
-      **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
-      ```bash	
-      [Unit]
-      Description=smartgarbage
-      After=network.target
-      [Service]
-      ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/app.py
-      WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
-      StandardOutput=inherit
-      StandardError=inherit
-      Restart=always
-      User=root
-      [Install]
-      WantedBy=multi-user.target
-      ```
-      Save the file (CTRL + X > Y).\
-      Now we are going to create the second service for the powerbtn.py
-      ```bash	
-      nano /etc/systemd/system/powerbtn.service
-      ```
-      **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
-      ```bash	
-      [Unit]
-      Description=powerbtn
-      After=network.target
-      [Service]
-      ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/powerbtn.py
-      WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
-      StandardOutput=inherit
-      StandardError=inherit
-      Restart=always
-      User=root
-      [Install]
-      WantedBy=multi-user.target
-      ```
-      Notify the system of the new service Next, inform the system that the new service should be active.
-      ```bash	
-      sudo systemctl enable powerbtn.service
-      ```	
-      Restart the system.
-      ```bash
-      sudo reboot
-      ```	
-      You can now use the power button to turn the app.py script on or off. If you hold the power button longer than 6 seconds the raspberry pi will shutdown.<br><br>
+    Create the file and put the contents of the following lines in it:
+
+    ```bash
+    nano /etc/systemd/system/smartgarbage.service
+    ```
+
+    **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
+
+    ```bash
+    [Unit]
+    Description=smartgarbage
+    After=network.target
+    [Service]
+    ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/app.py
+    WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
+    StandardOutput=inherit
+    StandardError=inherit
+    Restart=always
+    User=root
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+    Save the file (CTRL + X > Y).\
+     Now we are going to create the second service for the powerbtn.py
+
+    ```bash
+    nano /etc/systemd/system/powerbtn.service
+    ```
+
+    **Don't forget** to replace the placeholders with the correct directory (ExecStart, WorkingDirectory)!
+
+    ```bash
+    [Unit]
+    Description=powerbtn
+    After=network.target
+    [Service]
+    ExecStart==/usr/bin/python3 -u /home/student/2021-2022-projectone-Jinlei2000/backend/powerbtn.py
+    WorkingDirectory=/home/student/2021-2022-projectone-Jinlei2000/backend
+    StandardOutput=inherit
+    StandardError=inherit
+    Restart=always
+    User=root
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+    Notify the system of the new service Next, inform the system that the new service should be active.
+
+    ```bash
+    sudo systemctl enable powerbtn.service
+    ```
+
+    Restart the system.
+
+    ```bash
+    sudo reboot
+    ```
+
+    You can now use the power button to turn the app.py script on or off. If you hold the power button longer than 6 seconds the raspberry pi will shutdown.<br><br>
 
 ### The circuit diagram
 
-We are going to connect the circuit of the Smart garbage. go to [instructables](https://www.instructables.com/Making-a-Smart-Garbage/) link!!!! to see the scheme for more detail.
+We are going to connect the circuit of the Smart garbage. go to [instructables](https://www.instructables.com/Making-a-Smart-Garbage/) to see the scheme for more detail or go to [fritzing](https://github.com/howest-mct/2021-2022-projectone-Jinlei2000/tree/master/fritzing_schema)
 
 ## Instructables
 
@@ -308,5 +322,3 @@ Source code: https://github.com/howest-mct/2021-2022-projectone-Jinlei2000
 
 - [Line awesome](https://icons8.com/line-awesome)
 - [Inter webfonts](https://rsms.me/inter/)
-
-
