@@ -386,7 +386,6 @@ def live_data(loadingStatus,loadingStatusShutdown):
         while True:
             try:
                 volume = ultrasonic_sensor.get_distance()
-
                 procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
                 if procent_volume > 100:
                     procent_volume = 100
