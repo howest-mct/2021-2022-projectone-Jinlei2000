@@ -292,11 +292,11 @@ Before we can run the code we are going to prepare the raspberry pi.
 
 ### The circuit diagram
 
-We are going to connect the circuit of the Smart garbage. go to [instructables]() link!!!! to see the scheme for more detail.
+We are going to connect the circuit of the Smart garbage. go to [instructables](https://www.instructables.com/Making-a-Smart-Garbage/) link!!!! to see the scheme for more detail.
 
 ## Instructables
 
-If you want to recreate my project you will find a well-documented guide on [instructables](https://www.instructables.com/preview/EZKOKHRL20FZQ8B/).link aaanpassss!!!!!
+If you want to recreate my project you will find a well-documented guide on [instructables](https://www.instructables.com/Making-a-Smart-Garbage/).
 
 ## Contact
 
