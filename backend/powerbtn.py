@@ -6,6 +6,8 @@ from helpers.Neopixel import Neopixel
 
 
 power = 6
+np = Neopixel(12)
+np.start_up()
 
 def setup():
     GPIO.setmode(GPIO.BCM) 

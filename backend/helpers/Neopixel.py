@@ -57,6 +57,14 @@ class Neopixel:
                 self.pixels[i] = color
                 sleep(0.08)
         self.__reset()
+    
+    def start_up(self):
+        self.__reset()
+        for i in range(3):
+            self.pixels.fill((0, 255, 0))
+            sleep(0.5)
+        self.__reset()
+
         
         
         
