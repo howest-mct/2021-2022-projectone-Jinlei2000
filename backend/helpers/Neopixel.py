@@ -12,10 +12,10 @@ x = [{1:board.D1},{2:board.D2},{3:board.D3},{4:board.D4},{5:board.D5},
 class Neopixel:
     def __init__(self, pin):
         self.pixels = NeoPixel(x[pin-1][pin], 8,brightness=0.2)
-        self.__reset()
+        self.reset()
         self.prevAmount = 0
 
-    def __reset(self):
+    def reset(self):
         self.pixels.fill((0, 0, 0))
 
     def __calc_volume_to_neopixel(self, max_volume,min_volume,volume):
@@ -35,7 +35,7 @@ class Neopixel:
         rgb = [(0,255,0),(255,140,0),(255,0,0)] # green, orange, red
         # print(amounts)
         if amount1 != self.prevAmount:
-            self.__reset()
+            self.reset()
             for i in range(3):
                 if amounts[i] < 0:
                     amounts[i] = 0
@@ -50,20 +50,28 @@ class Neopixel:
             self.prevAmount = amount1
     
     def show_loading(self, color=(38, 74, 255)):#blue default
-        self.__reset()
+        self.reset()
         for x in range(8):
             for i in range(8):
                 self.pixels[i-1] = (0,0,0)
                 self.pixels[i] = color
                 sleep(0.08)
-        self.__reset()
+        self.reset()
     
     def start_up(self):
-        self.__reset()
-        for i in range(3):
-            self.pixels.fill((0, 255, 0))
-            sleep(0.5)
-        self.__reset()
+        self.reset()
+        sleep(0.2)
+        self.pixels.fill((0, 255, 0))
+        sleep(0.2)
+        self.reset()
+        sleep(0.2)
+        self.pixels.fill((0, 255, 0))
+        sleep(0.2)
+        self.reset()
+        sleep(0.2)
+        self.pixels.fill((0, 255, 0))
+        sleep(0.2)
+        self.reset()
 
         
         

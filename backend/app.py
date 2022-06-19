@@ -39,6 +39,7 @@ magnetcontactValve = Button(26)
 
 lcd = Lcd_4bits_i2c(0x38)
 lcd.init_LCD()
+lcd.curscorBlinkOff()
 backlight_lcd = 25
 
 servo_door = SG90(24)
@@ -123,7 +124,6 @@ def rfid(send_badgeid,servoDoorStatus):
         print("**** DB --> Badge was scanned & buzzer rings ****")
         DataRepository.add_history(id,6,23)
         DataRepository.add_history(None,9,24)
-        #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
         user = DataRepository.check_user_badge_id(id)
         badgeid = user['badgeid']
         if badgeid is not None:

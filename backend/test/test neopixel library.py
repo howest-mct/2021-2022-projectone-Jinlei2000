@@ -7,7 +7,8 @@ np = Neopixel(12)
 while True:
     try:
         value = int(input("Enter a value between 0 and 100: "))
-        np.show_value(value)
+        np.start_up()
+        # np.show_value(value)
         # np.show_loading()
     except Exception as e:
         print(e)
