@@ -116,13 +116,17 @@ const listenToSocketConnection = function () {
   try {
     socketio.on('connect', function () {
       console.log('verbonden met socket webserver');
+      
+    socketio.on('connect_error', (err) => {
+        console.log(`connect_error due to ${err.message}`);
+      });
     });
   } catch (error) {
     console.log(`socketio don't have connection`);
     showNotification('error', 'Sockect connection lost!');
   }
   socketio.on('B2F_button', function (data) {
-    console.log('B2F_button', data);
+    // console.log('B2F_button', data);
     const message = data.message;
     if (message == 'poweroff') {
       showNotification('warning', 'Raspberry Pi is going to poweroff!');
@@ -133,7 +137,7 @@ const listenToSocketConnection = function () {
     }
   });
   socketio.on('B2F_full_volume', function () {
-    if (!document.querySelector('.js-index-page')) {
+    if (document.querySelector('.js-dashboard-page')) {
       showNotification('warning', 'The trash can is full.');
     }
   });

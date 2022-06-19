@@ -70,11 +70,11 @@ class Lcd_4bits_i2c:
         self.clear_LCD()
         self.curscorOff()
         if type_ip == 'wlan0':
-            self.__write('WIFI IP adres:')
+            self.__write('WIFI IP address:')
             self.second_row()
             self.__write(ip)
         elif type_ip == 'eth0':
-            self.__write('LAN IP adres:')
+            self.__write('LAN IP address:')
             self.second_row()
             self.__write(ip)
     

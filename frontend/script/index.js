@@ -55,10 +55,10 @@ const callbackLogin = function (json) {
   // console.log('userid,access_token',json);
   const access_token = json.access_token;
   localStorage.setItem('userid', json.id.userid);
-  console.log(access_token);
+  // console.log(access_token);
   localStorage.setItem('access_token', access_token);
   const url = backend + `/protected/`;
-  console.log(url);
+  // console.log(url);
   handleData(url, callbackProtected, showApiError, 'GET', null, access_token);
 };
 
@@ -67,12 +67,12 @@ const callbackLoginError = function (json) {
 };
 
 const callbackProtected = function (json) {
-  console.log('logged_in_as: ', json.logged_in_as);
+  // console.log('logged_in_as: ', json.logged_in_as);
   socketio.emit('F2B_LoggedInUser');
-  console.log('localStorage.userid: ', localStorage.getItem('userid'));
-  console.log(page);
+  // console.log('localStorage.userid: ', localStorage.getItem('userid'));
+  // console.log(page);
   if (!page) {
-    window.location.href = `/welcome.html`;
+    window.location.href = `/home.html`;
   } else {
     window.location.href = `/${page}`;
   }
@@ -147,7 +147,7 @@ const listenToSignupBtn = function () {
 
 const listenToLoginBtn = function () {
   document.querySelector('.js-login-btn').addEventListener('click', function () {
-    console.log('login: click');
+    // console.log('login: click');
     const username = document.querySelector('.js-username-login').value;
     const password = document.querySelector('.js-password-login').value;
     if (username.length > 0 && password.length > 0) {

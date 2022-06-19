@@ -109,11 +109,6 @@ class DataRepository:
         params = [actionid]
         return Database.get_rows(sql,params)
     
-    # -- GET HISTORY BY TIME
-    @staticmethod
-    def filter_history_by_time(time):
-        pass
-    
     # -- LAST VALUE WEIGHT
     @staticmethod
     def get_last_value_weight():
@@ -164,3 +159,4 @@ class DataRepository:
         sql = 'UPDATE location SET address = %s, coordinates = %s, name = %s'
         params = [address,coords,name]
         return Database.execute_sql(sql,params)
+

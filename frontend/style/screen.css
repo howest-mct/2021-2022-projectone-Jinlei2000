@@ -921,6 +921,29 @@ a:focus {
     justify-content: start;
 }
 
+.c-card--home {
+    min-width: 312px;
+    max-width: 312px;
+    cursor: pointer;
+}
+
+.c-card__circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: orange;
+    margin-right: 4px;
+}
+
+.c-card__circle--green {
+    background-color: green;
+}
+
+.c-card__circle--red {
+    background-color: red;
+}
+
 @media (min-width: 576px) {
     .c-card__login {
         margin-top: 48px;
@@ -939,6 +962,7 @@ a:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #0B1D47;
 }
 
 .c-card__title--feed {
@@ -965,6 +989,7 @@ a:focus {
     font-size: 96px;
     cursor: pointer;
 }
+
 
 /*
     Component: popup
@@ -1409,6 +1434,8 @@ a:focus {
     }
 }
 
+
+
 /*------------------------------------*\
   #UTILITIES
 \*------------------------------------*/
@@ -1418,6 +1445,14 @@ a:focus {
     ---
     random utility functions
 */
+
+.u-rotate-90 {
+    transform: rotate(90deg);
+}
+
+.u-td-none {
+    text-decoration: none;
+}
 
 .u-title__link {
     all: unset !important;

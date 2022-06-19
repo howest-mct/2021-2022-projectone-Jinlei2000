@@ -114,7 +114,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 1)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg las la-door-open"></i>
+                    <i class="c-card__icon-lg las la-door-open u-rotate-90"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Opened
@@ -145,14 +145,14 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 2)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
+                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
                 </div>
               </div>
 
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 3)}">
                 <div class="c-card c-card--feed">
                   <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                    <i class="c-card__icon-lg ${iconValve}"></i>
+                    <i class="c-card__icon-lg ${iconValve} u-rotate-90"></i>
                   </i>
                   <h3 class="c-card__title c-card__title--feed">
                     Door 2
@@ -164,7 +164,7 @@ const showLiveData = function (data) {
               <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 js-card-info ${checkStatusCardInfo('.js-card-info', 3)}">
                 <div class="c-card c-card--feed c-card--info">
                   <i class="c-card__icon-sm las la-times u-h-xl js-card-button"></i>
-                  <p class="u-mb-clear">Here you see the status of the door to empty is: closed = close, opened = open.</p>
+                  <p class="u-mb-clear">Here you see the status of lid is: closed = close, opened = open.</p>
                 </div>
               </div>
             </div>
@@ -178,7 +178,8 @@ const showPopupInputValue = function (info) {
 };
 
 const calcVolumeToProcent = function (volume) {
-  let result = Math.round(Math.abs(((volume - 28.5) * 100) / 16.5));
+  const value = volume == 0 ? 28.5 : volume;
+  let result = Math.round(Math.abs(((value - 28.5) * 100) / 16.5));
   result = result > 100 ? 100 : result;
   result = result < 5 ? 0 : result;
   return result;
@@ -305,7 +306,7 @@ const showTotal = function (json) {
                           <div class="o-layout__item u-1-of-3-bp2 u-1-of-2-bp1 u-flex-grow-1 js-card ${checkStatusCardInfo('.js-card', 5)}">
                             <div class="c-card c-card--feed">
                               <i class="c-card__icon-sm las la-question-circle js-card-button u-align-items-start">
-                                <i class="c-card__icon-lg las la-door-open"></i>
+                                <i class="c-card__icon-lg las la-door-open u-rotate-90"></i>
                               </i>
                               <h3 class="c-card__title c-card__title--feed">
                                 Opened
@@ -459,7 +460,7 @@ const listenToPopupConfirmBtn = function () {
 
 const listenToSocket = function () {
   socketio.on('B2F_live_data', function (data) {
-    // console.log('B2F_live_data');
+    console.log('B2F_live_data 😁😁😁😁😁😁');
     // console.log(data);
     showLiveData(data);
   });
@@ -468,7 +469,7 @@ const listenToSocket = function () {
     const btns = document.querySelectorAll(htmlClass);
     for (const btn of btns) {
       if (btn.classList.contains('c-filter--active')) {
-        console.log(btn.innerHTML);
+        // console.log(btn.innerHTML);
         return btn.innerHTML;
       }
     }

@@ -1,3 +1,4 @@
+import multiprocessing
 from time import sleep,time
 import datetime
 from RPi import GPIO
@@ -38,6 +39,7 @@ magnetcontactValve = Button(26)
 
 lcd = Lcd_4bits_i2c(0x38)
 lcd.init_LCD()
+lcd.curscorBlinkOff()
 backlight_lcd = 25
 
 servo_door = SG90(24)
@@ -52,12 +54,10 @@ weight_sensor = HX711_Weight(dout_pin=27,sck_pin=22)
 reader = SimpleMFRC522()
 buzzer = 16
 
-btnStatusPoweroff = False
 
 btnStatusLcd = Value('b', False)
 badgeid = Queue()
 
-# nog een led van de knop aansturen
 
 np = Neopixel(12)
 loadingStatus = Value('b', True)
@@ -76,8 +76,7 @@ def setup():
     GPIO.output(btnPoweroffLed,GPIO.HIGH)
 
     btnLcdPin.on_press(demo_callback1)
-    btnPoweroffPin.on_press(demo_callback2)
-
+    btnPoweroffPin.on_release(demo_callback2)
 
 def demo_callback1(pin):
     global btnStatusLcd
@@ -85,6 +84,13 @@ def demo_callback1(pin):
     btnStatusLcd.value = True
     print("**** DB --> LCD Button pressed ****")
     DataRepository.add_history(1,8,5)
+
+def cleanup():
+    print("**** Cleaning up ****")
+    GPIO.output(btnPoweroffLed,GPIO.LOW)
+    GPIO.output(backlight_lcd, GPIO.LOW)
+    lcd.clear_LCD()
+    # GPIO.cleanup() 
 
 def poweroff():
     socketio.emit('B2F_button', {'message': 'poweroff'})
@@ -96,40 +102,38 @@ def poweroff():
     print("**** DB --> Pi is shutting down ****")
     DataRepository.add_history(None,10,8)
     GPIO.output(btnPoweroffLed,GPIO.LOW)
+    cleanup()
     sleep(1)
-    #hier nog poweroff plaatsen om te stoppen
     call("sudo poweroff", shell=True)
-    
 
 def demo_callback2(pin):
-    global btnStatusPoweroff
-    loadingStatusShutdown.value = True
+    cleanup()
+    # loadingStatusShutdown.value = True
     print("---- Poweroff Pi Button pressed ----")
-    btnStatusPoweroff = True
     print("**** DB --> Poweroff Button pressed ****")
     DataRepository.add_history(1,8,7)
-    poweroff()
 
 def rfid(send_badgeid,servoDoorStatus):
-    id, text = reader.read()
-    send_badgeid.put([id])
-    print(f'**** RFID ID: {id} ****')
-    GPIO.output(buzzer, GPIO.HIGH)
-    sleep(1)
-    GPIO.output(buzzer, GPIO.LOW)
-    print("**** DB --> Badge was scanned & buzzer rings ****")
-    DataRepository.add_history(id,6,23)
-    DataRepository.add_history(None,9,24)
-    #controleren op id bestaat in user tabal van database (alle id op halen en checken in list)
-    user = DataRepository.check_user_badge_id(id)
-    badgeid = user['badgeid']
-    if badgeid is not None:
-        if badgeid == id:
-            if magnetcontactDoor.pressed == True:
-                print('servo unlock door')
-                servoDoorStatus.value = True
+    try:
+        id, text = reader.read()
+        send_badgeid.put([id])
+        print(f'**** RFID ID: {id} ****')
+        GPIO.output(buzzer, GPIO.HIGH)
+        sleep(1)
+        GPIO.output(buzzer, GPIO.LOW)
+        print("**** DB --> Badge was scanned & buzzer rings ****")
+        DataRepository.add_history(id,6,23)
+        DataRepository.add_history(None,9,24)
+        user = DataRepository.check_user_badge_id(id)
+        badgeid = user['badgeid']
+        if badgeid is not None:
+            if badgeid == id:
+                if magnetcontactDoor.pressed == True:
+                    print('servo unlock door')
+                    servoDoorStatus.value = True
+    except Exception as e:
+        print("rfid crashed!! ",e)
     
-
 # CODE FOR FLASK
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'geheim!!!!!'
@@ -227,36 +231,40 @@ def get_charts(time,actionid):
         data = DataRepository.filter_chart_data_by_time_actionid(time,actionid)
         return jsonify(data), 201
 
-@socketio.on('connect')
-def initial_connection():
-    print('A new client connect')
+try:
+    @socketio.on('connect')
+    def initial_connection():
+        print('A new client connect')
+        
 
-@socketio.on('F2B_addNewUser')
-def add_new_user():
-    print("**** DB --> New User added ****")
-    DataRepository.add_history(None,None,14)
+    @socketio.on('F2B_addNewUser')
+    def add_new_user():
+        print("**** DB --> New User added ****")
+        DataRepository.add_history(None,None,14)
 
-@socketio.on('F2B_LoggedInUser')
-def logged_in_user():
-    print("**** DB --> Logged in user ****")
-    DataRepository.add_history(None,None,17)
+    @socketio.on('F2B_LoggedInUser')
+    def logged_in_user():
+        print("**** DB --> Logged in user ****")
+        DataRepository.add_history(None,None,17)
 
-@socketio.on('F2B_buttons')
-def buttons(payload):
-    btn_type = payload['button']
-    if btn_type == 'poweroff':
-        print("**** DB --> Remote poweroff button pressed ****")
-        DataRepository.add_history(None,None,25)
-        poweroff()
-    if btn_type == 'open':
-        if magnetcontactDoor.pressed == True:
-                print("**** DB -->  Remote open button pressed****")
-                DataRepository.add_history(None,None,26)
-                servoDoorStatus.value = True
-                socketio.emit('B2F_button', {'message': 'opening'})
-        else:
-            socketio.emit('B2F_button', {'message': 'already opened'})
-    
+    @socketio.on('F2B_buttons')
+    def buttons(payload):
+        btn_type = payload['button']
+        if btn_type == 'poweroff':
+            print("**** DB --> Remote poweroff button pressed ****")
+            DataRepository.add_history(None,None,25)
+            poweroff()
+        if btn_type == 'open':
+            if magnetcontactDoor.pressed == True:
+                    print("**** DB -->  Remote open button pressed****")
+                    DataRepository.add_history(None,None,26)
+                    servoDoorStatus.value = True
+                    socketio.emit('B2F_button', {'message': 'opening'})
+            else:
+                socketio.emit('B2F_button', {'message': 'already opened'})
+except Exception as e:
+    print("socket crashed!! ",e)
+        
     
 # ALL THREADS
 # Important!!! Debugging must be OFF on server startup, otherwise thread will start twice
@@ -282,30 +290,36 @@ def start_lcd(btnStatusLcd,loadingStatus):
     write_ip_status = True
     try:
         while True:
-            if loadingStatus.value == True:
-                np.show_loading()
-                print("**** DB --> RGB led loading starting pi ****")
-                DataRepository.add_history(None,7,29)
-                loadingStatus.value = False
-            if btnStatusLcd.value == True:
-                if write_ip_status == True:
-                    print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
-                    lcd.write_ip_adres('wlan0')
+            try:
+                if loadingStatus.value == True:
+                    lcd.write("Starting...")
                     GPIO.output(backlight_lcd, GPIO.HIGH)
-                    write_ip_status = False
-                    print("**** DB --> LCD on & show ip ****")
-                    DataRepository.add_history(None,5,12)
-                    DataRepository.add_history(None,5,6)
-                # print(time()-tijd)
-                if((time()-tijd)>10):
-                    btnStatusLcd.value = False
-                    print("**** DB --> LCD off ****")
-                    DataRepository.add_history(None,5,13)
-            else:
-                lcd.clear_LCD()
-                GPIO.output(backlight_lcd, GPIO.LOW)
-                tijd = time()
-                write_ip_status = True
+                    np.show_loading()
+                    print("**** DB --> RGB led loading starting pi ****")
+                    DataRepository.add_history(None,7,29)
+                    loadingStatus.value = False
+                    
+                if btnStatusLcd.value == True:
+                    if write_ip_status == True:
+                        print(f'**** Showing IP WLAN: {lcd.get_ip_wlan0()} ****')
+                        lcd.write_ip_adres('wlan0')
+                        GPIO.output(backlight_lcd, GPIO.HIGH)
+                        write_ip_status = False
+                        print("**** DB --> LCD on & show ip ****")
+                        DataRepository.add_history(None,5,12)
+                        DataRepository.add_history(None,5,6)
+                    # print(time()-tijd)
+                    if((time()-tijd)>10):
+                        btnStatusLcd.value = False
+                        print("**** DB --> LCD off ****")
+                        DataRepository.add_history(None,5,13)
+                else:
+                    lcd.clear_LCD()
+                    GPIO.output(backlight_lcd, GPIO.LOW)
+                    tijd = time()
+                    write_ip_status = True
+            except Exception as e:
+                print('start_lcd crashed!! ',e)
     except:
         print('Error thread lcd!!!')
 
@@ -352,13 +366,11 @@ def save_data():
     
 def start_thread_save_data():
     print("**** Starting THREAD save data ****")
-    # p = Process(target=save_data, args=())
-    # p.start()
     thread = threading.Thread(target=save_data, args=(), daemon=True)
     thread.start()
 
 # START LIVE DATA
-def live_data(loadingStatus,loadingStatusShutdown):
+def live_data(loadingStatus,loadingStatusShutdown): 
     try:
         prev_volume = 30
         servoValveStatus = False
@@ -367,8 +379,8 @@ def live_data(loadingStatus,loadingStatusShutdown):
         sleep(0.5)
         while True:
             try:
+                print(magnetcontactValve.pressed)
                 volume = ultrasonic_sensor.get_distance()
-
                 procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
                 if procent_volume > 100:
                     procent_volume = 100
@@ -385,7 +397,8 @@ def live_data(loadingStatus,loadingStatusShutdown):
                     print("**** DB -->  DOOR 1 is unlocked****")
                     DataRepository.add_history(None,1,4)
                     servoValveStatus = False
-
+                if magnetcontactValve.pressed == False:
+                    volume = prev_volume
                 weight = round(weight_sensor.get_weight(),2)
                 door_status = magnetcontactDoor.pressed
                 valve_status = magnetcontactValve.pressed
@@ -411,70 +424,73 @@ def live_data(loadingStatus,loadingStatusShutdown):
 
                 sleep(0.5) # 500 ms
             except Exception as e:
-                print('live_data gecrasht!!',e)
+                print('live_data crashed!!',e)
                 sleep(0.5)
     except Exception as e:
         print('Error thread live_data!!! ',e)
 
 def start_thread_live_data():
     print("**** Starting THREAD live data ****")
-    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True)
+    thread = threading.Thread(target=live_data, args=(loadingStatus,loadingStatusShutdown), daemon=True) 
     thread.start()
 
 # START SERVO & MAGNETCONTACT
 def servo_magnet(servoDoorStatus):
     try:
-        prevStatus1 = None
-        prevStatus2 = None
+        prevStatus1 = 1
+        prevStatus2 = 1
         tijd = 0
         if servoDoorStatus.value == True:
             servo_door.lock_door()
         else:
             servo_door.unlock_door()
         while True:
-            if servoDoorStatus.value == True:
-                servo_door.unlock_door()
+            try:
+                if servoDoorStatus.value == True:
+                    servo_door.unlock_door()
+                    sleep(0.5)
+                    print("**** DB -->  DOOR 2 is unlocked with badge****")
+                    DataRepository.add_history(None,1,19)
+                    servoDoorStatus.value = False
+                    tijd = time()
+
+                if servoDoorStatus.value == False and magnetcontactDoor.pressed == True:
+                    if tijd is not None:
+                        # print(time()-tijd)
+                        if((time()-tijd)>15):
+                            servo_door.lock_door()
+                            sleep(0.5)
+                            print("**** DB -->  DOOR 2 is locked****")
+                            DataRepository.add_history(None,1,21)
+                            tijd = None
+
+                status1 = magnetcontactDoor.pressed
+                if status1 != prevStatus1:
+                    if status1 == 1:
+                        print('**** Magnetcontact door close ****')
+                        DataRepository.add_history(1,2,20)
+                    elif status1 == 0 :
+                        print('**** Magnetcontact door open ****')
+                        DataRepository.add_history(1,2,22)
+                    prevStatus1 = status1
+                    sleep(0.25)
+                    # sleep(0.3)
+                
+                status2 = magnetcontactValve.pressed
+                if status2 != prevStatus2:
+                    if status2 == 1:
+                        print('**** Magnetcontact valve close ****')
+                        DataRepository.add_history(1,2,1)
+                    elif status2 == 0:
+                        print('**** Magnetcontact valve open ****')
+                        DataRepository.add_history(1,2,2)
+                    prevStatus2 = status2
+                    sleep(0.75)
+                    # sleep(0.3)
+                sleep(0.00001)
+            except Exception as e:
+                print('servo_magnet crashed!!',e)
                 sleep(0.5)
-                print("**** DB -->  DOOR 2 is unlocked with badge****")
-                DataRepository.add_history(None,1,19)
-                servoDoorStatus.value = False
-                tijd = time()
-
-            if servoDoorStatus.value == False and magnetcontactDoor.pressed == True:
-                if tijd is not None:
-                    # print(time()-tijd)
-                    if((time()-tijd)>15):
-                        servo_door.lock_door()
-                        sleep(0.5)
-                        print("**** DB -->  DOOR 2 is locked****")
-                        DataRepository.add_history(None,1,21)
-                        tijd = None
-
-            status1 = magnetcontactDoor.pressed
-            if status1 != prevStatus1:
-                if status1 == 1:
-                    print('**** Magnetcontact door close ****')
-                    DataRepository.add_history(1,2,20)
-                elif status1 == 0 :
-                    print('**** Magnetcontact door open ****')
-                    DataRepository.add_history(1,2,22)
-                prevStatus1 = status1
-                sleep(0.25)
-                # sleep(0.3)
-            
-            status2 = magnetcontactValve.pressed
-            if status2 != prevStatus2:
-                if status2 == 1:
-                    print('**** Magnetcontact valve close ****')
-                    DataRepository.add_history(1,2,1)
-                elif status2 == 0:
-                    print('**** Magnetcontact valve open ****')
-                    DataRepository.add_history(1,2,2)
-                prevStatus2 = status2
-                sleep(1)
-                # sleep(0.3)
-            sleep(0.001) # 1 ms
-
     except:
         print('Error thread servo & magnetcontact!!!')
    
@@ -502,6 +518,7 @@ def start_chrome_kiosk():
         # options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--no-sandbox')
         options.add_argument('--kiosk')
+        options.add_argument('--remote-debugging-port=9923')
         # chrome_options.add_argument('--no-sandbox')         
         # options.add_argument("disable-infobars")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -511,8 +528,8 @@ def start_chrome_kiosk():
         driver.get("http://localhost")
         while True:
             pass
-    except:
-        print('Error thread chrome!!!')
+    except Exception as e:
+        print('Error thread chrome!!!',e)
 
 def start_chrome_thread():
     print("**** Starting CHROME ****")
@@ -523,14 +540,16 @@ def start_chrome_thread():
 def read_list_out_Process():
     try:
         while True:
-            # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
-            list_data = badgeid.get()
-            # print(">>", list_data)
-            id = list_data[0]
-            socketio.emit('B2F_sendBadgeId', {'badgeid': id})
-            sleep(0.5)
+            try:
+                list_data = badgeid.get()
+                # print(">>", list_data)
+                id = list_data[0]
+                socketio.emit('B2F_sendBadgeId', {'badgeid': id})
+                sleep(0.5)
+            except Exception as e:
+                print('read_list_out_Process crashed!!',e)
     except:
-        print('Error thread read_list_out_Process!!!')
+        print('Error thread read_list_out_Process!!!',e)
 
 def start_thread_Queue():
     xThread = threading.Thread(target=read_list_out_Process, args=(), daemon=True)
@@ -538,30 +557,32 @@ def start_thread_Queue():
 
 if __name__ == '__main__':
     try:
-        start = time()
-        setup()
-        start_thread_lcd()
-        start_thread_live_data()
-        start_thread_save_data()
-        start_thread_rfid()
-        start_thread_servo_magnet()
-        start_chrome_thread()
-        start_thread_Queue()
-        print(f"Threads elapsed time: {(time()-start):.3f}s")
-        print("**** Starting APP ****")
-        socketio.run(app, debug=False, host='0.0.0.0')
+        try:
+            start = time()
+            setup()
+            start_thread_lcd()
+            start_thread_live_data()
+            start_thread_save_data()
+            start_thread_rfid()
+            start_thread_servo_magnet()
+            start_thread_Queue()
+            # start_chrome_thread()
+            print(f"Threads elapsed time: {(time()-start):.3f}s")
+            print("**** Starting APP ****")
+            socketio.run(app, debug=False, host='0.0.0.0')
+        except Exception as e:
+            print('Error main!!!',e)
     except KeyboardInterrupt:
         print('KeyboardInterrupt exception is caught')
-        # scherm backlight uitzetten
+        # LCD backlight off
         GPIO.output(btnPoweroffLed,GPIO.LOW)
         GPIO.output(backlight_lcd, GPIO.LOW)
-        # scherm leegmaken en 8 bits instellen
+        # clean and set 8-bit mode
         lcd.cursorOn()
         lcd.clear_LCD()
         lcd.set_to_8bits()
-        # i2c afsluiten
+        # close i2c bus
         lcd.close_i2c()
-
     finally:
         GPIO.cleanup()
 
