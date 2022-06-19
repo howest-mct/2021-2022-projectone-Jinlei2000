@@ -283,8 +283,6 @@ def start_thread_rfid():
     print("**** Starting THREAD rfid ****")
     p = Process(target=start_rfid, args=(badgeid,servoDoorStatus,))
     p.start()
-    # thread = threading.Thread(target=start_rfid, args=(badgeid,servoDoorStatus,), daemon=True)
-    # thread.start()
 
 # START LCD
 def start_lcd(btnStatusLcd,loadingStatus):
@@ -329,8 +327,6 @@ def start_thread_lcd():
     print("**** Starting THREAD lcd ****")
     p = Process(target=start_lcd, args=(btnStatusLcd,loadingStatus))
     p.start()
-    # thread = threading.Thread(target=start_lcd, args=(btnStatusLcd,loadingStatus), daemon=True)
-    # thread.start()
 
 # START SAVE DATA
 def save_data():
@@ -370,8 +366,6 @@ def save_data():
     
 def start_thread_save_data():
     print("**** Starting THREAD save data ****")
-    # p = Process(target=save_data, args=())
-    # p.start()
     thread = threading.Thread(target=save_data, args=(), daemon=True)
     thread.start()
 
@@ -546,7 +540,6 @@ def read_list_out_Process():
     try:
         while True:
             try:
-                # Ik haal hier de data uit de queue (uit mijn multiprocessing Process) en print het
                 list_data = badgeid.get()
                 # print(">>", list_data)
                 id = list_data[0]
