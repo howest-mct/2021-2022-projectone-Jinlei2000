@@ -582,7 +582,6 @@ if __name__ == '__main__':
         lcd.set_to_8bits()
         # close i2c bus
         lcd.close_i2c()
-
     finally:
         GPIO.cleanup()
 
