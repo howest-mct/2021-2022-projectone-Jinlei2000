@@ -379,6 +379,7 @@ def live_data(loadingStatus,loadingStatusShutdown):
         sleep(0.5)
         while True:
             try:
+                print(magnetcontactValve.pressed)
                 volume = ultrasonic_sensor.get_distance()
                 procent_volume = round(abs((((volume - 28.5) * 100)/16.5)),0)
                 if procent_volume > 100:
