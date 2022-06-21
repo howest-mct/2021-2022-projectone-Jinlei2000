@@ -23,16 +23,16 @@ class SG90:
         max = 12.5
         min = 2.5
         duty = ((max - min)/180)*angle + min
-        print(duty)
+        # print(duty)
         self.pwm.ChangeDutyCycle(duty)
         sleep(0.15)  # 50ms
         self.pwm.ChangeDutyCycle(0)
 
     def unlock_door(self):
-        self.__set_angle(0)
+        self.__set_angle(70)
     
     def lock_door(self):
-        self.__set_angle(70)
+        self.__set_angle(0)
 
     def unlock_valve(self):
         self.__set_angle(0)
